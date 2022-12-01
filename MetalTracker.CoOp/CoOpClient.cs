@@ -60,7 +60,7 @@ namespace MetalTracker.CoOp
 
 		private async Task HubConnectionClosed(Exception? arg)
 		{
-			this.RoomId = null;
+			await Task.Run(() => { this.RoomId = null; });
 		}
 
 		public async Task Disconnect()
