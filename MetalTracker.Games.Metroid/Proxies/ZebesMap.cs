@@ -282,9 +282,9 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					var props = GetMeta(x, y);
 
-					if (props.SlotClass != null && roomState.Item == null)
+					if (props.SlotClass != '\0' && roomState.Item == null)
 					{
-						DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass, Fonts.Sans(12), Brushes.White);
+						DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
 					}
 
 					if (roomState.DestElev != null)

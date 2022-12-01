@@ -6,7 +6,7 @@
 
 		public bool IsVertical { get; set; }
 
-		public string SlotClass { get; set; }
+		public char SlotClass { get; set; } = '\0';
 
 		public bool CanHaveDest()
 		{
@@ -15,7 +15,7 @@
 
 		public bool CanHaveItem()
 		{
-			return SlotClass != null;
+			return SlotClass != '\0';
 		}
 	}
 }
