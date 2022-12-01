@@ -133,27 +133,11 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			_refreshing = true;
 
-			if (_props.CanHaveDest())
-			{
-				_dropDownDestElev.Enabled = true;
-				_dropDownDestElev.SelectedKey = _state.DestElev?.GetCode();
-			}
-			else
-			{
-				_dropDownDestElev.Enabled = false;
-				_dropDownDestElev.SelectedKey = null;
-			}
+			_dropDownDestElev.SelectedKey = _state.DestElev?.GetCode();
+			_dropDownItem.SelectedKey = _state.Item?.GetCode();
 
-			if (_props.CanHaveItem())
-			{
-				_dropDownItem.Enabled = true;
-				_dropDownItem.SelectedKey = _state.Item?.GetCode();
-			}
-			else
-			{
-				_dropDownItem.Enabled = false;
-				_dropDownItem.SelectedKey = null;
-			}
+			_dropDownDestElev.Enabled = _props.CanHaveDest();
+			_dropDownItem.Enabled = _props.CanHaveItem();
 
 			_refreshing = false;
 		}

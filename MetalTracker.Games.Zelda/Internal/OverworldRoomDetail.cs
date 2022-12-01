@@ -163,12 +163,14 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
+			_dropDownDest.SelectedKey = _state.Destination?.GetCode();
+			_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
+			_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
+			_dropDownItem3.SelectedKey = _state.Item3?.GetCode();
+
 			if (_props.ItemHere)
 			{
 				_mainLayout.Visible = true;
-
-				_dropDownDest.Enabled = false;
-				_dropDownDest.SelectedIndex = 0;
 
 				_dropDownItem1.Visible = false;
 				_dropDownItem2.Visible = true;
@@ -178,7 +180,6 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownItem2.Enabled = true;
 				_dropDownItem3.Enabled = false;
 
-				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 			}
 			else if (_props.DestHere)
 			{
@@ -191,8 +192,6 @@ namespace MetalTracker.Games.Zelda.Internal
 
 				if (_state.Destination == null)
 				{
-					_dropDownDest.SelectedIndex = 0;
-
 					_dropDownItem1.Enabled = false;
 					_dropDownItem2.Enabled = false;
 					_dropDownItem3.Enabled = false;
@@ -203,8 +202,6 @@ namespace MetalTracker.Games.Zelda.Internal
 				}
 				else
 				{
-					_dropDownDest.SelectedKey = _state.Destination.GetCode();
-
 					if (_state.Destination.ItemSlots == 0)
 					{
 						_dropDownItem1.Enabled = false;
@@ -230,10 +227,6 @@ namespace MetalTracker.Games.Zelda.Internal
 						_dropDownItem2.Enabled = true;
 						_dropDownItem3.Enabled = true;
 					}
-
-					_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
-					_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
-					_dropDownItem3.SelectedKey = _state.Item3?.GetCode();
 				}
 			}
 			else

@@ -11,6 +11,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private bool _active;
 
+		private int _w;
+
 		private int _my;
 		private int _mx;
 
