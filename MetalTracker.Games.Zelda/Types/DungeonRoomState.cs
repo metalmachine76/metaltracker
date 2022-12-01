@@ -4,14 +4,29 @@ namespace MetalTracker.Games.Zelda.Types
 {
     public class DungeonRoomState
 	{
-		public bool Explored { get; set; }
+		// shared state
+
 		public GameDest DestNorth { get; set; }
 		public GameDest DestSouth { get; set; }
 		public GameDest DestWest { get; set; }
 		public GameDest DestEast { get; set; }
-		public bool WallNorth { get; set; }
-		public bool WallSouth { get; set; }
-		public bool WallWest { get; set; }
-		public bool WallEast { get; set; }
+		public GameItem Item { get; set; }
+
+		// local state
+
+		public bool Explored { get; set; }
+
+		public DungeonRoomState Clone()
+		{
+			var clone = new DungeonRoomState();
+
+			clone.DestNorth = this.DestNorth;
+			clone.DestSouth = this.DestSouth;
+			clone.DestWest = this.DestWest;
+			clone.DestEast = this.DestEast;
+			clone.Item = this.Item;
+
+			return clone;
+		}
 	}
 }
