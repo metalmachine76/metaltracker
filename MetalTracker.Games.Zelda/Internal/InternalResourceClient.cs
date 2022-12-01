@@ -10,7 +10,9 @@ namespace MetalTracker.Games.Zelda
 		{
 			Bitmap map;
 
-			string resName = $"MetalTracker.Games.Zelda.Res.overworld.{(q2 ? "q2" : "q1")}{(mirrored ? ".m" : "")}.png";
+			string q = q2 ? "q2" : "q1";
+
+			string resName = $"MetalTracker.Games.Zelda.Res.{q}.overworld.{q}{(mirrored ? ".m" : "")}.png";
 
 			map = Bitmap.FromResource(resName);
 
@@ -21,7 +23,9 @@ namespace MetalTracker.Games.Zelda
 		{
 			OverworldRoomProps[,] meta = new OverworldRoomProps[8, 16];
 
-			string resName = $"MetalTracker.Games.Zelda.Res.overworldmeta.{(q2 ? "q2" : "q1")}.txt";
+			string q = q2 ? "q2" : "q1";
+
+			string resName = $"MetalTracker.Games.Zelda.Res.{q}.overworldmeta.{(q2 ? "q2" : "q1")}.txt";
 
 			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(resName))
 			{
