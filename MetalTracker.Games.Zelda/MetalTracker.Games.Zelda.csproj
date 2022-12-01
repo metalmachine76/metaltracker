@@ -1,0 +1,110 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Res\Icons\compass.png" />
+	  <None Remove="Res\Icons\heart.png" />
+	  <None Remove="Res\Icons\map.png" />
+	  <None Remove="Res\Icons\tri.png" />
+	  <None Remove="Res\overworld.q1.m.png" />
+	  <None Remove="Res\overworld.q2.m.png" />
+	  <None Remove="Res\overworld.q2.png" />
+	  <None Remove="Res\overworldmeta.q2.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Res\Icons\arrow0.png" />
+	  <EmbeddedResource Include="Res\Icons\arrow1.png" />
+	  <EmbeddedResource Include="Res\Icons\arrow2.png" />
+	  <EmbeddedResource Include="Res\Icons\bait0.png" />
+	  <EmbeddedResource Include="Res\Icons\book0.png" />
+	  <EmbeddedResource Include="Res\Icons\boom0.png" />
+	  <EmbeddedResource Include="Res\Icons\boom1.png" />
+	  <EmbeddedResource Include="Res\Icons\boom2.png" />
+	  <EmbeddedResource Include="Res\Icons\bow0.png" />
+	  <EmbeddedResource Include="Res\Icons\bracelet0.png" />
+	  <EmbeddedResource Include="Res\Icons\candle0.png" />
+	  <EmbeddedResource Include="Res\Icons\candle1.png" />
+	  <EmbeddedResource Include="Res\Icons\bluepotion.png" />
+	  <EmbeddedResource Include="Res\Icons\bluerupee.png" />
+	  <EmbeddedResource Include="Res\Icons\bomb.png" />
+	  <EmbeddedResource Include="Res\Icons\book1.png" />
+	  <EmbeddedResource Include="Res\Icons\bow1.png" />
+	  <EmbeddedResource Include="Res\Icons\bracelet1.png" />
+	  <EmbeddedResource Include="Res\Icons\compass.png" />
+	  <EmbeddedResource Include="Res\Icons\d1tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d1tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d2tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d2tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d3tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d3tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d4tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d4tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d6tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d5tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d5tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d6tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d7tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d7tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\d8tri0.png" />
+	  <EmbeddedResource Include="Res\Icons\d8tri1.png" />
+	  <EmbeddedResource Include="Res\Icons\heart.png" />
+	  <EmbeddedResource Include="Res\Icons\heartcontainer.png" />
+	  <EmbeddedResource Include="Res\Icons\key.png" />
+	  <EmbeddedResource Include="Res\Icons\ladder0.png" />
+	  <EmbeddedResource Include="Res\Icons\ladder1.png" />
+	  <EmbeddedResource Include="Res\Icons\letter0.png" />
+	  <EmbeddedResource Include="Res\Icons\letter1.png" />
+	  <EmbeddedResource Include="Res\Icons\magkey0.png" />
+	  <EmbeddedResource Include="Res\Icons\magkey1.png" />
+	  <EmbeddedResource Include="Res\Icons\bait1.png" />
+	  <EmbeddedResource Include="Res\Icons\map.png" />
+	  <EmbeddedResource Include="Res\Icons\raft0.png" />
+	  <EmbeddedResource Include="Res\Icons\raft1.png" />
+	  <EmbeddedResource Include="Res\Icons\candle2.png" />
+	  <EmbeddedResource Include="Res\Icons\recorder0.png" />
+	  <EmbeddedResource Include="Res\Icons\recorder1.png" />
+	  <EmbeddedResource Include="Res\Icons\redpotion.png" />
+	  <EmbeddedResource Include="Res\Icons\ring0.png" />
+	  <EmbeddedResource Include="Res\Icons\ring1.png" />
+	  <EmbeddedResource Include="Res\Icons\ring2.png" />
+	  <EmbeddedResource Include="Res\Icons\shield.png" />
+	  <EmbeddedResource Include="Res\Icons\sword0.png" />
+	  <EmbeddedResource Include="Res\Icons\sword1.png" />
+	  <EmbeddedResource Include="Res\Icons\sword2.png" />
+	  <EmbeddedResource Include="Res\Icons\sword3.png" />
+	  <EmbeddedResource Include="Res\Icons\tri.png" />
+	  <EmbeddedResource Include="Res\Icons\wand0.png" />
+	  <EmbeddedResource Include="Res\Icons\wand1.png" />
+	  <EmbeddedResource Include="Res\overworld.q1.m.png" />
+	  <EmbeddedResource Include="Res\overworld.q1.png" />
+	  <EmbeddedResource Include="Res\overworld.q2.m.png" />
+	  <EmbeddedResource Include="Res\overworld.q2.png" />
+	  <EmbeddedResource Include="Res\overworldmeta.q2.txt" />
+	  <EmbeddedResource Include="Res\overworldmeta.q1.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Eto.Forms" Version="2.7.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MetalTracker.Common\MetalTracker.Common.csproj" />
+	  <ProjectReference Include="..\MetalTracker.CoOp\MetalTracker.CoOp.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Proxies\DungeonMap.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="Proxies\OverworldMap.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>

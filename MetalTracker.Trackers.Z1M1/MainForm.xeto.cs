@@ -1,0 +1,271 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using Eto.Forms;
+using Eto.Serialization.Xaml;
+using MetalTracker.Common.Types;
+using MetalTracker.CoOp;
+using MetalTracker.Games.Metroid;
+using MetalTracker.Games.Metroid.Proxies;
+using MetalTracker.Games.Zelda;
+using MetalTracker.Games.Zelda.Proxies;
+using MetalTracker.Trackers.Z1M1.Dialogs;
+using MetalTracker.Trackers.Z1M1.Forms;
+using MetalTracker.Trackers.Z1M1.Internal;
+using MetalTracker.Trackers.Z1M1.Proxies;
+
+namespace MetalTracker.Trackers.Z1M1
+{
+	internal class MainForm : Form
+	{
+		private readonly OverworldMap _overworldMap = null;
+		private readonly DungeonMap _dungeonMap = null;
+		private readonly ZebesMap _zebesMap = null;
+		private readonly ItemTracker _itemTracker = null;
+		private readonly List<GameItem> _gameItems = new List<GameItem>();
+
+		private SessionFlags _sessionFlags = new SessionFlags();
+		private string _sessionFilename = "default.mts";
+
+		private CoOpConfig _coOpConfig;
+		private CoOpClient _coOpClient;
+
+		public MainForm()
+		{
+			XamlReader.Load(this);
+
+			_gameItems.AddRange(ZeldaResourceClient.GetGameItems());
+			_gameItems.AddRange(MetroidResourceClient.GetGameItems());
+
+			var drawableCurrentMap = this.FindChild<Drawable>("drawableCurrentMap");
+			var roomDetailContainer = this.FindChild<GroupBox>("groupBoxRoomDetail");
+
+			_overworldMap = new OverworldMap(drawableCurrentMap, roomDetailContainer);
+			_overworldMap.AddDestinations(ZeldaResourceClient.GetCaveDestinations());
+			_overworldMap.AddDestinations(ZeldaResourceClient.GetExitDestinations().Where(d => d.Key != "0"));
+			_overworldMap.AddDestinations(MetroidResourceClient.GetDestinations());
+			_overworldMap.SetGameItems(_gameItems);
+
+			_dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
+
+			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
+			_zebesMap.AddDestinations(ZeldaResourceClient.GetExitDestinations());
+			_zebesMap.AddDestinations(MetroidResourceClient.GetDestinations());
+			_zebesMap.SetGameItems(_gameItems);
+
+			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
+			_itemTracker = new ItemTracker(itemTrackerContainer);
+		}
+
+		#region Event Handlers
+
+		protected void HandlePreLoad(object sender, EventArgs e)
+		{
+			this.FindChild<DropDown>("dropDownSelectedMap").SelectedIndex = 0;
+			this.Title = $"Metal Tracker for Z1M1 [{_sessionFilename}]";
+			_itemTracker.Init();
+		}
+
+		protected void HandleLoad(object sender, EventArgs e)
+		{
+			if (File.Exists(".coopconfig"))
+			{
+				_coOpConfig = new CoOpConfig();
+				_coOpConfig.RestoreFrom(".coopconfig");
+				CreateCoOpClient();
+			}
+
+			AssignSessionFlags();
+		}
+
+		#region Menus
+
+		protected void HandleSessionNewClick(object sender, EventArgs e)
+		{
+			var newSessionFlags = new SessionFlags();
+			EditSessionFlagsDlg dlg = new EditSessionFlagsDlg(true);
+			dlg.Flags = newSessionFlags;
+			dlg.ShowModal(this);
+			if (dlg.Result == true)
+			{
+				_sessionFlags = newSessionFlags;
+			}
+		}
+
+		protected void HandleSessionOpenClick(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Filters.Add(new FileFilter("Metal Tracker Session", ".mts"));
+			var dr = ofd.ShowDialog(this);
+			if (dr == DialogResult.Ok)
+			{
+				// TODO
+			}
+		}
+
+		protected void HandleSessionSaveClick(object sender, EventArgs e)
+		{
+			if (_sessionFilename == null)
+			{
+				SaveSessionAs();
+			}
+			else
+			{
+				SaveSession();
+			}
+		}
+
+		protected void HandleSessionSaveAsClick(object sender, EventArgs e)
+		{
+			SaveSessionAs();
+		}
+
+		protected void HandleAppQuitClick(object sender, EventArgs e)
+		{
+			Application.Instance.Quit();
+		}
+
+		protected void HandleSessionEditFlagsClick(object sender, EventArgs e)
+		{
+			EditSessionFlagsDlg dlg = new EditSessionFlagsDlg(false);
+			dlg.Flags = _sessionFlags;
+			if (dlg.ShowModal(this))
+			{
+				AssignSessionFlags();
+			}
+		}
+
+		protected void HandleSessionClearDataClick(object sender, EventArgs e)
+		{
+			if (MessageBox.Show("This will reset all tracked data to default for the current flags. Proceed?", "Metal Tracker",
+					MessageBoxButtons.YesNo, MessageBoxType.Question) == DialogResult.Yes)
+			{
+				_overworldMap.ResetState();
+				_zebesMap.ResetState();
+			}
+		}
+
+		protected void HandleOpenCoOpClientClick(object sender, EventArgs e)
+		{
+			if (_coOpConfig == null)
+			{
+				MessageBox.Show("We'll need to configure your co-op settings first.", "Metal Tracker", MessageBoxType.Information);
+				HandleConfigCoOpClick(sender, e);
+			}
+
+			if (_coOpConfig != null)
+			{
+				if (_coOpClient == null)
+				{
+					CreateCoOpClient();
+				}
+				CoOpClientForm _coOpClientForm = new CoOpClientForm(_coOpClient);
+				_coOpClientForm.Show(this);
+			}
+		}
+
+		protected void HandleOpenCoOpRoomClick(object sender, EventArgs e)
+		{
+			if (_coOpClient == null)
+			{
+				MessageBox.Show("You must configure and connect the co-op client first.", "Metal Tracker", MessageBoxButtons.OK, MessageBoxType.Error);
+				return;
+			}
+
+			if (!_coOpClient.IsConnected())
+			{
+				if (MessageBox.Show("Client is not connected. Open connection window?", "Metal Tracker", MessageBoxButtons.OKCancel,
+					MessageBoxType.Question) == DialogResult.Ok)
+				{
+					HandleOpenCoOpClientClick(sender, e);
+				}
+			}
+
+			if (_coOpClient.IsConnected())
+			{
+				JoinRoomDlg dlg = new JoinRoomDlg(_coOpClient);
+				dlg.ShowModal(this);
+			}
+		}
+
+		protected void HandleConfigCoOpClick(object sender, EventArgs e)
+		{
+			CoOpConfigDlg coOpConfigDlg = new CoOpConfigDlg();
+			coOpConfigDlg.Config = _coOpConfig;
+			if (coOpConfigDlg.ShowModal(this))
+			{
+				_coOpConfig = coOpConfigDlg.Config;
+				_coOpConfig.PersistTo(".coopconfig");
+				if (_coOpClient != null && _coOpClient.IsConnected())
+				{
+					_coOpClient.UpdatePlayer(_coOpConfig.PlayerName, _coOpConfig.PlayerColor);
+				}
+			}
+		}
+
+		protected void HandleHelpAboutClick(object sender, EventArgs e)
+		{
+			new AboutDialog().ShowDialog(this);
+		}
+
+		#endregion
+
+		protected void HandleMapChanged(object sender, EventArgs e)
+		{
+			DropDown dropDown = sender as DropDown;
+
+			_overworldMap.Activate(false);
+			_dungeonMap.Activate(false);
+			_zebesMap.Activate(false);
+
+			if (dropDown.SelectedIndex == 0)
+			{
+				_overworldMap.Activate(true);
+			}
+			else if (dropDown.SelectedIndex == 10)
+			{
+				_zebesMap.Activate(true);
+			}
+			else
+			{
+				_dungeonMap.Activate(true);
+			}
+		}
+
+		#endregion
+
+		private void AssignSessionFlags()
+		{
+			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
+			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
+		}
+
+		private void CreateCoOpClient()
+		{
+			_coOpClient = new CoOpClient("https://mtshub.azurewebsites.net");
+			_coOpClient.Configure(_coOpConfig.PlayerId, _coOpConfig.PlayerName, _coOpConfig.PlayerColor);
+			_overworldMap.SetCoOpClient(_coOpClient);
+			_dungeonMap.SetCoOpClient(_coOpClient);
+			_zebesMap.SetCoOpClient(_coOpClient);
+		}
+
+		private void SaveSessionAs()
+		{
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filters.Add(new FileFilter("Metal Tracker Session", ".mts"));
+			var dr = sfd.ShowDialog(this);
+			if (dr == DialogResult.Ok)
+			{
+				_sessionFilename = sfd.FileName;
+				SaveSession();
+			}
+		}
+
+		private void SaveSession()
+		{
+			// TODO
+		}
+	}
+}

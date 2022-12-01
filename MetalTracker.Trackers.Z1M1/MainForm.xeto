@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Form
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1;assembly=MetalTracker.Trackers.Z1M1"
+	xmlns:controls="clr-namespace:MetalTracker.Trackers.Z1M1.Controls;assembly=MetalTracker.Trackers.Z1M1"
+	Title="Metal Tracker for Z1M1"
+	Padding="10"
+	PreLoad="HandlePreLoad"
+	Load="HandleLoad"
+	Maximizable="False"
+	Resizable="False"
+	>
+
+	<Form.Menu>
+		<MenuBar>
+			<SubMenuItem Text="&amp;File">
+				<ButtonMenuItem Text="&amp;New Session..." Click="HandleSessionNewClick" />
+				<ButtonMenuItem Text="&amp;Open Session..." Click="HandleSessionOpenClick" />
+				<ButtonMenuItem Text="&amp;Save Session" Click="HandleSessionSaveClick" />
+				<ButtonMenuItem Text="Save Session &amp;As..." Click="HandleSessionSaveAsClick" />
+				<SeparatorMenuItem />
+				<ButtonMenuItem Text="E&amp;xit" Click="HandleAppQuitClick" />
+			</SubMenuItem>
+			<SubMenuItem Text="&amp;Session">
+				<ButtonMenuItem Text="&amp;Edit Flags" Click="HandleSessionEditFlagsClick" />
+				<ButtonMenuItem Text="&amp;Clear Data" Click="HandleSessionClearDataClick" />
+			</SubMenuItem>
+			<SubMenuItem Text="&amp;Co-Op">
+				<ButtonMenuItem Text="&amp;Connect/Disconnect..." Click="HandleOpenCoOpClientClick" />
+				<ButtonMenuItem Text="&amp;View Rooms..." Click="HandleOpenCoOpRoomClick" />
+				<ButtonMenuItem Text="&amp;Configure..." Click="HandleConfigCoOpClick" />
+			</SubMenuItem>
+			<SubMenuItem Text="&amp;Help">
+				<ButtonMenuItem Text="&amp;About" Click="HandleHelpAboutClick" />
+			</SubMenuItem>
+		</MenuBar>
+	</Form.Menu>
+
+	<StackLayout Orientation="Horizontal">
+		<GroupBox Height="550" Text="Maps" Padding="5,5,5,5">
+			<StackLayout>
+				<StackLayout Orientation="Horizontal" Height="30">
+					<DropDown ID="dropDownSelectedMap" SelectedIndexChanged="HandleMapChanged">
+						<ListItem Text="Overworld" />
+						<ListItem Text="Dungeon L1" />
+						<ListItem Text="Dungeon L2" />
+						<ListItem Text="Dungeon L3" />
+						<ListItem Text="Dungeon L4" />
+						<ListItem Text="Dungeon L5" />
+						<ListItem Text="Dungeon L6" />
+						<ListItem Text="Dungeon L7" />
+						<ListItem Text="Dungeon L8" />
+						<ListItem Text="Dungeon L9" />
+						<ListItem Text="Zebes" />
+					</DropDown>
+				</StackLayout>
+				<Drawable ID="drawableCurrentMap" Width="512" Height="480" BackgroundColor="#333366"></Drawable>
+			</StackLayout>
+		</GroupBox>
+		<StackLayout>
+			<GroupBox ID="groupBoxItemTracker" Width="360" Height="300" Text="Inventory / Goals" Padding="5,5,5,5">
+			</GroupBox>
+			<GroupBox ID="groupBoxRoomDetail" Width="360" Height="250" Text="Room Detail" Padding="5,5,5,5">
+			</GroupBox>
+		</StackLayout>
+	</StackLayout>
+
+</Form>

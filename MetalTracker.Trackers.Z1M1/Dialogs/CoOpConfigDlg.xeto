@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Dialog
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs;assembly=MetalTracker.Trackers.Z1M1"
+	Title="Co-op Settings"
+	Maximizable="False"
+	Resizable="False"
+	Padding="10"
+	Load="HandleLoad"
+	>
+
+	<StackLayout HorizontalContentAlignment="Center">
+
+		<GroupBox>
+			<StackLayout HorizontalContentAlignment="Left">
+				<StackLayout Orientation="Horizontal" VerticalContentAlignment="Center" Padding="2,2,2,2">
+					<Label Width="100">Player name:</Label>
+					<TextBox Width="180" ID="textBoxPlayerName" TextChanged="HandleNameChanged"></TextBox>
+				</StackLayout>
+				<StackLayout Orientation="Horizontal" VerticalContentAlignment="Center" Padding="2,2,2,2">
+					<Label Width="100">Marker color:</Label>
+					<ColorPicker Width="90" ID="colorPickerColor"></ColorPicker>
+				</StackLayout>
+			</StackLayout>
+		</GroupBox>
+
+		<Panel Padding="5">
+		</Panel>
+
+		<Button Click="HandleAcceptClick" Enabled="False" ID="buttonAccept">Accept</Button>
+
+	</StackLayout>
+
+</Dialog>

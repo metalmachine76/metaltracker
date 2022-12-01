@@ -1,0 +1,67 @@
+﻿<Project Sdk="Eto.Forms/2.7.2">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Configurations>DebugWpf;DebugGtk;ReleaseWPF;ReleaseGTK</Configurations>
+    <BuildPlatform Condition=" '$(Configuration)'=='DebugGtk'">Gtk</BuildPlatform>
+    <BuildPlatform Condition=" '$(Configuration)'=='DebugWpf'">Wpf</BuildPlatform>
+    <BuildPlatform Condition=" '$(Configuration)'=='ReleaseWPF' ">Wpf</BuildPlatform>
+    <BuildPlatform Condition=" '$(Configuration)'=='ReleaseGTK' ">Gtk</BuildPlatform>
+    <UseXeto>True</UseXeto>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGtk|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;GTK</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWpf|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWPF|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseGTK|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DefineConstants>$(DefineConstants)TRACE;GTK</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MetalTracker.Common\MetalTracker.Common.csproj" />
+    <ProjectReference Include="..\MetalTracker.CoOp\MetalTracker.CoOp.csproj" />
+    <ProjectReference Include="..\MetalTracker.Games.Metroid\MetalTracker.Games.Metroid.csproj" />
+    <ProjectReference Include="..\MetalTracker.Games.Zelda\MetalTracker.Games.Zelda.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Dialogs\JoinRoomDlg.xeto.cs">
+      <DependentUpon>JoinRoomDlg.xeto</DependentUpon>
+    </Compile>
+    <Compile Update="Dialogs\CoOpConfigDlg.xeto.cs">
+      <DependentUpon>CoOpConfigDlg.xeto</DependentUpon>
+    </Compile>
+    <Compile Update="Dialogs\EditSessionFlagsDlg.xeto.cs">
+      <DependentUpon>EditSessionFlagsDlg.xeto</DependentUpon>
+    </Compile>
+    <Compile Update="Forms\CoOpClientForm.xeto.cs">
+      <DependentUpon>CoOpClientForm.xeto</DependentUpon>
+    </Compile>
+    <Compile Update="MainForm.xeto.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GtkSharp" Version="3.24.24.38" />
+  </ItemGroup>
+
+</Project>

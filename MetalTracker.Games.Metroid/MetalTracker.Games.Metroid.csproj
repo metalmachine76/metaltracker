@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Res\Icons\boots0.png" />
+	  <None Remove="Res\Icons\boots1.png" />
+	  <None Remove="Res\Icons\energy.png" />
+	  <None Remove="Res\Icons\energytank.png" />
+	  <None Remove="Res\Icons\icebeam0.png" />
+	  <None Remove="Res\Icons\icebeam1.png" />
+	  <None Remove="Res\Icons\kraidtot0.png" />
+	  <None Remove="Res\Icons\kraidtot1.png" />
+	  <None Remove="Res\Icons\longbeam0.png" />
+	  <None Remove="Res\Icons\longbeam1.png" />
+	  <None Remove="Res\Icons\missile.png" />
+	  <None Remove="Res\Icons\missilepack.png" />
+	  <None Remove="Res\Icons\morphball0.png" />
+	  <None Remove="Res\Icons\morphball1.png" />
+	  <None Remove="Res\Icons\morphbombs0.png" />
+	  <None Remove="Res\Icons\morphbombs1.png" />
+	  <None Remove="Res\Icons\ridleytot0.png" />
+	  <None Remove="Res\Icons\ridleytot1.png" />
+	  <None Remove="Res\Icons\screwattack0.png" />
+	  <None Remove="Res\Icons\screwattack1.png" />
+	  <None Remove="Res\Icons\varia0.png" />
+	  <None Remove="Res\Icons\varia1.png" />
+	  <None Remove="Res\Icons\wavebeam0.png" />
+	  <None Remove="Res\Icons\wavebeam1.png" />
+	  <None Remove="Res\zebesmap.m.png" />
+	  <None Remove="Res\zebesmap.png" />
+	  <None Remove="Res\zebesmeta.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Res\Icons\boots0.png" />
+	  <EmbeddedResource Include="Res\Icons\boots1.png" />
+	  <EmbeddedResource Include="Res\Icons\energy.png" />
+	  <EmbeddedResource Include="Res\Icons\energytank.png" />
+	  <EmbeddedResource Include="Res\Icons\icebeam0.png" />
+	  <EmbeddedResource Include="Res\Icons\icebeam1.png" />
+	  <EmbeddedResource Include="Res\Icons\kraidtot0.png" />
+	  <EmbeddedResource Include="Res\Icons\kraidtot1.png" />
+	  <EmbeddedResource Include="Res\Icons\longbeam0.png" />
+	  <EmbeddedResource Include="Res\Icons\longbeam1.png" />
+	  <EmbeddedResource Include="Res\Icons\missile.png" />
+	  <EmbeddedResource Include="Res\Icons\missilepack.png" />
+	  <EmbeddedResource Include="Res\Icons\morphball0.png" />
+	  <EmbeddedResource Include="Res\Icons\morphball1.png" />
+	  <EmbeddedResource Include="Res\Icons\morphbombs0.png" />
+	  <EmbeddedResource Include="Res\Icons\morphbombs1.png" />
+	  <EmbeddedResource Include="Res\Icons\ridleytot0.png" />
+	  <EmbeddedResource Include="Res\Icons\ridleytot1.png" />
+	  <EmbeddedResource Include="Res\Icons\screwattack0.png" />
+	  <EmbeddedResource Include="Res\Icons\screwattack1.png" />
+	  <EmbeddedResource Include="Res\Icons\varia0.png" />
+	  <EmbeddedResource Include="Res\Icons\varia1.png" />
+	  <EmbeddedResource Include="Res\Icons\wavebeam0.png" />
+	  <EmbeddedResource Include="Res\Icons\wavebeam1.png" />
+	  <EmbeddedResource Include="Res\zebesmap.m.png" />
+	  <EmbeddedResource Include="Res\zebesmap.png" />
+	  <EmbeddedResource Include="Res\zebesmeta.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Eto.Forms" Version="2.7.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MetalTracker.Common\MetalTracker.Common.csproj" />
+	  <ProjectReference Include="..\MetalTracker.CoOp\MetalTracker.CoOp.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Proxies\ZebesMap.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Dialog
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs;assembly=MetalTracker.Trackers.Z1M1"
+	Title="Edit Session Flags"
+	Maximizable="False"
+	Resizable="False"
+	Padding="10"
+	Load="HandleLoad"
+	>
+
+	<StackLayout Orientation="Vertical" HorizontalContentAlignment="Center">
+		<StackLayout Orientation="Horizontal">
+			<StackLayout Padding="20,10,20,10">
+				<CheckBox ID="checkBoxSecondQuest" Height="25">Second Quest</CheckBox>
+				<CheckBox ID="checkBoxMirroredOW" Height="25">Mirrored Overworld</CheckBox>
+				<CheckBox ID="checkBoxMirroredL1" Height="25">Mirrored Dungeon L1</CheckBox>
+				<CheckBox ID="checkBoxMirroredL2" Height="25">Mirrored Dungeon L2</CheckBox>
+				<CheckBox ID="checkBoxMirroredL3" Height="25">Mirrored Dungeon L3</CheckBox>
+				<CheckBox ID="checkBoxMirroredL4" Height="25">Mirrored Dungeon L4</CheckBox>
+				<CheckBox ID="checkBoxMirroredL5" Height="25">Mirrored Dungeon L5</CheckBox>
+				<CheckBox ID="checkBoxMirroredL6" Height="25">Mirrored Dungeon L6</CheckBox>
+				<CheckBox ID="checkBoxMirroredL7" Height="25">Mirrored Dungeon L7</CheckBox>
+				<CheckBox ID="checkBoxMirroredL8" Height="25">Mirrored Dungeon L8</CheckBox>
+				<CheckBox ID="checkBoxMirroredL9" Height="25">Mirrored Dungeon L9</CheckBox>
+				<CheckBox ID="checkBoxMirroredZebes" Height="25">Mirrored Zebes</CheckBox>
+			</StackLayout>
+			<StackLayout Padding="20,10,20,10">
+				<CheckBox ID="checkBoxShuffleDungeons" Height="25">Overworld: Dungeon Entrances Shuffled </CheckBox>
+				<CheckBox ID="checkBoxShuffleOthers" Height="25">Overworld: Other Entrances Shuffled</CheckBox>
+				<CheckBox ID="checkBoxShuffleMinorDungeonRooms" Height="25">Dungeons: Minor Rooms Shuffled</CheckBox>
+				<CheckBox ID="checkBoxShuffleAllDungeonRooms" Height="25" CheckedChanged="HandleAllDungeonRoomsCheckedChanged">Dungeons: All Rooms Shuffled</CheckBox>
+				<CheckBox ID="checkBoxShuffleMinorZebesRooms" Height="25">Zebes: Minor Rooms Shuffled</CheckBox>
+				<CheckBox ID="checkBoxShuffleAllZebesRooms" Height="25" CheckedChanged="HandleAllZebesRoomsCheckedChanged">Zebes: All Rooms Shuffled</CheckBox>
+			</StackLayout>
+		</StackLayout>
+		<StackLayout Orientation="Horizontal">
+			<Button Click="HandleAcceptClick">Accept</Button>
+		</StackLayout>
+	</StackLayout>
+
+</Dialog>

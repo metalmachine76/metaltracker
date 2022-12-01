@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Dialog
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs;assembly=MetalTracker.Trackers.Z1M1"
+	Title="Open/Join Room"
+	Maximizable="False"
+	Resizable="False"
+	Padding="10"
+	Load="HandleLoad"
+	Shown="HandleShown"
+	>
+
+	<StackLayout HorizontalContentAlignment="Center">
+
+		<StackLayout HorizontalContentAlignment="Left">
+			<LinkButton Click="HandleRefresh">Refresh</LinkButton>
+			<GridView Width="400" Height="200" GridLines="Horizontal" ID="gridViewRoomList" AllowMultipleSelection="False" SelectionChanged="HandleSelectionChanged" />
+		</StackLayout>
+
+		<StackLayout HorizontalContentAlignment="Center">
+			<StackLayout Orientation="Horizontal">
+				<Button Width="125" ID="buttonOpenRoom" Click="HandleOpenRoomClick" Enabled="True">Open New Room</Button>
+				<Button Width="125" ID="buttonJoinRoom" Click="HandleJoinRoomClick" Enabled="False">Join Selected Room</Button>
+			</StackLayout>
+		</StackLayout>
+
+	</StackLayout>
+
+</Dialog>

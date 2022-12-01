@@ -1,0 +1,93 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.Games.Zelda", "MetalTracker.Games.Zelda\MetalTracker.Games.Zelda.csproj", "{CDCDE789-0F81-479F-9CBB-499F77119079}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.Trackers.Z1M1", "MetalTracker.Trackers.Z1M1\MetalTracker.Trackers.Z1M1.csproj", "{E4077BE4-B6E3-4637-B089-9F3149ED5417}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.Games.Metroid", "MetalTracker.Games.Metroid\MetalTracker.Games.Metroid.csproj", "{F0754B99-8EFC-455C-ADF2-0E175C435001}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.CoOp", "MetalTracker.CoOp\MetalTracker.CoOp.csproj", "{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.Common", "MetalTracker.Common\MetalTracker.Common.csproj", "{09865F87-D371-4264-9099-DA7D03C64087}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		DebugGtk|Any CPU = DebugGtk|Any CPU
+		DebugWpf|Any CPU = DebugWpf|Any CPU
+		GTK|Any CPU = GTK|Any CPU
+		Release|Any CPU = Release|Any CPU
+		WPF|Any CPU = WPF|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.DebugGtk|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.DebugGtk|Any CPU.Build.0 = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.DebugWpf|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.DebugWpf|Any CPU.Build.0 = Debug|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.GTK|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.GTK|Any CPU.Build.0 = Release|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.WPF|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCDE789-0F81-479F-9CBB-499F77119079}.WPF|Any CPU.Build.0 = Release|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.Debug|Any CPU.ActiveCfg = DebugWpf|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.Debug|Any CPU.Build.0 = DebugWpf|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.DebugGtk|Any CPU.ActiveCfg = DebugGtk|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.DebugGtk|Any CPU.Build.0 = DebugGtk|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.DebugWpf|Any CPU.ActiveCfg = DebugWpf|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.DebugWpf|Any CPU.Build.0 = DebugWpf|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.GTK|Any CPU.ActiveCfg = ReleaseGTK|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.GTK|Any CPU.Build.0 = ReleaseGTK|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.Release|Any CPU.ActiveCfg = ReleaseWPF|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.Release|Any CPU.Build.0 = ReleaseWPF|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.WPF|Any CPU.ActiveCfg = ReleaseWPF|Any CPU
+		{E4077BE4-B6E3-4637-B089-9F3149ED5417}.WPF|Any CPU.Build.0 = ReleaseWPF|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.DebugGtk|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.DebugGtk|Any CPU.Build.0 = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.DebugWpf|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.DebugWpf|Any CPU.Build.0 = Debug|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.GTK|Any CPU.ActiveCfg = Release|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.GTK|Any CPU.Build.0 = Release|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.WPF|Any CPU.ActiveCfg = Release|Any CPU
+		{F0754B99-8EFC-455C-ADF2-0E175C435001}.WPF|Any CPU.Build.0 = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.DebugGtk|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.DebugGtk|Any CPU.Build.0 = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.DebugWpf|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.DebugWpf|Any CPU.Build.0 = Debug|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.GTK|Any CPU.ActiveCfg = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.GTK|Any CPU.Build.0 = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.WPF|Any CPU.ActiveCfg = Release|Any CPU
+		{4C7B612B-DDE3-4D8F-B24A-221AA86D4C10}.WPF|Any CPU.Build.0 = Release|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.DebugGtk|Any CPU.ActiveCfg = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.DebugGtk|Any CPU.Build.0 = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.DebugWpf|Any CPU.ActiveCfg = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.DebugWpf|Any CPU.Build.0 = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.GTK|Any CPU.ActiveCfg = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.GTK|Any CPU.Build.0 = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.WPF|Any CPU.ActiveCfg = Debug|Any CPU
+		{09865F87-D371-4264-9099-DA7D03C64087}.WPF|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {57B5CC93-8D1E-4ED0-A6D1-C7F9C1687338}
+	EndGlobalSection
+EndGlobal
