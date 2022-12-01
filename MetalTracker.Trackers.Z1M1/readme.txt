@@ -12,7 +12,7 @@ File
 
 Session
   Edit  -> Edit flags for current session (partially functional)
-  Clear -> Clear data for current session (not yet functional)
+  Clear -> Clear data for current session
 
 Co-Op
   Connect   -> Open the co-op client window where you can connect to the co-op server. Once you are connected, you can close the window if desired.
