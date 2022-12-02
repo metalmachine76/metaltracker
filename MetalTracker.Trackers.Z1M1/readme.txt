@@ -3,17 +3,16 @@ MENU
 ----
 
 File
-  New     -> Create a new tracking session (not yet functional)
-  Open    -> Open a previously saved tracking session (not yet functional)
-  Save    -> Save the current tracking session (not yet functional)
-  Save As -> Save current tracking session to a new file (not yet functional)
-  Open    -> Open a previously saved tracking session  (not yet functional)
-  Exit    -> Close the tracker application
+  New       -> Create a new tracking session
+  Open      -> Open a previously saved tracking session
+  Save      -> Save the current tracking session
+  Save As   -> Save current tracking session to a new file
+  Exit      -> Close the tracker application
 
 Session
-  Flags -> View/edit flags for current session (partially functional)
-  Log   -> Session log will tell you where all major items and exits are located
-  Reset -> Reset (clear) tracked data for current session
+  Flags     -> View/edit flags for current session (partially functional)
+  Log       -> Session log will tell you where all major items and exits are located
+  Reset     -> Reset (clear) tracked data for current session
 
 Co-Op
   Connect   -> Open the co-op client window where you can connect to the co-op server. Once you are connected, you can close the window if desired.
@@ -21,23 +20,17 @@ Co-Op
   Configure -> Set your player name and marker color for co-op. You must configure before you can connect.
 
 Help
-  About  -> Shows the "about" window
+  About     -> Shows the "about" window
 
 
 MAIN UI
 -------
 
-There are three main sections in the UI. They are:
-
--Maps
--Room Detail
--Inventory/Goals
-
 Maps
 
 There are 11 maps you can select:
 
-Overworld, the 9 dungeons (partially functional), and Zebes.
+Overworld, the 9 Dungeons, and Zebes.
 
 Map interaction is currently mouse-based only:
 
