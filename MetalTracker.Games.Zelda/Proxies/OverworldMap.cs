@@ -285,13 +285,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 						continue;
 					}
 
-					if (roomState.Destination != null)
-					{
-						var dest = _roomStates[y, x].Destination;
-
-						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
-					}
-
 					if (roomState.Item1 != null)
 					{
 						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 3, y0 + 23, 18, 18);
@@ -314,9 +307,23 @@ namespace MetalTracker.Games.Zelda.Proxies
 						e.Graphics.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
 					}
 
+					if (roomState.Destination != null && !roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+
+						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
+					}
+
 					if ((props.DestHere || props.ItemHere) && roomState.Explored)
 					{
 						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+					}
+
+					if (roomState.Destination != null && roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+
+						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
 					}
 				}
 			}

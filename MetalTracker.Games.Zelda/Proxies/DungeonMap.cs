@@ -292,6 +292,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 						DrawText(e.Graphics, x0, y0 + 11, 64, 44, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
 					}
 
+					if (roomState.Item != null)
+					{
+						e.Graphics.DrawImage(roomState.Item.Icon, x0 + 23, y0 + 13, 18, 18);
+					}
+
+					if (roomState.Explored)
+					{
+						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+					}
+
 					if (roomState.DestNorth != null)
 					{
 						DrawDest(e.Graphics, x0, y0 - 11, 64, 44, roomState.DestNorth);
@@ -310,16 +320,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (roomState.DestEast != null)
 					{
 						DrawDest(e.Graphics, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
-					}
-
-					if (roomState.Item != null)
-					{
-						e.Graphics.DrawImage(roomState.Item.Icon, x0 + 23, y0 + 13, 18, 18);
-					}
-
-					if (roomState.Explored)
-					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
 					}
 				}
 			}

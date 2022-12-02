@@ -287,11 +287,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 						DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
 					}
 
-					if (roomState.DestElev != null)
-					{
-						DrawDest(e.Graphics, x0 - 16, y0, 64, 30, roomState.DestElev);
-					}
-
 					if (roomState.Item != null)
 					{
 						e.Graphics.DrawImage(roomState.Item.Icon, x0 + 7, y0 + 6, 18, 18);
@@ -300,6 +295,11 @@ namespace MetalTracker.Games.Metroid.Proxies
 					if (roomState.Explored)
 					{
 						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 32, 30);
+					}
+
+					if (roomState.DestElev != null)
+					{
+						DrawDest(e.Graphics, x0 - 16, y0, 64, 30, roomState.DestElev);
 					}
 				}
 			}
