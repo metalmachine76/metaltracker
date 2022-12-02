@@ -347,11 +347,17 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			try
 			{
-				ResetSessionState();
-
 				string serialized = File.ReadAllText(filename);
 
-				SessionState state = System.Text.Json.JsonSerializer.Deserialize<SessionState>(serialized);
+				Session session = System.Text.Json.JsonSerializer.Deserialize<Session>(serialized);
+
+				_sessionFlags = session.Flags;
+
+				AssignSessionFlags();
+
+				ResetSessionState();
+
+				var state = session.State;
 
 				_overworldMap.SetDestStates(state.DestStateLists[0]);
 				_dungeonMaps[0].SetDestStates(state.DestStateLists[1]);
@@ -414,7 +420,15 @@ namespace MetalTracker.Trackers.Z1M1
 			state.ItemStateLists[9] = _dungeonMaps[8].GetItemStates();
 			state.ItemStateLists[10] = _zebesMap.GetItemStates();
 
-			string serialized = System.Text.Json.JsonSerializer.Serialize(state);
+			SessionFlags flags = _sessionFlags;
+
+			Session session = new Session
+			{
+				Flags = _sessionFlags,
+				State = state
+			};
+
+			string serialized = System.Text.Json.JsonSerializer.Serialize(session);
 
 			try
 			{
