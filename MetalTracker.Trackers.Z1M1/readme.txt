@@ -11,8 +11,9 @@ File
   Exit    -> Close the tracker application
 
 Session
-  Edit  -> Edit flags for current session (partially functional)
-  Clear -> Clear data for current session
+  Flags -> View/edit flags for current session (partially functional)
+  Log   -> Session log will tell you where all major items and exits are located
+  Reset -> Reset (clear) tracked data for current session
 
 Co-Op
   Connect   -> Open the co-op client window where you can connect to the co-op server. Once you are connected, you can close the window if desired.
@@ -36,14 +37,15 @@ Maps
 
 There are 11 maps you can select:
 
-Overworld (functional), the 9 dungeons (not yet functional), and Zebes (functional).
+Overworld, the 9 dungeons (partially functional), and Zebes.
 
 Map interaction is currently mouse-based only:
 
 - You can click and drag the map.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
-- Right-clicking applicable rooms will show a menu where you can choose an exit or destination to connect the room to. 
-- Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use is to shade a room if you've collected the item there.
+- Right-clicking applicable rooms will show a menu where you can choose an exit or destination to connect the room to.
+- Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use is to shade a room 
+  if you've collected the item there, explored the room, or don't care about it.
 
 Portal connections on the map are shown in green. Non-portal connections (such as shops, take-any-road, etc) will be shown in white.
 Items will be shown on the map with icons.

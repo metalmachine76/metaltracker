@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eto.Forms;
 using Eto.Serialization.Xaml;
 using MetalTracker.Common.Bases;
@@ -90,7 +91,8 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 					}
 				}
 			}
-			if (key == "exits")
+
+			else if (key == "exits")
 			{
 				foreach (var map in _maps)
 				{
@@ -101,8 +103,10 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				}
 			}
 
+			var sorted = entries.OrderBy(e => e.Name);
+
 			GridView gridView = FindChild<GridView>("gridViewSessionLog");
-			gridView.DataStore = entries;
+			gridView.DataStore = sorted;
 		}
 	}
 }
