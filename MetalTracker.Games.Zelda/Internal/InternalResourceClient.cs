@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Eto.Drawing;
 using MetalTracker.Games.Zelda.Types;
 
@@ -6,6 +8,11 @@ namespace MetalTracker.Games.Zelda
 {
 	public static class InternalResourceClient
 	{
+		static List<(bool, int, int, int)> DungeonItemBasements = new List<(bool, int, int, int)>
+		{
+			(false, 3, 0, 6),
+		};
+
 		public static Image GetOverworldImage(bool q2, bool mirrored)
 		{
 			Bitmap map;
@@ -62,7 +69,7 @@ namespace MetalTracker.Games.Zelda
 			return meta;
 		}
 
-		public static Image GetDungeonImage(bool q2, bool mirrored, int level)
+		public static Image GetDungeonImage(bool q2, int level, bool mirrored)
 		{
 			Bitmap map;
 
@@ -76,7 +83,7 @@ namespace MetalTracker.Games.Zelda
 			return map;
 		}
 
-		public static DungeonRoomProps[,] GetDungeonMeta(bool q2, bool mirrored, int level)
+		public static DungeonRoomProps[,] GetDungeonMeta(bool q2, int level, bool mirrored)
 		{
 			string d = $"d{level}";
 			string q = q2 ? "q2" : "q1";
@@ -113,11 +120,11 @@ namespace MetalTracker.Games.Zelda
 					}
 					else
 					{
-						char sc = '\0';
+						char s1c = '\0';
 
 						if (c == 'Q' || c == 'E' || c == 'U' || c == 'M')
 						{
-							sc = c;
+							s1c = c;
 						}
 
 						bool destNorth = (y == 0) || lines[y - 1][x] == '.';
@@ -132,7 +139,9 @@ namespace MetalTracker.Games.Zelda
 							destEast = false;
 						}
 
-						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, sc);
+						bool lowerItem = DungeonItemBasements.Any(e => e.Item1 == q2 && e.Item2 == level && e.Item3 == x && e.Item4 == y);
+
+						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, s1c, lowerItem ? 'E' : '\0');
 					}
 
 					meta[y, x] = props;

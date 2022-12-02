@@ -82,8 +82,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_q2 = q2;
 			_flag_mirrored = mirrored;
 			_level = level;
-			_mapImage = InternalResourceClient.GetDungeonImage(q2, mirrored, level);
-			_meta = InternalResourceClient.GetDungeonMeta(q2, mirrored, level);
+			_mapImage = InternalResourceClient.GetDungeonImage(q2, level, mirrored);
+			_meta = InternalResourceClient.GetDungeonMeta(q2, level, mirrored);
 			_width = _meta.GetLength(1);
 		}
 
@@ -170,9 +170,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < _width; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.Item != null && state.Item.IsImportant())
+					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Dungeon #{_level}");
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_level} (floor)");
+						list.Add(loc);
+					}
+					if (state.Item2 != null && state.Item2.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_level} (basement)");
 						list.Add(loc);
 					}
 				}
@@ -353,14 +358,24 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					var props = GetMeta(x, y);
 
-					if (props.SlotClass != '\0' && roomState.Item == null)
+					if (props.Slot1Class != '\0' && roomState.Item1 == null)
 					{
-						DrawText(e.Graphics, x0, y0 + 11, 64, 44, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+						DrawText(e.Graphics, x0 - 6, y0 + 5, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
 					}
 
-					if (roomState.Item != null)
+					if (props.Slot2Class != '\0' && roomState.Item2 == null)
 					{
-						e.Graphics.DrawImage(roomState.Item.Icon, x0 + 23, y0 + 13, 18, 18);
+						DrawText(e.Graphics, x0 + 6, y0 + 17, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+					}
+
+					if (roomState.Item1 != null)
+					{
+						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 17, y0 + 7, 18, 18);
+					}
+
+					if (roomState.Item2 != null)
+					{
+						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 29, y0 + 16, 18, 18);
 					}
 
 					if (roomState.Explored)
@@ -456,7 +471,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 				var roomState = _roomStates[e.Y, e.X];
 				var item = _items.Find(i => i.GetCode() == e.Code);
 
-				roomState.Item = item;
+				if (e.Slot == 0)
+					roomState.Item1 = item;
+				else if (e.Slot == 1)
+					roomState.Item2 = item;
 
 				_invalidateMap = true;
 

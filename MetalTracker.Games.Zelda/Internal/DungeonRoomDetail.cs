@@ -16,7 +16,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownDestSouth;
 		private DropDown _dropDownDestWest;
 		private DropDown _dropDownDestEast;
-		private DropDown _dropDownItem;
+		private DropDown _dropDownItem1;
+		private DropDown _dropDownItem2;
 
 		private List<GameDest> _gameDests;
 		private List<GameItem> _gameItems;
@@ -89,13 +90,18 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			#region Items Layout
 
-			_mainLayout.Items.Add(new Label { Text = "Item" });
+			_mainLayout.Items.Add(new Label { Text = "Items" });
 
-			var itemsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
+			var itemsLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
-			_dropDownItem = new DropDown { Height = 25 };
-			_dropDownItem.SelectedIndexChanged += HandleSelectedItemChanged;
-			_dropDownItem.Items.Add(null);
+			_dropDownItem1 = new DropDown { Height = 25 };
+			_dropDownItem2 = new DropDown { Height = 25 };
+
+			_dropDownItem1.SelectedIndexChanged += HandleSelectedItem1Changed;
+			_dropDownItem2.SelectedIndexChanged += HandleSelectedItem2Changed;
+
+			_dropDownItem1.Items.Add(null);
+			_dropDownItem2.Items.Add(null);
 
 			foreach (var gameItem in gameItems)
 			{
@@ -105,10 +111,12 @@ namespace MetalTracker.Games.Zelda.Internal
 					Image = gameItem.Icon,
 				};
 
-				_dropDownItem.Items.Add(listItem);
+				_dropDownItem1.Items.Add(listItem);
+				_dropDownItem2.Items.Add(listItem);
 			}
 
-			itemsLayout.Items.Add(_dropDownItem);
+			itemsLayout.Items.Add(_dropDownItem1);
+			itemsLayout.Items.Add(_dropDownItem2);
 
 			_mainLayout.Items.Add(itemsLayout);
 
@@ -155,11 +163,20 @@ namespace MetalTracker.Games.Zelda.Internal
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void HandleSelectedItemChanged(object sender, EventArgs e)
+		private void HandleSelectedItem1Changed(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeItem(_w, _x, _y, _state, gameItem);
+			_mutator.ChangeItem1(_w, _x, _y, _state, gameItem);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedItem2Changed(object sender, EventArgs e)
+		{
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			_mutator.ChangeItem2(_w, _x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -180,7 +197,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			if (_props.CanHaveItem() || _props.CanHaveDest())
+			if (_props.CanHaveDest() || _props.CanHaveItem1() || _props.CanHaveItem2())
 			{
 				_mainLayout.Visible = true;
 
@@ -188,13 +205,15 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
 				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
 				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
-				_dropDownItem.SelectedKey = _state.Item?.GetCode();
+				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
+				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 
 				_dropDownDestNorth.Enabled = _props.DestNorth;
 				_dropDownDestSouth.Enabled = _props.DestSouth;
 				_dropDownDestWest.Enabled = _props.DestWest;
 				_dropDownDestEast.Enabled = _props.DestEast;
-				_dropDownItem.Enabled = _props.CanHaveItem();
+				_dropDownItem1.Enabled = _props.CanHaveItem1();
+				_dropDownItem2.Enabled = _props.CanHaveItem2();
 			}
 			else
 			{
