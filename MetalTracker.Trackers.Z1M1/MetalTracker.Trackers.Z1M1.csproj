@@ -51,6 +51,9 @@
     <Compile Update="Forms\CoOpClientForm.xeto.cs">
       <DependentUpon>CoOpClientForm.xeto</DependentUpon>
     </Compile>
+    <Compile Update="Forms\SessionLogForm.xeto.cs">
+      <DependentUpon>SessionLogForm.xeto</DependentUpon>
+    </Compile>
     <Compile Update="MainForm.xeto.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>

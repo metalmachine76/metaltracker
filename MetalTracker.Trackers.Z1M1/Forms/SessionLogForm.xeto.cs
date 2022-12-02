@@ -4,9 +4,9 @@ using Eto.Forms;
 using Eto.Serialization.Xaml;
 using MetalTracker.Common.Bases;
 
-namespace MetalTracker.Trackers.Z1M1.Dialogs
+namespace MetalTracker.Trackers.Z1M1.Forms
 {
-	public class SessionLogDlg : Dialog
+	public class SessionLogForm : Form
 	{
 		class SessionLogEntry
 		{
@@ -16,7 +16,9 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 
 		private List<BaseMap> _maps = new List<BaseMap>();
 
-		public SessionLogDlg()
+		private UITimer _uITimer;
+
+		public SessionLogForm()
 		{
 			XamlReader.Load(this);
 		}
@@ -28,7 +30,7 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 
 		protected void HandleLoad(object sender, EventArgs e)
 		{
-			GridView gridView = this.FindChild<GridView>("gridViewSessionLog");
+			GridView gridView = FindChild<GridView>("gridViewSessionLog");
 
 			gridView.Columns.Add(new GridColumn
 			{
@@ -45,6 +47,16 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			});
 
 			Show("items");
+
+			_uITimer = new UITimer();
+			_uITimer.Interval = 5;
+			_uITimer.Elapsed += HandleTimerElapsed;
+			_uITimer.Start();
+		}
+
+		private void HandleTimerElapsed(object sender, EventArgs e)
+		{
+			Update();
 		}
 
 		protected void HandleRadioShown(object sender, EventArgs e)
@@ -55,7 +67,12 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 
 		protected void HandleRadioChanged(object sender, EventArgs e)
 		{
-			RadioButtonList rbl = sender as RadioButtonList;
+			Update();
+		}
+
+		private void Update()
+		{
+			var rbl = this.FindChild<RadioButtonList>("radioButtonList");
 			Show(rbl.SelectedKey);
 		}
 
@@ -84,7 +101,7 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 				}
 			}
 
-			GridView gridView = this.FindChild<GridView>("gridViewSessionLog");
+			GridView gridView = FindChild<GridView>("gridViewSessionLog");
 			gridView.DataStore = entries;
 		}
 	}

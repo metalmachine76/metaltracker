@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Dialog
+<Form
 	xmlns="http://schema.picoe.ca/eto.forms" 
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Forms"
 	Title="Session Log"
 	Padding="10"
 	Load="HandleLoad"
 	>
 
   <StackLayout HorizontalContentAlignment="Left">
-    <RadioButtonList Shown="HandleRadioShown" Height="30" SelectedKeyChanged="HandleRadioChanged">
+    <RadioButtonList ID="radioButtonList" Shown="HandleRadioShown" Height="30" SelectedKeyChanged="HandleRadioChanged">
       <ListItem Key="items" Text="Show Items   "></ListItem>
       <ListItem Key="exits" Text="Show Exits   "></ListItem>
     </RadioButtonList>
     <GridView Width="400" Height="400" GridLines="Horizontal" ID="gridViewSessionLog" />
   </StackLayout>
 
-</Dialog>
+</Form>

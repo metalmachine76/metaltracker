@@ -18,7 +18,7 @@ using MetalTracker.Trackers.Z1M1.Proxies;
 
 namespace MetalTracker.Trackers.Z1M1
 {
-	internal class MainForm : Form
+    internal class MainForm : Form
 	{
 		private readonly OverworldMap _overworldMap = null;
 		private readonly DungeonMap[] _dungeonMaps = new DungeonMap[9];
@@ -141,14 +141,14 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleShowSessionLogClick(object sender, EventArgs e)
 		{
-			SessionLogDlg dlg = new SessionLogDlg();
-			dlg.AddMap(_overworldMap);
+			SessionLogForm form = new SessionLogForm();
+			form.AddMap(_overworldMap);
 			for (int i = 0; i < 9; i++)
 			{
-				dlg.AddMap(_dungeonMaps[i]);
+				form.AddMap(_dungeonMaps[i]);
 			}
-			dlg.AddMap(_zebesMap);
-			dlg.ShowModal(this);
+			form.AddMap(_zebesMap);
+			form.Show();
 		}
 
 		protected void HandleSessionEditFlagsClick(object sender, EventArgs e)
