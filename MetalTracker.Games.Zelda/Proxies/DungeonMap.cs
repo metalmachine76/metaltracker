@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
@@ -14,7 +15,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 	{
 		const string Game = "zelda";
 
-		string _map = "d1";
+		string _map = null;
 
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
@@ -85,6 +86,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_mapImage = InternalResourceClient.GetDungeonImage(q2, level, mirrored);
 			_meta = InternalResourceClient.GetDungeonMeta(q2, level, mirrored);
 			_width = _meta.GetLength(1);
+			_map = $"d{level}";
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -441,6 +443,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
 		{
+			Debug.Assert(_map != null && _map.Length == 2);
+
 			if (e.Game == Game && e.Map == _map)
 			{
 				var roomState = _roomStates[e.Y, e.X];
@@ -466,6 +470,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleCoOpClientFoundItem(object sender, FoundEventArgs e)
 		{
+			Debug.Assert(_map != null && _map.Length == 2);
+
 			if (e.Game == Game && e.Map == _map)
 			{
 				var roomState = _roomStates[e.Y, e.X];
