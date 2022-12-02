@@ -262,6 +262,12 @@ namespace MetalTracker.Trackers.Z1M1
 		private void AssignSessionFlags()
 		{
 			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
+
+			for (int i = 0; i < 9; i++)
+			{
+				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[i], i + 1);
+			}
+
 			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
 		}
 

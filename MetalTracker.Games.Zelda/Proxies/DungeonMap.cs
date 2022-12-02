@@ -86,6 +86,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void SetMapFlags(bool q2, bool mirrored, int level)
 		{
+			if (mirrored != _flag_mirrored)
+			{
+				MirrorState();
+			}
+
 			_flag_q2 = q2;
 			_flag_mirrored = mirrored;
 			_level = level;
@@ -148,6 +153,34 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			_drawable.Invalidate();
+		}
+
+		public void MirrorState()
+		{
+			int m = _width / 2;
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < m; x++)
+				{
+					var s0 = _roomStates[y, x];
+					var s1 = _roomStates[y, (_width - 1) - x];
+					_roomStates[y, x] = s1;
+					_roomStates[y, (_width - 1) - x] = s0;
+				}
+			}
+
+			_drawable.Invalidate();
+		}
+
+		public override List<LocationOfItem> GetItemLocations()
+		{
+			return new List<LocationOfItem>();
+		}
+
+		public override List<LocationOfDest> GetDestLocations()
+		{
+			return new List<LocationOfDest>();
 		}
 
 		#region Event Handlers

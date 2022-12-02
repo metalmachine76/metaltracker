@@ -128,7 +128,6 @@ namespace MetalTracker.Games.Zelda
 						if (level == 9)
 						{
 							destNorth = false;
-							destSouth = false;
 							destWest = false;
 							destEast = false;
 						}
@@ -142,15 +141,15 @@ namespace MetalTracker.Games.Zelda
 
 			if (mirrored)
 			{
-				int m = w / 2 - 1;
+				int m = w / 2;
 				for (int y = 0; y < 8; y++)
 				{
 					for (int x = 0; x < m; x++)
 					{
 						var m0 = meta[y, x];
-						var m1 = meta[y, m - x];
+						var m1 = meta[y, (w - 1) - x];
 						meta[y, x] = m1;
-						meta[y, m - x] = m0;
+						meta[y, (w - 1) - x] = m0;
 					}
 				}
 			}

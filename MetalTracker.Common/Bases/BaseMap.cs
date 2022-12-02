@@ -5,6 +5,10 @@ namespace MetalTracker.Common.Bases
 {
 	public abstract class BaseMap
 	{
+		public abstract List<LocationOfDest> GetDestLocations();
+
+		public abstract List<LocationOfItem> GetItemLocations();
+
 		protected void DrawDest(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
 			Brush textBrush = dest.IsExit ? Brushes.Lime : Brushes.White;

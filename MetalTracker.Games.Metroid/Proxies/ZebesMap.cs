@@ -73,6 +73,11 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public void SetMapFlags(bool mirrored)
 		{
+			if (mirrored != _flag_mirrored)
+			{
+				MirrorState();
+			}
+
 			_flag_mirrored = mirrored;
 			_mapImage = InternalResourceClient.GetZebesImage(mirrored);
 			_meta = InternalResourceClient.GetZebesMeta(mirrored);
@@ -132,6 +137,32 @@ namespace MetalTracker.Games.Metroid.Proxies
 			}
 
 			_drawable.Invalidate();
+		}
+
+		public void MirrorState()
+		{
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					var s0 = _roomStates[y, x];
+					var s1 = _roomStates[y, 31 - x];
+					_roomStates[y, x] = s1;
+					_roomStates[y, 31 - x] = s0;
+				}
+			}
+
+			_drawable.Invalidate();
+		}
+
+		public override List<LocationOfItem> GetItemLocations()
+		{
+			return new List<LocationOfItem>();
+		}
+
+		public override List<LocationOfDest> GetDestLocations()
+		{
+			return new List<LocationOfDest>();
 		}
 
 		#endregion
@@ -336,7 +367,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#endregion
 
-		#region CoOp Send/Recieve
+		#region CoOp Event Handlers
 
 		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
 		{
