@@ -18,7 +18,7 @@ using MetalTracker.Trackers.Z1M1.Proxies;
 
 namespace MetalTracker.Trackers.Z1M1
 {
-    internal class MainForm : Form
+	internal class MainForm : Form
 	{
 		private readonly OverworldMap _overworldMap = null;
 		private readonly DungeonMap[] _dungeonMaps = new DungeonMap[9];
@@ -90,6 +90,14 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 
 			AssignSessionFlags();
+		}
+
+		protected void HandleClosed(object sender, EventArgs e)
+		{
+			foreach (var window in Application.Instance.Windows)
+			{
+				window.Close();
+			}
 		}
 
 		#region Menus
