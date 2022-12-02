@@ -20,6 +20,17 @@ namespace MetalTracker.Games.Zelda
 			(false, 8, 4, 1),
 			(false, 9, 0, 1),
 			(false, 9, 7, 0),
+
+			(true, 2, 1, 3),
+			(true, 4, 2, 5),
+			(true, 4, 3, 1),
+			(true, 5, 2, 1),
+			(true, 6, 0, 5),
+			(true, 7, 2, 1),
+			(true, 8, 0, 3),
+			(true, 8, 0, 4),
+			(true, 9, 0, 0),
+			(true, 9, 5, 4),
 		};
 
 		public static Image GetOverworldImage(bool q2, bool mirrored)
