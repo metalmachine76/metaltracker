@@ -114,6 +114,7 @@ namespace MetalTracker.Games.Zelda
 					else
 					{
 						char sc = '\0';
+
 						if (c == 'Q' || c == 'E' || c == 'U' || c == 'M')
 						{
 							sc = c;
@@ -123,6 +124,14 @@ namespace MetalTracker.Games.Zelda
 						bool destSouth = (y == 7) || lines[y + 1][x] == '.';
 						bool destWest = (x == 0) || line[x - 1] == '.';
 						bool destEast = (x == w - 1) || line[x + 1] == '.';
+
+						if (level == 9)
+						{
+							destNorth = false;
+							destSouth = false;
+							destWest = false;
+							destEast = false;
+						}
 
 						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, sc);
 					}

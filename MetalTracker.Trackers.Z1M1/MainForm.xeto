@@ -59,9 +59,9 @@
 			</StackLayout>
 		</GroupBox>
 		<StackLayout>
-			<GroupBox ID="groupBoxItemTracker" Width="360" Height="300" Text="Inventory / Goals" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxItemTracker" Width="400" Height="300" Text="Inventory / Goals" Padding="5,5,5,5">
 			</GroupBox>
-			<GroupBox ID="groupBoxRoomDetail" Width="360" Height="250" Text="Room Detail" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxRoomDetail" Width="400" Height="250" Text="Room Detail" Padding="5,5,5,5">
 			</GroupBox>
 		</StackLayout>
 	</StackLayout>

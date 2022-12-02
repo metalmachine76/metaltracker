@@ -56,6 +56,7 @@ namespace MetalTracker.Trackers.Z1M1
 			_dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
 			_dungeonMap.AddDestinations(zeldaExitDests);
 			_dungeonMap.AddDestinations(zebesExitDests);
+			_dungeonMap.SetGameItems(gameItems);
 
 			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
 			_zebesMap.AddDestinations(zeldaExitDests);

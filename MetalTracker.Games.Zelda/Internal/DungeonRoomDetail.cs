@@ -77,12 +77,11 @@ namespace MetalTracker.Games.Zelda.Internal
 			_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
 			_dropDownDestEast.SelectedIndexChanged += HandleSelectedDestEastChanged;
 
-			TableLayout destsLayout = new TableLayout(3, 3);
-
-			destsLayout.Rows[0].Cells[1].Control = _dropDownDestNorth;
-			destsLayout.Rows[1].Cells[0].Control = _dropDownDestWest;
-			destsLayout.Rows[1].Cells[2].Control = _dropDownDestEast;
-			destsLayout.Rows[2].Cells[1].Control = _dropDownDestSouth;
+			TableLayout destsLayout = new TableLayout(
+				new TableRow(new TableCell(), new TableCell(_dropDownDestNorth), new TableCell()),
+				new TableRow(new TableCell(_dropDownDestWest), new TableCell(), new TableCell(_dropDownDestEast)),
+				new TableRow(new TableCell(), new TableCell(_dropDownDestSouth), new TableCell())
+			);
 
 			_mainLayout.Items.Add(destsLayout);
 
@@ -116,7 +115,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			#endregion
 
-			_mainLayout.Visible = true;
+			_mainLayout.Visible = false;
 
 			_detailPanel.Content = _mainLayout;
 		}
