@@ -17,6 +17,11 @@
 			this.SlotClass = slotClass;
 		}
 
+		public bool CanHaveDest()
+		{
+			return DestNorth || DestSouth || DestWest || DestEast;
+		}
+
 		public bool CanHaveItem()
 		{
 			return SlotClass != '\0';

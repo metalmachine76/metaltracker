@@ -116,7 +116,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			#endregion
 
-			_mainLayout.Visible = false;
+			_mainLayout.Visible = true;
 
 			_detailPanel.Content = _mainLayout;
 		}
@@ -182,17 +182,26 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			_dropDownDestNorth.SelectedKey = _state.DestNorth.GetCode();
-			_dropDownDestSouth.SelectedKey = _state.DestSouth.GetCode();
-			_dropDownDestWest.SelectedKey = _state.DestWest.GetCode();
-			_dropDownDestEast.SelectedKey = _state.DestEast.GetCode();
-			_dropDownItem.SelectedKey = _state.Item?.GetCode();
+			if (_props.CanHaveItem() || _props.CanHaveDest())
+			{
+				_mainLayout.Visible = true;
 
-			_dropDownDestNorth.Enabled = _props.DestNorth;
-			_dropDownDestSouth.Enabled = _props.DestSouth;
-			_dropDownDestWest.Enabled = _props.DestWest;
-			_dropDownDestEast.Enabled = _props.DestEast;
-			_dropDownItem.Enabled = _props.CanHaveItem();
+				_dropDownDestNorth.SelectedKey = _state.DestNorth?.GetCode();
+				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
+				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
+				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
+				_dropDownItem.SelectedKey = _state.Item?.GetCode();
+
+				_dropDownDestNorth.Enabled = _props.DestNorth;
+				_dropDownDestSouth.Enabled = _props.DestSouth;
+				_dropDownDestWest.Enabled = _props.DestWest;
+				_dropDownDestEast.Enabled = _props.DestEast;
+				_dropDownItem.Enabled = _props.CanHaveItem();
+			}
+			else
+			{
+				_mainLayout.Visible = false;
+			}
 
 			_refreshing = false;
 		}

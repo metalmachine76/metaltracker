@@ -24,7 +24,6 @@ namespace MetalTracker.Trackers.Z1M1
 		private readonly DungeonMap _dungeonMap = null;
 		private readonly ZebesMap _zebesMap = null;
 		private readonly ItemTracker _itemTracker = null;
-		private readonly List<GameItem> _gameItems = new List<GameItem>();
 
 		private SessionFlags _sessionFlags = new SessionFlags();
 		private string _sessionFilename = "default.mts";
@@ -36,24 +35,32 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			XamlReader.Load(this);
 
-			_gameItems.AddRange(ZeldaResourceClient.GetGameItems());
-			_gameItems.AddRange(MetroidResourceClient.GetGameItems());
+			List<GameItem> gameItems = new List<GameItem>();
+
+			gameItems.AddRange(ZeldaResourceClient.GetGameItems());
+			gameItems.AddRange(MetroidResourceClient.GetGameItems());
+
+			var zeldaCaveDests = ZeldaResourceClient.GetCaveDestinations();
+			var zeldaExitDests = ZeldaResourceClient.GetExitDestinations();
+			var zebesExitDests = MetroidResourceClient.GetDestinations();
 
 			var drawableCurrentMap = this.FindChild<Drawable>("drawableCurrentMap");
 			var roomDetailContainer = this.FindChild<GroupBox>("groupBoxRoomDetail");
 
 			_overworldMap = new OverworldMap(drawableCurrentMap, roomDetailContainer);
-			_overworldMap.AddDestinations(ZeldaResourceClient.GetCaveDestinations());
-			_overworldMap.AddDestinations(ZeldaResourceClient.GetExitDestinations().Where(d => d.Key != "0"));
-			_overworldMap.AddDestinations(MetroidResourceClient.GetDestinations());
-			_overworldMap.SetGameItems(_gameItems);
+			_overworldMap.AddDestinations(zeldaCaveDests);
+			_overworldMap.AddDestinations(zeldaExitDests.Where(d => d.Key != "0"));
+			_overworldMap.AddDestinations(zebesExitDests);
+			_overworldMap.SetGameItems(gameItems);
 
 			_dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
+			_dungeonMap.AddDestinations(zeldaExitDests);
+			_dungeonMap.AddDestinations(zebesExitDests);
 
 			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
-			_zebesMap.AddDestinations(ZeldaResourceClient.GetExitDestinations());
-			_zebesMap.AddDestinations(MetroidResourceClient.GetDestinations());
-			_zebesMap.SetGameItems(_gameItems);
+			_zebesMap.AddDestinations(zeldaExitDests);
+			_zebesMap.AddDestinations(zebesExitDests);
+			_zebesMap.SetGameItems(gameItems);
 
 			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
 			_itemTracker = new ItemTracker(itemTrackerContainer);
@@ -230,6 +237,8 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 			else
 			{
+				int level = dropDown.SelectedIndex;
+				_dungeonMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[level - 1], level);
 				_dungeonMap.Activate(true);
 			}
 		}

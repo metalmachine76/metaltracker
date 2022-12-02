@@ -1,7 +1,5 @@
-﻿using System.IO;
-using Eto.Drawing;
+﻿using Eto.Drawing;
 using MetalTracker.Common.Types;
-using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda
 {
