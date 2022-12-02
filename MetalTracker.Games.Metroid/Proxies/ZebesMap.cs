@@ -140,25 +140,61 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public override List<StateEntry> GetDestStates()
 		{
-			throw new System.NotImplementedException();
+			List<StateEntry> list = new List<StateEntry>();
+
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 32; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.DestElev != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestElev.GetCode() };
+						list.Add(entry);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		public override List<StateEntry> GetItemStates()
 		{
-			throw new System.NotImplementedException();
+			List<StateEntry> list = new List<StateEntry>();
+
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 32; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Item != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item.GetCode() };
+						list.Add(entry);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		public override void SetDestStates(List<StateEntry> entries)
 		{
-			throw new System.NotImplementedException();
+			foreach (var entry in entries)
+			{
+				_roomStates[entry.Y, entry.X].DestElev = _dests.Find(i => i.GetCode() == entry.Code);
+			}
 		}
 
 		public override void SetItemStates(List<StateEntry> entries)
 		{
-			throw new System.NotImplementedException();
+			foreach (var entry in entries)
+			{
+				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
+			}
 		}
 
-		public override List<LocationOfItem> GetItemLocations()
+		public override List<LocationOfItem> LogItemLocations()
 		{
 			List<LocationOfItem> list = new List<LocationOfItem>();
 
@@ -178,7 +214,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			return list;
 		}
 
-		public override List<LocationOfDest> GetExitLocations()
+		public override List<LocationOfDest> LogExitLocations()
 		{
 			List<LocationOfDest> list = new List<LocationOfDest>();
 

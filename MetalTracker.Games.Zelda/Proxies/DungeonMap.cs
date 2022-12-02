@@ -147,25 +147,91 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public override List<StateEntry> GetDestStates()
 		{
-			throw new System.NotImplementedException();
+			List<StateEntry> list = new List<StateEntry>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Item1 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
+						list.Add(entry);
+					}
+					if (state.Item2 != null && state.Item2.IsImportant())
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
+						list.Add(entry);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		public override List<StateEntry> GetItemStates()
 		{
-			throw new System.NotImplementedException();
+			List<StateEntry> list = new List<StateEntry>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.DestNorth != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestNorth.GetCode() };
+						list.Add(entry);
+					}
+					if (state.DestSouth != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.DestSouth.GetCode() };
+						list.Add(entry);
+					}
+					if (state.DestWest != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.DestWest.GetCode() };
+						list.Add(entry);
+					}
+					if (state.DestEast != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.DestEast.GetCode() };
+						list.Add(entry);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		public override void SetDestStates(List<StateEntry> entries)
 		{
-			throw new System.NotImplementedException();
+			foreach (var entry in entries)
+			{
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestNorth = _dests.Find(i => i.GetCode() == entry.Code);
+				else if (entry.Slot == 1)
+					_roomStates[entry.Y, entry.X].DestSouth = _dests.Find(i => i.GetCode() == entry.Code);
+				else if (entry.Slot == 2)
+					_roomStates[entry.Y, entry.X].DestWest = _dests.Find(i => i.GetCode() == entry.Code);
+				else if (entry.Slot == 3)
+					_roomStates[entry.Y, entry.X].DestEast = _dests.Find(i => i.GetCode() == entry.Code);
+			}
 		}
 
 		public override void SetItemStates(List<StateEntry> entries)
 		{
-			throw new System.NotImplementedException();
+			foreach (var entry in entries)
+			{
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
+				else if (entry.Slot == 1)
+					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
+			}
 		}
 
-		public override List<LocationOfItem> GetItemLocations()
+		public override List<LocationOfItem> LogItemLocations()
 		{
 			List<LocationOfItem> list = new List<LocationOfItem>();
 
@@ -190,7 +256,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
-		public override List<LocationOfDest> GetExitLocations()
+		public override List<LocationOfDest> LogExitLocations()
 		{
 			List<LocationOfDest> list = new List<LocationOfDest>();
 

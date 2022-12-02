@@ -13,9 +13,9 @@ namespace MetalTracker.Common.Bases
 
 		public abstract void SetItemStates(List<StateEntry> entries);
 
-		public abstract List<LocationOfDest> GetExitLocations();
+		public abstract List<LocationOfDest> LogExitLocations();
 
-		public abstract List<LocationOfItem> GetItemLocations();
+		public abstract List<LocationOfItem> LogItemLocations();
 
 		protected void DrawDest(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{

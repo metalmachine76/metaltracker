@@ -85,7 +85,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			{
 				foreach (var map in _maps)
 				{
-					foreach (var loc in map.GetItemLocations())
+					foreach (var loc in map.LogItemLocations())
 					{
 						entries.Add(new SessionLogEntry { Name = loc.Item.Name, Location = loc.Location });
 					}
@@ -96,7 +96,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			{
 				foreach (var map in _maps)
 				{
-					foreach (var loc in map.GetExitLocations())
+					foreach (var loc in map.LogExitLocations())
 					{
 						entries.Add(new SessionLogEntry { Name = loc.Dest.LongName, Location = loc.Location });
 					}
