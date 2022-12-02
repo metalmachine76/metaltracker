@@ -138,20 +138,24 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 		}
 
-		public void MirrorState()
+		public override List<StateEntry> GetDestStates()
 		{
-			for (int y = 0; y < 32; y++)
-			{
-				for (int x = 0; x < 16; x++)
-				{
-					var s0 = _roomStates[y, x];
-					var s1 = _roomStates[y, 31 - x];
-					_roomStates[y, x] = s1;
-					_roomStates[y, 31 - x] = s0;
-				}
-			}
+			throw new System.NotImplementedException();
+		}
 
-			_drawable.Invalidate();
+		public override List<StateEntry> GetItemStates()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void SetDestStates(List<StateEntry> entries)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void SetItemStates(List<StateEntry> entries)
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public override List<LocationOfItem> GetItemLocations()
@@ -435,5 +439,22 @@ namespace MetalTracker.Games.Metroid.Proxies
 		}
 
 		#endregion
+
+		private void MirrorState()
+		{
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					var s0 = _roomStates[y, x];
+					var s1 = _roomStates[y, 31 - x];
+					_roomStates[y, x] = s1;
+					_roomStates[y, 31 - x] = s0;
+				}
+			}
+
+			_drawable.Invalidate();
+		}
+
 	}
 }

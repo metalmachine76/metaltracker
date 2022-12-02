@@ -140,20 +140,24 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
-		public void MirrorState()
+		public override List<StateEntry> GetDestStates()
 		{
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 8; x++)
-				{
-					var s0 = _roomStates[y, x];
-					var s1 = _roomStates[y, 15 - x];
-					_roomStates[y, x] = s1;
-					_roomStates[y, 15 - x] = s0;
-				}
-			}
+			throw new System.NotImplementedException();
+		}
 
-			_drawable.Invalidate();
+		public override List<StateEntry> GetItemStates()
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void SetDestStates(List<StateEntry> entries)
+		{
+			throw new System.NotImplementedException();
+		}
+
+		public override void SetItemStates(List<StateEntry> entries)
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public override List<LocationOfItem> GetItemLocations()
@@ -430,7 +434,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		#endregion
 
-		#region CoOp Send/Recieve
+		#region CoOp Event Handlers
 
 		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
 		{
@@ -473,5 +477,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 		}
 
 		#endregion
+
+		public void MirrorState()
+		{
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < 8; x++)
+				{
+					var s0 = _roomStates[y, x];
+					var s1 = _roomStates[y, 15 - x];
+					_roomStates[y, x] = s1;
+					_roomStates[y, 15 - x] = s0;
+				}
+			}
+
+			_drawable.Invalidate();
+		}
 	}
 }
