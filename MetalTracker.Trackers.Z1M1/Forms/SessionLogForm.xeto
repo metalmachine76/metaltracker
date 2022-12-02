@@ -6,12 +6,14 @@
 	Title="Session Log"
 	Padding="10"
 	Load="HandleLoad"
+  Resizable="False"
+  Maximizable="False"
 	>
 
   <StackLayout HorizontalContentAlignment="Left">
     <RadioButtonList ID="radioButtonList" Shown="HandleRadioShown" Height="30" SelectedKeyChanged="HandleRadioChanged">
-      <ListItem Key="items" Text="Show Items   "></ListItem>
-      <ListItem Key="exits" Text="Show Exits   "></ListItem>
+      <ListItem Key="items" Text="List Items   "></ListItem>
+      <ListItem Key="exits" Text="List Exits   "></ListItem>
     </RadioButtonList>
     <GridView Width="400" Height="400" GridLines="Horizontal" ID="gridViewSessionLog" />
   </StackLayout>

@@ -172,7 +172,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item != null && state.Item.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Dungeon {_level}");
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Dungeon #{_level}");
 						list.Add(loc);
 					}
 				}
@@ -192,22 +192,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon {_level}");
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_level}");
 						list.Add(loc);
 					}
 					if (state.DestSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon {_level}");
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_level}");
 						list.Add(loc);
 					}
 					if (state.DestWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon {_level}");
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_level}");
 						list.Add(loc);
 					}
 					if (state.DestEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon {_level}");
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_level}");
 						list.Add(loc);
 					}
 				}
