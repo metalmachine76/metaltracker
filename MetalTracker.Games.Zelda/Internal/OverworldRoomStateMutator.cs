@@ -32,8 +32,8 @@ namespace MetalTracker.Games.Zelda.Internal
 				{
 					if (newDest.Game == "z1" && newDest.Key == "P")
 					{
-						state.Item1 = new GameItem("z1", "potion1", "Blue Potion", ZeldaResourceClient.GetIcon("bluepotion"));
-						state.Item3 = new GameItem("z1", "potion2", "Red Potion", ZeldaResourceClient.GetIcon("redpotion"));
+						state.Item1 = new GameItem("z1", "potion1", "Blue Potion", 'M', ZeldaResourceClient.GetIcon("bluepotion"));
+						state.Item3 = new GameItem("z1", "potion2", "Red Potion", 'M', ZeldaResourceClient.GetIcon("redpotion"));
 					}
 				}
 

@@ -103,7 +103,6 @@ namespace MetalTracker.Games.Zelda.Internal
 				{
 					Key = gameItem.GetCode(),
 					Image = gameItem.Icon,
-					Text = gameItem.Name,
 				};
 
 				_dropDownItem.Items.Add(listItem);

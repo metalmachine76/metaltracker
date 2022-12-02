@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.CoOp", "MetalT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.Common", "MetalTracker.Common\MetalTracker.Common.csproj", "{09865F87-D371-4264-9099-DA7D03C64087}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetalTracker.CoOp.Interface", "MetalTracker.CoOp.Interface\MetalTracker.CoOp.Interface.csproj", "{22AD7CA9-5159-4414-927B-B5CA7716C89F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetalTracker.CoOp.Interface", "MetalTracker.CoOp.Interface\MetalTracker.CoOp.Interface.csproj", "{22AD7CA9-5159-4414-927B-B5CA7716C89F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

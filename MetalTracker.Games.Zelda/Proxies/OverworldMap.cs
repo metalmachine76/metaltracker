@@ -158,12 +158,52 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public override List<LocationOfItem> GetItemLocations()
 		{
-			return new List<LocationOfItem>();
+			List<LocationOfItem> list = new List<LocationOfItem>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Item1 != null && state.Item1.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}");
+						list.Add(loc);
+					}
+					if (state.Item2 != null && state.Item2.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}");
+						list.Add(loc);
+					}
+					if (state.Item3 != null && state.Item3.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
-		public override List<LocationOfDest> GetDestLocations()
+		public override List<LocationOfDest> GetExitLocations()
 		{
-			return new List<LocationOfDest>();
+			List<LocationOfDest> list = new List<LocationOfDest>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Destination != null && state.Destination.IsExit)
+					{
+						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		#endregion

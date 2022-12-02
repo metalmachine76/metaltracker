@@ -163,12 +163,57 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public override List<LocationOfItem> GetItemLocations()
 		{
-			return new List<LocationOfItem>();
+			List<LocationOfItem> list = new List<LocationOfItem>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Item != null && state.Item.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Dungeon {_level}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
-		public override List<LocationOfDest> GetDestLocations()
+		public override List<LocationOfDest> GetExitLocations()
 		{
-			return new List<LocationOfDest>();
+			List<LocationOfDest> list = new List<LocationOfDest>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.DestNorth != null)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon {_level}");
+						list.Add(loc);
+					}
+					if (state.DestSouth != null)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon {_level}");
+						list.Add(loc);
+					}
+					if (state.DestWest != null)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon {_level}");
+						list.Add(loc);
+					}
+					if (state.DestEast != null)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon {_level}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		#region Event Handlers

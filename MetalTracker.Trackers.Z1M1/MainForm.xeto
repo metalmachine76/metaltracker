@@ -15,8 +15,8 @@
 	<Form.Menu>
 		<MenuBar>
 			<SubMenuItem Text="&amp;File">
-				<ButtonMenuItem Text="&amp;New Session..." Click="HandleSessionNewClick" />
-				<ButtonMenuItem Text="&amp;Open Session..." Click="HandleSessionOpenClick" />
+				<ButtonMenuItem Text="&amp;New Session" Click="HandleSessionNewClick" />
+				<ButtonMenuItem Text="&amp;Open Session" Click="HandleSessionOpenClick" />
 				<ButtonMenuItem Text="&amp;Save Session" Click="HandleSessionSaveClick" />
 				<ButtonMenuItem Text="Save Session &amp;As..." Click="HandleSessionSaveAsClick" />
 				<SeparatorMenuItem />
@@ -24,12 +24,14 @@
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Session">
 				<ButtonMenuItem Text="&amp;Edit Flags" Click="HandleSessionEditFlagsClick" />
+				<ButtonMenuItem Text="&amp;View Log" Click="HandleShowSessionLogClick" />
+				<SeparatorMenuItem />
 				<ButtonMenuItem Text="&amp;Reset Data" Click="HandleSessionClearDataClick" />
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Co-Op">
-				<ButtonMenuItem Text="&amp;Connect/Disconnect..." Click="HandleOpenCoOpClientClick" />
-				<ButtonMenuItem Text="&amp;View Rooms..." Click="HandleOpenCoOpRoomClick" />
-				<ButtonMenuItem Text="&amp;Configure..." Click="HandleConfigCoOpClick" />
+				<ButtonMenuItem Text="&amp;Connect/Disconnect" Click="HandleOpenCoOpClientClick" />
+				<ButtonMenuItem Text="&amp;View Rooms" Click="HandleOpenCoOpRoomClick" />
+				<ButtonMenuItem Text="&amp;Configure" Click="HandleConfigCoOpClick" />
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Help">
 				<ButtonMenuItem Text="&amp;About" Click="HandleHelpAboutClick" />

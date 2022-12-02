@@ -5,7 +5,7 @@ namespace MetalTracker.Common.Bases
 {
 	public abstract class BaseMap
 	{
-		public abstract List<LocationOfDest> GetDestLocations();
+		public abstract List<LocationOfDest> GetExitLocations();
 
 		public abstract List<LocationOfItem> GetItemLocations();
 

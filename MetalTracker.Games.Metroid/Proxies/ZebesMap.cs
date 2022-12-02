@@ -156,12 +156,42 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public override List<LocationOfItem> GetItemLocations()
 		{
-			return new List<LocationOfItem>();
+			List<LocationOfItem> list = new List<LocationOfItem>();
+
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 32; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.Item != null && state.Item.IsImportant())
+					{
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
-		public override List<LocationOfDest> GetDestLocations()
+		public override List<LocationOfDest> GetExitLocations()
 		{
-			return new List<LocationOfDest>();
+			List<LocationOfDest> list = new List<LocationOfDest>();
+
+			for (int y = 0; y < 32; y++)
+			{
+				for (int x = 0; x < 32; x++)
+				{
+					var state = _roomStates[y, x];
+					if (state.DestElev != null && state.DestElev.IsExit)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}");
+						list.Add(loc);
+					}
+				}
+			}
+
+			return list;
 		}
 
 		#endregion

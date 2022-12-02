@@ -21,20 +21,20 @@ namespace MetalTracker.Games.Metroid
 		{
 			return new GameItem[]
 			{
-				new GameItem("m1", "boots", "High Jump Boots", GetIcon("boots1")),
-				new GameItem("m1", "ice", "Ice Beam", GetIcon("icebeam1")),
-				new GameItem("m1", "wave", "Wave Beam", GetIcon("wavebeam1")),
-				new GameItem("m1", "long", "Long Beam", GetIcon("longbeam1")),
-				new GameItem("m1", "morph", "Morph Ball", GetIcon("morphball1")),
-				new GameItem("m1", "bombs", "Morph Ball Bombs", GetIcon("morphbombs1")),
-				new GameItem("m1", "screw", "Screw Attack", GetIcon("screwattack1")),
-				new GameItem("m1", "varia", "Varia Suit", GetIcon("varia1")),
-				new GameItem("m1", "kraidtot", "Kraid Totem", GetIcon("kraidtot1")),
-				new GameItem("m1", "ridleytot", "Ridley Totem", GetIcon("ridleytot1")),
-				new GameItem("m1", "missilepack", "Missile Pack", GetIcon("missilepack")),
-				new GameItem("m1", "energytank", "Energy Tank", GetIcon("energytank")),
-				new GameItem("m1", "missiles", "Missiles", GetIcon("missile")),
-				new GameItem("m1", "energy", "Energy", GetIcon("energy")),
+				new GameItem("m1", "boots", "High Jump Boots", 'E', GetIcon("boots1")),
+				new GameItem("m1", "ice", "Ice Beam", 'E', GetIcon("icebeam1")),
+				new GameItem("m1", "wave", "Wave Beam", 'E', GetIcon("wavebeam1")),
+				new GameItem("m1", "long", "Long Beam", 'E', GetIcon("longbeam1")),
+				new GameItem("m1", "morph", "Morph Ball", 'E', GetIcon("morphball1")),
+				new GameItem("m1", "bombs", "Morph Ball Bombs", 'E', GetIcon("morphbombs1")),
+				new GameItem("m1", "screw", "Screw Attack", 'E', GetIcon("screwattack1")),
+				new GameItem("m1", "varia", "Varia Suit", 'E', GetIcon("varia1")),
+				new GameItem("m1", "kraidtot", "Kraid Totem", 'Q', GetIcon("kraidtot1")),
+				new GameItem("m1", "ridleytot", "Ridley Totem", 'Q', GetIcon("ridleytot1")),
+				new GameItem("m1", "missilepack", "Missile Pack", 'U', GetIcon("missilepack")),
+				new GameItem("m1", "energytank", "Energy Tank", 'U', GetIcon("energytank")),
+				new GameItem("m1", "missiles", "Missiles", 'M', GetIcon("missile")),
+				new GameItem("m1", "energy", "Energy", 'M', GetIcon("energy")),
 			};
 		}
 

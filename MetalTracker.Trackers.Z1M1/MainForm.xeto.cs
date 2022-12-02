@@ -139,6 +139,18 @@ namespace MetalTracker.Trackers.Z1M1
 			Application.Instance.Quit();
 		}
 
+		protected void HandleShowSessionLogClick(object sender, EventArgs e)
+		{
+			SessionLogDlg dlg = new SessionLogDlg();
+			dlg.AddMap(_overworldMap);
+			for (int i = 0; i < 9; i++)
+			{
+				dlg.AddMap(_dungeonMaps[i]);
+			}
+			dlg.AddMap(_zebesMap);
+			dlg.ShowModal(this);
+		}
+
 		protected void HandleSessionEditFlagsClick(object sender, EventArgs e)
 		{
 			EditSessionFlagsDlg dlg = new EditSessionFlagsDlg(false);
