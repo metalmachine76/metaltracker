@@ -10,7 +10,16 @@ namespace MetalTracker.Games.Zelda
 	{
 		static List<(bool, int, int, int)> DungeonItemBasements = new List<(bool, int, int, int)>
 		{
+			(false, 1, 1, 2),
 			(false, 3, 0, 6),
+			(false, 4, 2, 3),
+			(false, 5, 1, 0),
+			(false, 6, 1, 0),
+			(false, 7, 2, 1),
+			(false, 8, 1, 7),
+			(false, 8, 4, 1),
+			(false, 9, 0, 1),
+			(false, 9, 7, 0),
 		};
 
 		public static Image GetOverworldImage(bool q2, bool mirrored)
