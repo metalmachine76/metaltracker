@@ -4,8 +4,7 @@ using Eto.Drawing;
 using Eto.Forms;
 using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
-using MetalTracker.CoOp;
-using MetalTracker.CoOp.EventArgs;
+using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Metroid.Internal;
 using MetalTracker.Games.Metroid.Types;
 

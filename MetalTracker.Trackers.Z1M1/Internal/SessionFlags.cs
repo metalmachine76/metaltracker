@@ -10,9 +10,9 @@
 
 		public bool ZebesMirrored { get; set; }
 
-		public bool DungeonEntrancesShuffled { get; set; }
+		public bool DungeonEntrancesShuffled { get; set; } = true;
 
-		public bool OtherEntrancesShuffled { get; set; }
+		public bool OtherEntrancesShuffled { get; set; } = true;
 
 		public int DungeonRoomShuffleMode { get; set; }
 

@@ -1,5 +1,5 @@
 ﻿using MetalTracker.Common.Types;
-using MetalTracker.CoOp;
+using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Internal

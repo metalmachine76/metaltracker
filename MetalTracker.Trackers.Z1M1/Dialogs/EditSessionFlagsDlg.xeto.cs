@@ -19,6 +19,8 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 		private CheckBox checkBoxMirroredL8;
 		private CheckBox checkBoxMirroredL9;
 		private CheckBox checkBoxMirroredZebes;
+		private CheckBox checkBoxShuffleDungeons;
+		private CheckBox checkBoxShuffleOthers;
 		private CheckBox checkBoxShuffleMinorDungeonRooms;
 		private CheckBox checkBoxShuffleAllDungeonRooms;
 		private CheckBox checkBoxShuffleMinorZebesRooms;
@@ -42,6 +44,8 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			checkBoxMirroredL8 = this.FindChild<CheckBox>("checkBoxMirroredL8");
 			checkBoxMirroredL9 = this.FindChild<CheckBox>("checkBoxMirroredL9");
 			checkBoxMirroredZebes = this.FindChild<CheckBox>("checkBoxMirroredZebes");
+			checkBoxShuffleDungeons = this.FindChild<CheckBox>("checkBoxShuffleDungeons");
+			checkBoxShuffleOthers = this.FindChild<CheckBox>("checkBoxShuffleOthers");
 			checkBoxShuffleMinorDungeonRooms = this.FindChild<CheckBox>("checkBoxShuffleMinorDungeonRooms");
 			checkBoxShuffleAllDungeonRooms = this.FindChild<CheckBox>("checkBoxShuffleAllDungeonRooms");
 			checkBoxShuffleMinorZebesRooms = this.FindChild<CheckBox>("checkBoxShuffleMinorZebesRooms");
@@ -67,6 +71,8 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			checkBoxMirroredL8.Checked = Flags.DungeonsMirrored[7];
 			checkBoxMirroredL9.Checked = Flags.DungeonsMirrored[8];
 			checkBoxMirroredZebes.Checked = Flags.ZebesMirrored;
+			checkBoxShuffleDungeons.Checked = Flags.DungeonEntrancesShuffled;
+			checkBoxShuffleOthers.Checked = Flags.OtherEntrancesShuffled;
 			checkBoxShuffleMinorDungeonRooms.Checked = Flags.DungeonRoomShuffleMode > 0;
 			checkBoxShuffleAllDungeonRooms.Checked = Flags.DungeonRoomShuffleMode == 2;
 			checkBoxShuffleMinorZebesRooms.Checked = Flags.ZebesRoomShuffleMode > 0;
@@ -115,6 +121,8 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			Flags.DungeonsMirrored[7] = checkBoxMirroredL8.Checked.Value;
 			Flags.DungeonsMirrored[8] = checkBoxMirroredL9.Checked.Value;
 			Flags.ZebesMirrored = checkBoxMirroredZebes.Checked.Value;
+			Flags.DungeonEntrancesShuffled = checkBoxShuffleDungeons.Checked.Value;
+			Flags.OtherEntrancesShuffled = checkBoxShuffleOthers.Checked.Value;
 
 			if (checkBoxShuffleAllDungeonRooms.Checked == true)
 				this.Flags.DungeonRoomShuffleMode = 2;

@@ -4,8 +4,7 @@ using Eto.Drawing;
 using Eto.Forms;
 using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
-using MetalTracker.CoOp;
-using MetalTracker.CoOp.EventArgs;
+using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Zelda.Internal;
 using MetalTracker.Games.Zelda.Types;
 
@@ -71,17 +70,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
 
 			ResetState();
-		}
-
-		public void SetCoOpClient(CoOpClient coOpClient)
-		{
-			//coOpClient.FoundDest += HandleCoOpClientFoundDest;
-			//coOpClient.FoundItem += HandleCoOpClientFoundItem;
-			//_mutator.SetCoOpClient(coOpClient);
-			//_timer = new UITimer();
-			//_timer.Interval = 0.5;
-			//_timer.Elapsed += HandleTimerElapsed;
-			//_timer.Start();
 		}
 
 		public void SetMapFlags(bool q2, bool mirrored, int level)

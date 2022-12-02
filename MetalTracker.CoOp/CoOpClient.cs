@@ -1,5 +1,5 @@
 ﻿using MetalTracker.CoOp.Contracts.Responses;
-using MetalTracker.CoOp.EventArgs;
+using MetalTracker.CoOp.Interface;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 

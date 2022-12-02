@@ -1,6 +1,4 @@
-﻿using MetalTracker.CoOp.EventArgs;
-
-namespace MetalTracker.CoOp
+﻿namespace MetalTracker.CoOp.Interface
 {
 	public interface ICoOpClient
 	{

@@ -191,7 +191,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\MetalTracker.Common\MetalTracker.Common.csproj" />
-	  <ProjectReference Include="..\MetalTracker.CoOp\MetalTracker.CoOp.csproj" />
+	  <ProjectReference Include="..\MetalTracker.CoOp.Interface\MetalTracker.CoOp.Interface.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace MetalTracker.CoOp.EventArgs
+﻿namespace MetalTracker.CoOp.Interface
 {
 	public class FoundEventArgs
 	{

@@ -24,7 +24,7 @@
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Session">
 				<ButtonMenuItem Text="&amp;Edit Flags" Click="HandleSessionEditFlagsClick" />
-				<ButtonMenuItem Text="&amp;Clear Data" Click="HandleSessionClearDataClick" />
+				<ButtonMenuItem Text="&amp;Reset Data" Click="HandleSessionClearDataClick" />
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Co-Op">
 				<ButtonMenuItem Text="&amp;Connect/Disconnect..." Click="HandleOpenCoOpClientClick" />

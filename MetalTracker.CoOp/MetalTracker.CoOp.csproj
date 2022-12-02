@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MetalTracker.CoOp.Interface\MetalTracker.CoOp.Interface.csproj" />
+  </ItemGroup>
+
 </Project>
