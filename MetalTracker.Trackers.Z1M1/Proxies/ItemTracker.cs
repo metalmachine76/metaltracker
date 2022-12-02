@@ -4,7 +4,6 @@ using Eto.Forms;
 using MetalTracker.Common.Controls;
 using MetalTracker.Games.Metroid;
 using MetalTracker.Games.Zelda;
-using MetalTracker.Trackers.Z1M1.Internal;
 
 namespace MetalTracker.Trackers.Z1M1.Proxies
 {
@@ -12,13 +11,11 @@ namespace MetalTracker.Trackers.Z1M1.Proxies
 	{
 		private readonly Panel _panel;
 		private readonly List<TrackedItemView> _trackedItemViews;
-		private readonly PlayerState _playerState;
 
 		public ItemTracker(Panel panel)
 		{
 			_panel = panel;
 			_trackedItemViews = new List<TrackedItemView>();
-			_playerState = new PlayerState();
 		}
 
 		public void Init()

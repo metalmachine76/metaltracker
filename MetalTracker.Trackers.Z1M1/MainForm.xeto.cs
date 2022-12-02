@@ -26,7 +26,7 @@ namespace MetalTracker.Trackers.Z1M1
 		private readonly ItemTracker _itemTracker = null;
 
 		private SessionFlags _sessionFlags = new SessionFlags();
-		private string _sessionFilename = "default.mts";
+		private string _sessionFilename = null;
 
 		private CoOpConfig _coOpConfig;
 		private CoOpClient _coOpClient;
@@ -76,8 +76,8 @@ namespace MetalTracker.Trackers.Z1M1
 		protected void HandlePreLoad(object sender, EventArgs e)
 		{
 			this.FindChild<DropDown>("dropDownSelectedMap").SelectedIndex = 0;
-			this.Title = $"Metal Tracker for Z1M1 [{_sessionFilename}]";
 			_itemTracker.Init();
+			UpdateTitle();
 		}
 
 		protected void HandleLoad(object sender, EventArgs e)
@@ -111,6 +111,8 @@ namespace MetalTracker.Trackers.Z1M1
 			if (dlg.Result == true)
 			{
 				_sessionFlags = newSessionFlags;
+				AssignSessionFlags();
+				ResetSessionState();
 			}
 		}
 
@@ -121,7 +123,11 @@ namespace MetalTracker.Trackers.Z1M1
 			var dr = ofd.ShowDialog(this);
 			if (dr == DialogResult.Ok)
 			{
-				// TODO
+				if (LoadSession(ofd.FileName))
+				{
+					_sessionFilename = ofd.FileName;
+					UpdateTitle();
+				}
 			}
 		}
 
@@ -129,17 +135,27 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			if (_sessionFilename == null)
 			{
-				SaveSessionAs();
+				HandleSessionSaveAsClick(sender, e);
 			}
 			else
 			{
-				SaveSession();
+				SaveSession(_sessionFilename);
 			}
 		}
 
 		protected void HandleSessionSaveAsClick(object sender, EventArgs e)
 		{
-			SaveSessionAs();
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filters.Add(new FileFilter("Metal Tracker Session", ".mts"));
+			var dr = sfd.ShowDialog(this);
+			if (dr == DialogResult.Ok)
+			{
+				if (SaveSession(sfd.FileName))
+				{
+					_sessionFilename = sfd.FileName;
+					UpdateTitle();
+				}
+			}
 		}
 
 		protected void HandleAppQuitClick(object sender, EventArgs e)
@@ -279,16 +295,16 @@ namespace MetalTracker.Trackers.Z1M1
 
 		#endregion
 
-		private void AssignSessionFlags()
+		private void UpdateTitle()
 		{
-			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
-
-			for (int i = 0; i < 9; i++)
+			if (_sessionFilename == null)
 			{
-				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[i], i + 1);
+				this.Title = $"Metal Tracker for Z1M1";
 			}
-
-			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
+			else
+			{
+				this.Title = $"Metal Tracker for Z1M1 [{_sessionFilename}]";
+			}
 		}
 
 		private void CreateCoOpClient()
@@ -305,21 +321,111 @@ namespace MetalTracker.Trackers.Z1M1
 			_zebesMap.SetCoOpClient(_coOpClient);
 		}
 
-		private void SaveSessionAs()
+		private void AssignSessionFlags()
 		{
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filters.Add(new FileFilter("Metal Tracker Session", ".mts"));
-			var dr = sfd.ShowDialog(this);
-			if (dr == DialogResult.Ok)
+			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
+
+			for (int i = 0; i < 9; i++)
 			{
-				_sessionFilename = sfd.FileName;
-				SaveSession();
+				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[i], i + 1);
+			}
+
+			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
+		}
+
+		private void ResetSessionState()
+		{
+			_overworldMap.ResetState();
+			for (int i = 0; i < 9; i++)
+			{
+				_dungeonMaps[i].ResetState();
+			}
+			_zebesMap.ResetState();
+		}
+
+		private bool LoadSession(string filename)
+		{
+			try
+			{
+				ResetSessionState();
+
+				string serialized = File.ReadAllText(filename);
+
+				SessionState state = System.Text.Json.JsonSerializer.Deserialize<SessionState>(serialized);
+
+				_overworldMap.SetDestStates(state.DestStateLists[0]);
+				_dungeonMaps[0].SetDestStates(state.DestStateLists[1]);
+				_dungeonMaps[1].SetDestStates(state.DestStateLists[2]);
+				_dungeonMaps[2].SetDestStates(state.DestStateLists[3]);
+				_dungeonMaps[3].SetDestStates(state.DestStateLists[4]);
+				_dungeonMaps[4].SetDestStates(state.DestStateLists[5]);
+				_dungeonMaps[5].SetDestStates(state.DestStateLists[6]);
+				_dungeonMaps[6].SetDestStates(state.DestStateLists[7]);
+				_dungeonMaps[7].SetDestStates(state.DestStateLists[8]);
+				_dungeonMaps[8].SetDestStates(state.DestStateLists[9]);
+				_zebesMap.SetDestStates(state.DestStateLists[10]);
+
+				_overworldMap.SetItemStates(state.ItemStateLists[0]);
+				_dungeonMaps[0].SetItemStates(state.ItemStateLists[1]);
+				_dungeonMaps[1].SetItemStates(state.ItemStateLists[2]);
+				_dungeonMaps[2].SetItemStates(state.ItemStateLists[3]);
+				_dungeonMaps[3].SetItemStates(state.ItemStateLists[4]);
+				_dungeonMaps[4].SetItemStates(state.ItemStateLists[5]);
+				_dungeonMaps[5].SetItemStates(state.ItemStateLists[6]);
+				_dungeonMaps[6].SetItemStates(state.ItemStateLists[7]);
+				_dungeonMaps[7].SetItemStates(state.ItemStateLists[8]);
+				_dungeonMaps[8].SetItemStates(state.ItemStateLists[9]);
+				_zebesMap.SetItemStates(state.ItemStateLists[10]);
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred while loading:\r\n\r\n{ex.Message}", "Metal Tracker", MessageBoxType.Error);
+				return false;
 			}
 		}
 
-		private void SaveSession()
+		private bool SaveSession(string filename)
 		{
-			// TODO
+			SessionState state = new SessionState();
+
+			state.DestStateLists[0] = _overworldMap.GetDestStates();
+			state.DestStateLists[1] = _dungeonMaps[0].GetDestStates();
+			state.DestStateLists[2] = _dungeonMaps[1].GetDestStates();
+			state.DestStateLists[3] = _dungeonMaps[2].GetDestStates();
+			state.DestStateLists[4] = _dungeonMaps[3].GetDestStates();
+			state.DestStateLists[5] = _dungeonMaps[4].GetDestStates();
+			state.DestStateLists[6] = _dungeonMaps[5].GetDestStates();
+			state.DestStateLists[7] = _dungeonMaps[6].GetDestStates();
+			state.DestStateLists[8] = _dungeonMaps[7].GetDestStates();
+			state.DestStateLists[9] = _dungeonMaps[8].GetDestStates();
+			state.DestStateLists[10] = _zebesMap.GetDestStates();
+
+			state.ItemStateLists[0] = _overworldMap.GetItemStates();
+			state.ItemStateLists[1] = _dungeonMaps[0].GetItemStates();
+			state.ItemStateLists[2] = _dungeonMaps[1].GetItemStates();
+			state.ItemStateLists[3] = _dungeonMaps[2].GetItemStates();
+			state.ItemStateLists[4] = _dungeonMaps[3].GetItemStates();
+			state.ItemStateLists[5] = _dungeonMaps[4].GetItemStates();
+			state.ItemStateLists[6] = _dungeonMaps[5].GetItemStates();
+			state.ItemStateLists[7] = _dungeonMaps[6].GetItemStates();
+			state.ItemStateLists[8] = _dungeonMaps[7].GetItemStates();
+			state.ItemStateLists[9] = _dungeonMaps[8].GetItemStates();
+			state.ItemStateLists[10] = _zebesMap.GetItemStates();
+
+			string serialized = System.Text.Json.JsonSerializer.Serialize(state);
+
+			try
+			{
+				File.WriteAllText(filename, serialized);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred while saving:\r\n\r\n{ex.Message}", "Metal Tracker", MessageBoxType.Error);
+				return false;
+			}
 		}
 	}
 }
