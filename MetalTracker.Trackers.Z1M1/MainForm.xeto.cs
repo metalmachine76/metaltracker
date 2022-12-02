@@ -196,6 +196,7 @@ namespace MetalTracker.Trackers.Z1M1
 					_dungeonMaps[i].ResetState();
 				}
 				_zebesMap.ResetState();
+				_itemTracker.Init();
 			}
 		}
 
@@ -355,6 +356,8 @@ namespace MetalTracker.Trackers.Z1M1
 
 				AssignSessionFlags();
 
+				_itemTracker.SetInventory(session.Inventory);
+
 				ResetSessionState();
 
 				var state = session.State;
@@ -422,10 +425,13 @@ namespace MetalTracker.Trackers.Z1M1
 
 			SessionFlags flags = _sessionFlags;
 
+			var inventory = _itemTracker.GetInventory();
+
 			Session session = new Session
 			{
 				Flags = _sessionFlags,
-				State = state
+				State = state,
+				Inventory = inventory
 			};
 
 			string serialized = System.Text.Json.JsonSerializer.Serialize(session);

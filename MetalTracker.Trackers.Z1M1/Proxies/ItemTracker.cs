@@ -4,6 +4,7 @@ using Eto.Forms;
 using MetalTracker.Common.Controls;
 using MetalTracker.Games.Metroid;
 using MetalTracker.Games.Zelda;
+using MetalTracker.Trackers.Z1M1.Internal;
 
 namespace MetalTracker.Trackers.Z1M1.Proxies
 {
@@ -79,6 +80,38 @@ namespace MetalTracker.Trackers.Z1M1.Proxies
 			mainLayout.Items.Add(metroidRow1);
 
 			_panel.Content = mainLayout;
+		}
+
+		public void SetInventory(List<InventoryEntry> entries)
+		{
+			foreach (var view in _trackedItemViews)
+			{
+				var entry = entries.Find(e => e.Key == view.ItemKey);
+				if (entry != null)
+				{
+					view.ItemLevel = entry.Level;
+				}
+				else
+				{
+					view.ItemLevel = 0;
+				}
+				view.Invalidate();
+			}
+		}
+
+		public List<InventoryEntry> GetInventory()
+		{
+			List<InventoryEntry> entries = new List<InventoryEntry>();
+
+			foreach (var view in _trackedItemViews)
+			{
+				if (view.ItemLevel > 0)
+				{
+					entries.Add(new InventoryEntry { Key = view.ItemKey, Level = view.ItemLevel });
+				}
+			}
+
+			return entries;
 		}
 
 		private void AddZeldaTrackedItem(StackLayout row, string key, params string[] iconNames)
