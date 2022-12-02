@@ -21,7 +21,7 @@ namespace MetalTracker.Trackers.Z1M1
 	internal class MainForm : Form
 	{
 		private readonly OverworldMap _overworldMap = null;
-		private readonly DungeonMap _dungeonMap = null;
+		private readonly DungeonMap[] _dungeonMaps = new DungeonMap[9];
 		private readonly ZebesMap _zebesMap = null;
 		private readonly ItemTracker _itemTracker = null;
 
@@ -53,10 +53,14 @@ namespace MetalTracker.Trackers.Z1M1
 			_overworldMap.AddDestinations(zebesExitDests);
 			_overworldMap.SetGameItems(gameItems);
 
-			_dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
-			_dungeonMap.AddDestinations(zeldaExitDests);
-			_dungeonMap.AddDestinations(zebesExitDests);
-			_dungeonMap.SetGameItems(gameItems);
+			for (int i = 0; i < 9; i++)
+			{
+				var dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
+				dungeonMap.AddDestinations(zeldaExitDests);
+				dungeonMap.AddDestinations(zebesExitDests);
+				dungeonMap.SetGameItems(gameItems);
+				_dungeonMaps[i] = dungeonMap;
+			}
 
 			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
 			_zebesMap.AddDestinations(zeldaExitDests);
@@ -151,6 +155,10 @@ namespace MetalTracker.Trackers.Z1M1
 					MessageBoxButtons.YesNo, MessageBoxType.Question) == DialogResult.Yes)
 			{
 				_overworldMap.ResetState();
+				for (int i = 0; i < 9; i++)
+				{
+					_dungeonMaps[i].ResetState();
+				}
 				_zebesMap.ResetState();
 			}
 		}
@@ -225,7 +233,12 @@ namespace MetalTracker.Trackers.Z1M1
 			DropDown dropDown = sender as DropDown;
 
 			_overworldMap.Activate(false);
-			_dungeonMap.Activate(false);
+
+			for (int i = 0; i < 9; i++)
+			{
+				_dungeonMaps[i].Activate(false);
+			}
+
 			_zebesMap.Activate(false);
 
 			if (dropDown.SelectedIndex == 0)
@@ -239,8 +252,8 @@ namespace MetalTracker.Trackers.Z1M1
 			else
 			{
 				int level = dropDown.SelectedIndex;
-				_dungeonMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[level - 1], level);
-				_dungeonMap.Activate(true);
+				_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[level - 1], level);
+				_dungeonMaps[level - 1].Activate(true);
 			}
 		}
 
@@ -257,7 +270,12 @@ namespace MetalTracker.Trackers.Z1M1
 			_coOpClient = new CoOpClient("https://mtshub.azurewebsites.net");
 			_coOpClient.Configure(_coOpConfig.PlayerId, _coOpConfig.PlayerName, _coOpConfig.PlayerColor);
 			_overworldMap.SetCoOpClient(_coOpClient);
-			_dungeonMap.SetCoOpClient(_coOpClient);
+
+			for (int i = 0; i < 9; i++)
+			{
+				_dungeonMaps[i].SetCoOpClient(_coOpClient);
+			}
+
 			_zebesMap.SetCoOpClient(_coOpClient);
 		}
 
