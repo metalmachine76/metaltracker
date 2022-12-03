@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using Eto.Forms;
@@ -113,6 +112,7 @@ namespace MetalTracker.Trackers.Z1M1
 				_sessionFlags = newSessionFlags;
 				AssignSessionFlags();
 				ResetSessionState();
+				_itemTracker.Init();
 			}
 		}
 
