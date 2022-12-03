@@ -32,6 +32,7 @@
 			<SubMenuItem Text="&amp;Co-Op">
 				<ButtonMenuItem Text="&amp;Connect/Disconnect" Click="HandleOpenCoOpClientClick" />
 				<ButtonMenuItem Text="&amp;View Rooms" Click="HandleOpenCoOpRoomClick" />
+				<SeparatorMenuItem />
 				<ButtonMenuItem Text="&amp;Configure" Click="HandleConfigCoOpClick" />
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Help">
