@@ -1,21 +1,26 @@
 ﻿MetalTracker for Z1M1 
-Version 0.1.5
+Version 0.1.6
 
 
 MENU
 ----
 
 File
-  New       -> Create a new tracking session
-  Open      -> Open a previously saved tracking session
-  Save      -> Save the current tracking session
-  Save As   -> Save current tracking session to a new file
-  Exit      -> Close the tracker application
+  New       -> Create a new tracking session.
+               Allows you to define various Z1M1 flags. When the new session is created, 
+               any currently tracked data will be reset.
+  Open      -> Open a previously saved tracking session.
+  Save      -> Save the current tracking session.
+  Save As   -> Save current tracking session to a new file.
+  Exit      -> Close the tracker application.
 
 Session
-  Flags     -> View/edit flags for current session
-  Log       -> Session log will tell you where all major items and exits are located
-  Reset     -> Reset (clear) tracked data for current session
+  Flags     -> View/edit flags for current session.
+               Allows you to view or change various Z1M1 flags. Changing a mirrored flag
+               will mirror any tracked data. Changing other flags will not affect currently
+               tracked data.
+  Log       -> Session log will tell you where all major items and exits are located.
+  Reset     -> Reset (clear) tracked data for current session.
 
 Co-Op
   Connect   -> Open the co-op client window where you can connect to the co-op server. Once you are connected, you can close the window if desired.
@@ -23,7 +28,8 @@ Co-Op
   Configure -> Set your player name and marker color for co-op. You must configure before you can connect.
 
 Help
-  About     -> Shows the "about" window
+  View Help -> Opens the "readme.txt" file.
+  About App -> Shows the "about" window.
 
 
 MAIN UI
@@ -46,9 +52,10 @@ Maps are divided into rooms, where each room is one game screen:
 
 Map interaction is currently mouse-based only:
 
-- You can click and drag the overworld and Zebes maps.
+- You can click and drag the maps which are larger than the visible area.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
 - Right-clicking applicable rooms will show a menu where you can choose an exit or destination to connect the room to.
+  (this is not implemented for dungeons yet)
 - Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use
   is to shade a room if you've collected the item there, explored the room, or don't care about it.
 
