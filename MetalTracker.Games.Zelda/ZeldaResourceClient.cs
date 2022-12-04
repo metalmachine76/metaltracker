@@ -52,6 +52,7 @@ namespace MetalTracker.Games.Zelda
 			new GameItem("z1", "recorder", "Recorder", 'E', GetIcon("recorder1")),
 			new GameItem("z1", "magkey", "Magical Key", 'E', GetIcon("magkey1")),
 			new GameItem("z1", "wand", "Wand", 'E', GetIcon("wand1")),
+			new GameItem("z1", "book", "Book", 'E', GetIcon("book1")),
 			new GameItem("z1", "ring1", "Blue Ring", 'E', GetIcon("ring1")),
 			new GameItem("z1", "ring2", "Red Ring", 'E', GetIcon("ring2")),
 			new GameItem("z1", "candle1", "Blue Candle", 'E', GetIcon("candle1")),
