@@ -89,6 +89,8 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 
 			AssignSessionFlags();
+
+			ResetSessionState();
 		}
 
 		protected void HandleClosed(object sender, EventArgs e)
@@ -113,6 +115,8 @@ namespace MetalTracker.Trackers.Z1M1
 				AssignSessionFlags();
 				ResetSessionState();
 				_itemTracker.Init();
+				_sessionFilename = null;
+				UpdateTitle();
 			}
 		}
 
@@ -324,7 +328,11 @@ namespace MetalTracker.Trackers.Z1M1
 
 		private void AssignSessionFlags()
 		{
-			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
+			_overworldMap.SetMapFlags(
+				_sessionFlags.ZeldaQ2,
+				_sessionFlags.DungeonEntrancesShuffled,
+				_sessionFlags.OtherEntrancesShuffled,
+				_sessionFlags.OverworldMirrored);
 
 			for (int i = 0; i < 9; i++)
 			{
@@ -337,10 +345,12 @@ namespace MetalTracker.Trackers.Z1M1
 		private void ResetSessionState()
 		{
 			_overworldMap.ResetState();
+
 			for (int i = 0; i < 9; i++)
 			{
 				_dungeonMaps[i].ResetState();
 			}
+
 			_zebesMap.ResetState();
 		}
 

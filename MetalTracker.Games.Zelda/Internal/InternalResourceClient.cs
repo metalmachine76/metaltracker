@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Eto.Drawing;
@@ -101,6 +102,72 @@ namespace MetalTracker.Games.Zelda
 			map = Bitmap.FromResource(resName);
 
 			return map;
+		}
+
+		public static OverworldRoomState[,] GetDefaultOverworldState(bool q2, bool dungeons, bool others, bool mirrored)
+		{
+			var caveDests = ZeldaResourceClient.GetCaveDestinations();
+			var exitDests = ZeldaResourceClient.GetExitDestinations();
+
+			OverworldRoomState[,] states = new OverworldRoomState[8, 16];
+
+			string q = q2 ? "q2" : "q1";
+
+			string resName = $"MetalTracker.Games.Zelda.Res.{q}.overworldcaves.txt";
+
+			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(resName))
+			{
+				using (StreamReader sr = new StreamReader(str))
+				{
+					string metaString = sr.ReadToEnd();
+					string[] lines = metaString.Split("\r\n");
+					for (int y = 0; y < 8; y++)
+					{
+						string line = lines[y];
+						for (int x = 0; x < 16; x++)
+						{
+							char c = line[x];
+							var state = new OverworldRoomState();
+							if (c != '.')
+							{
+								if (others)
+								{
+									var caveDest = Array.Find(caveDests, d => d.Key == c.ToString());
+									if (caveDest != null)
+									{
+										state.Destination = caveDest;
+									}
+								}
+								if (dungeons)
+								{
+									var exitDest = Array.Find(exitDests, d => d.Key == c.ToString());
+									if (exitDest != null)
+									{
+										state.Destination = exitDest;
+									}
+								}
+							}
+							states[y, x] = state;
+						}
+					}
+				}
+			}
+
+			if (mirrored)
+			{
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < 8; x++)
+					{
+						var s0 = states[y, x];
+						var s1 = states[y, 15 - x];
+						states[y, x] = s1;
+						states[y, 15 - x] = s0;
+					}
+				}
+			}
+
+			return states;
 		}
 
 		public static DungeonRoomProps[,] GetDungeonMeta(bool q2, int level, bool mirrored)

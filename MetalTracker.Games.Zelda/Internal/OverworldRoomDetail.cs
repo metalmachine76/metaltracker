@@ -171,6 +171,8 @@ namespace MetalTracker.Games.Zelda.Internal
 			{
 				_mainLayout.Visible = true;
 
+				_dropDownDest.Enabled = false;
+
 				_dropDownItem1.Visible = false;
 				_dropDownItem2.Visible = true;
 				_dropDownItem3.Visible = false;
@@ -185,6 +187,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_mainLayout.Visible = true;
 
 				_dropDownDest.Enabled = true;
+
 				_dropDownItem1.Visible = true;
 				_dropDownItem2.Visible = true;
 				_dropDownItem3.Visible = true;

@@ -44,6 +44,7 @@
 	  <None Remove="Res\q1\d9meta.txt" />
 	  <None Remove="Res\q1\overworld.q1.m.png" />
 	  <None Remove="Res\q1\overworld.q1.png" />
+	  <None Remove="Res\q1\overworldcaves.txt" />
 	  <None Remove="Res\q1\overworldmeta.q1.txt" />
 	  <None Remove="Res\q2\d1.q2.m.png" />
 	  <None Remove="Res\q2\d1.q2.png" />
@@ -170,6 +171,7 @@
 	  <EmbeddedResource Include="Res\q1\overworld.q1.m.png" />
 	  <EmbeddedResource Include="Res\q1\overworld.q1.png" />
 	  <EmbeddedResource Include="Res\q1\d1meta.txt" />
+	  <EmbeddedResource Include="Res\q1\overworldcaves.txt" />
 	  <EmbeddedResource Include="Res\q1\overworldmeta.q1.txt" />
 	  <EmbeddedResource Include="Res\q2\d1.q2.m.png" />
 	  <EmbeddedResource Include="Res\q2\d1.q2.png" />
