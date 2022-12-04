@@ -75,6 +75,7 @@
 	  <None Remove="Res\q2\d9meta.txt" />
 	  <None Remove="Res\q2\overworld.q2.m.png" />
 	  <None Remove="Res\q2\overworld.q2.png" />
+	  <None Remove="Res\q2\overworldcaves.txt" />
 	  <None Remove="Res\q2\overworldmeta.q2.txt" />
 	</ItemGroup>
 
@@ -202,6 +203,7 @@
 	  <EmbeddedResource Include="Res\q2\d9meta.txt" />
 	  <EmbeddedResource Include="Res\q2\overworld.q2.m.png" />
 	  <EmbeddedResource Include="Res\q2\overworld.q2.png" />
+	  <EmbeddedResource Include="Res\q2\overworldcaves.txt" />
 	  <EmbeddedResource Include="Res\q2\overworldmeta.q2.txt" />
 	</ItemGroup>
 
