@@ -293,7 +293,7 @@ namespace MetalTracker.Trackers.Z1M1
 			else
 			{
 				int level = dropDown.SelectedIndex;
-				_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[level - 1], level);
+				//_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, level, _sessionFlags.DungeonsMirrored[level - 1]);
 				_dungeonMaps[level - 1].Activate(true);
 			}
 		}
@@ -336,7 +336,7 @@ namespace MetalTracker.Trackers.Z1M1
 
 			for (int i = 0; i < 9; i++)
 			{
-				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[i], i + 1);
+				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, i + 1, _sessionFlags.DungeonRoomShuffleMode, _sessionFlags.DungeonsMirrored[i]);
 			}
 
 			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
