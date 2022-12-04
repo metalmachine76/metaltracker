@@ -132,7 +132,7 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			_refreshing = true;
 
-			if (_props.CanHaveDest() || _props.CanHaveItem())
+			if (_props.CanHaveDest() || _props.CanHaveItem() || _props.Shuffled)
 			{
 				_mainLayout.Visible = true;
 
@@ -140,7 +140,7 @@ namespace MetalTracker.Games.Metroid.Internal
 				_dropDownItem.SelectedKey = _state.Item?.GetCode();
 
 				_dropDownDestElev.Enabled = _props.CanHaveDest();
-				_dropDownItem.Enabled = _props.CanHaveItem();
+				_dropDownItem.Enabled = _props.CanHaveItem() || _props.Shuffled;
 			}
 			else
 			{
