@@ -31,7 +31,7 @@ namespace MetalTracker.Games.Zelda
 			new GameDest("z1", "9", "D9", "Dungeon #9", true),
 		};
 
-		static GameItem[] ItemDestinations = new GameItem[]
+		static GameItem[] GameItems = new GameItem[]
 		{
 			new GameItem("z1", "bombs", "Bombs", 'M', GetIcon("bomb")),
 			new GameItem("z1", "key", "Key", 'M', GetIcon("key")),
@@ -77,7 +77,7 @@ namespace MetalTracker.Games.Zelda
 
 		public static GameItem[] GetGameItems()
 		{
-			return ItemDestinations;
+			return GameItems;
 		}
 
 		public static Image GetIcon(string name)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Eto.Drawing;
+using MetalTracker.Common.Types;
 using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda
@@ -108,6 +109,7 @@ namespace MetalTracker.Games.Zelda
 		{
 			var caveDests = ZeldaResourceClient.GetCaveDestinations();
 			var exitDests = ZeldaResourceClient.GetExitDestinations();
+			var gameItems = ZeldaResourceClient.GetGameItems();
 
 			OverworldRoomState[,] states = new OverworldRoomState[8, 16];
 
@@ -136,6 +138,11 @@ namespace MetalTracker.Games.Zelda
 									if (caveDest != null)
 									{
 										state.Destination = caveDest;
+										if (caveDest.Key == "P")
+										{
+											state.Item1 = gameItems.First(i => i.Key == "potion1");
+											state.Item3 = gameItems.First(i => i.Key == "potion2");
+										}
 									}
 								}
 								if (dungeons)
