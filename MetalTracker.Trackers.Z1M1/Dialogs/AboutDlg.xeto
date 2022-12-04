@@ -13,7 +13,7 @@
       <Label Height="30">Metal Tracker for Z1M1</Label>
       <Label Height="30" ID="labelVersion">Version xxx</Label>
       <Label Height="30">This is open source software.</Label>
-      <LinkButton Height="30">https://github.com/metalmachine76/metaltracker/</LinkButton>
+      <LinkButton Height="30" Click="HandleLinkClick">https://github.com/metalmachine76/metaltracker/</LinkButton>
     </StackLayout>
   </GroupBox>
 
