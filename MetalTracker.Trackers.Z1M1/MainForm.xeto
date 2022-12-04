@@ -36,7 +36,8 @@
 				<ButtonMenuItem Text="&amp;Configure" Click="HandleConfigCoOpClick" />
 			</SubMenuItem>
 			<SubMenuItem Text="&amp;Help">
-				<ButtonMenuItem Text="&amp;About" Click="HandleHelpAboutClick" />
+				<ButtonMenuItem Text="&amp;View Help" Click="HandleHelpClick" />
+				<ButtonMenuItem Text="&amp;About App" Click="HandleAboutClick" />
 			</SubMenuItem>
 		</MenuBar>
 	</Form.Menu>

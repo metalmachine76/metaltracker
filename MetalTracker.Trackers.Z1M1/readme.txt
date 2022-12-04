@@ -1,4 +1,7 @@
-﻿
+﻿MetalTracker for Z1M1 
+Version 0.1.5
+
+
 MENU
 ----
 
@@ -10,7 +13,7 @@ File
   Exit      -> Close the tracker application
 
 Session
-  Flags     -> View/edit flags for current session (partially functional)
+  Flags     -> View/edit flags for current session
   Log       -> Session log will tell you where all major items and exits are located
   Reset     -> Reset (clear) tracked data for current session
 
@@ -26,30 +29,36 @@ Help
 MAIN UI
 -------
 
-Maps
+Maps:
 
 There are 11 maps you can select:
 
-Overworld, the 9 Dungeons, and Zebes.
+The overworld, the 9 dungeons, and Zebes.
+
+Maps are divided into rooms, where each room is one game screen:
+
+- If a room square is grayed out this means it is included in the shuffle (based on session flags).
+- If a room square is not grayed out, and it contains a letter, this indicates the item slot class for
+  the room, which can be useful for routing.
+- Portal connections on the map are shown in green. 
+- Non-portal connections (such as shops, take-any-road, etc) will be shown in white.
+- Items will be shown on the map with icons.
 
 Map interaction is currently mouse-based only:
 
-- You can click and drag the map.
+- You can click and drag the overworld and Zebes maps.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
 - Right-clicking applicable rooms will show a menu where you can choose an exit or destination to connect the room to.
-- Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use is to shade a room 
-  if you've collected the item there, explored the room, or don't care about it.
-
-Portal connections on the map are shown in green. Non-portal connections (such as shops, take-any-road, etc) will be shown in white.
-Items will be shown on the map with icons.
+- Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use
+  is to shade a room if you've collected the item there, explored the room, or don't care about it.
 
 
-Room Detail
+Room Detail:
 
 Allows you to view and edit details for the room you clicked on the main map. Some rooms have nothing to track and won't show here. 
 
 
-Inventory/Goals
+Inventory/Goals:
 
 You can use this section to keep track of your current inventory, as far as major equipment and quest items. 
 

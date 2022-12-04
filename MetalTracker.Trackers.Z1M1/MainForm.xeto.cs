@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Eto.Forms;
@@ -262,7 +263,19 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 		}
 
-		protected void HandleHelpAboutClick(object sender, EventArgs e)
+		protected void HandleHelpClick(object sender, EventArgs e)
+		{
+			try
+			{
+				Process.Start("notepad.exe", "readme.txt");
+			}
+			catch
+			{
+				MessageBox.Show("Could not open readme.txt file.", "Metal Tracker", MessageBoxType.Error);
+			}
+		}
+
+		protected void HandleAboutClick(object sender, EventArgs e)
 		{
 			new AboutDialog().ShowDialog(this);
 		}
