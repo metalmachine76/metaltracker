@@ -197,7 +197,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			if (_props.CanHaveDest() || _props.CanHaveItem1() || _props.CanHaveItem2())
+			if (_props.CanHaveDest() || _props.CanHaveItem1() || _props.CanHaveItem2() || _props.Shuffled)
 			{
 				_mainLayout.Visible = true;
 
@@ -212,8 +212,8 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestSouth.Enabled = _props.DestSouth;
 				_dropDownDestWest.Enabled = _props.DestWest;
 				_dropDownDestEast.Enabled = _props.DestEast;
-				_dropDownItem1.Enabled = _props.CanHaveItem1();
-				_dropDownItem2.Enabled = _props.CanHaveItem2();
+				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
+				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
 			}
 			else
 			{

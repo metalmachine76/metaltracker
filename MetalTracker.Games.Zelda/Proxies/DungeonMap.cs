@@ -17,6 +17,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		string _map = null;
 
+		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
@@ -73,7 +74,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			ResetState();
 		}
 
-		public void SetMapFlags(bool q2, bool mirrored, int level)
+		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
 		{
 			if (mirrored != _flag_mirrored)
 			{
@@ -84,7 +85,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_mirrored = mirrored;
 			_level = level;
 			_mapImage = InternalResourceClient.GetDungeonImage(q2, level, mirrored);
-			_meta = InternalResourceClient.GetDungeonMeta(q2, level, mirrored);
+			_meta = InternalResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
 			_width = _meta.GetLength(1);
 			_map = $"d{level}";
 		}
@@ -428,14 +429,20 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					var props = GetMeta(x, y);
 
-					if (props.Slot1Class != '\0' && roomState.Item1 == null)
+					if (props.Shuffled)
 					{
-						DrawText(e.Graphics, x0 - 6, y0 + 5, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
 					}
-
-					if (props.Slot2Class != '\0' && roomState.Item2 == null)
+					else
 					{
-						DrawText(e.Graphics, x0 + 6, y0 + 17, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+						if (props.Slot1Class != '\0' && roomState.Item1 == null)
+						{
+							DrawText(e.Graphics, x0 - 6, y0 + 5, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+						}
+						if (props.Slot2Class != '\0' && roomState.Item2 == null)
+						{
+							DrawText(e.Graphics, x0 + 6, y0 + 17, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+						}
 					}
 
 					if (roomState.Item1 != null)

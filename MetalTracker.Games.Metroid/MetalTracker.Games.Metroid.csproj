@@ -34,6 +34,7 @@
 	  <None Remove="Res\zebesmap.m.png" />
 	  <None Remove="Res\zebesmap.png" />
 	  <None Remove="Res\zebesmeta.txt" />
+	  <None Remove="Res\zebesshuffle.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -63,6 +64,7 @@
 	  <EmbeddedResource Include="Res\Icons\wavebeam1.png" />
 	  <EmbeddedResource Include="Res\zebesmap.m.png" />
 	  <EmbeddedResource Include="Res\zebesmap.png" />
+	  <EmbeddedResource Include="Res\zebesshuffle.txt" />
 	  <EmbeddedResource Include="Res\zebesmeta.txt" />
 	</ItemGroup>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Eto.Forms;
@@ -89,6 +90,8 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 
 			AssignSessionFlags();
+
+			ResetSessionState();
 		}
 
 		protected void HandleClosed(object sender, EventArgs e)
@@ -113,6 +116,8 @@ namespace MetalTracker.Trackers.Z1M1
 				AssignSessionFlags();
 				ResetSessionState();
 				_itemTracker.Init();
+				_sessionFilename = null;
+				UpdateTitle();
 			}
 		}
 
@@ -258,7 +263,19 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 		}
 
-		protected void HandleHelpAboutClick(object sender, EventArgs e)
+		protected void HandleHelpClick(object sender, EventArgs e)
+		{
+			try
+			{
+				Process.Start("notepad.exe", "readme.txt");
+			}
+			catch
+			{
+				MessageBox.Show("Could not open readme.txt file.", "Metal Tracker", MessageBoxType.Error);
+			}
+		}
+
+		protected void HandleAboutClick(object sender, EventArgs e)
 		{
 			new AboutDialog().ShowDialog(this);
 		}
@@ -289,7 +306,7 @@ namespace MetalTracker.Trackers.Z1M1
 			else
 			{
 				int level = dropDown.SelectedIndex;
-				_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[level - 1], level);
+				//_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, level, _sessionFlags.DungeonsMirrored[level - 1]);
 				_dungeonMaps[level - 1].Activate(true);
 			}
 		}
@@ -324,23 +341,29 @@ namespace MetalTracker.Trackers.Z1M1
 
 		private void AssignSessionFlags()
 		{
-			_overworldMap.SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.OverworldMirrored);
+			_overworldMap.SetMapFlags(
+				_sessionFlags.ZeldaQ2,
+				_sessionFlags.DungeonEntrancesShuffled,
+				_sessionFlags.OtherEntrancesShuffled,
+				_sessionFlags.OverworldMirrored);
 
 			for (int i = 0; i < 9; i++)
 			{
-				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, _sessionFlags.DungeonsMirrored[i], i + 1);
+				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, i + 1, _sessionFlags.DungeonRoomShuffleMode, _sessionFlags.DungeonsMirrored[i]);
 			}
 
-			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
+			_zebesMap.SetMapFlags(_sessionFlags.ZebesRoomShuffleMode, _sessionFlags.ZebesMirrored);
 		}
 
 		private void ResetSessionState()
 		{
 			_overworldMap.ResetState();
+
 			for (int i = 0; i < 9; i++)
 			{
 				_dungeonMaps[i].ResetState();
 			}
+
 			_zebesMap.ResetState();
 		}
 

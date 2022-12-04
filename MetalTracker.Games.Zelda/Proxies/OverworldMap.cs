@@ -23,6 +23,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private readonly OverworldRoomDetail _overworldRoomDetail;
 
 		private bool _flag_q2;
+		private bool _flag_shuffle_exits;
+		private bool _flag_shuffle_caves;
 		private bool _flag_mirrored;
 		private Image _mapImage;
 		private OverworldRoomProps[,] _meta;
@@ -71,7 +73,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			ResetState();
 		}
 
-		public void SetMapFlags(bool q2, bool mirrored)
+		public void SetMapFlags(bool q2, bool shuffleExits, bool shuffleCaves, bool mirrored)
 		{
 			if (mirrored != _flag_mirrored)
 			{
@@ -80,6 +82,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_flag_q2 = q2;
 			_flag_mirrored = mirrored;
+			_flag_shuffle_exits = shuffleExits;
+			_flag_shuffle_caves = shuffleCaves;
 			_mapImage = InternalResourceClient.GetOverworldImage(q2, mirrored);
 			_meta = InternalResourceClient.GetOverworldMeta(q2, mirrored);
 		}
@@ -129,11 +133,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void ResetState()
 		{
+			var defaultState = InternalResourceClient.GetDefaultOverworldState(
+				_flag_q2,
+				!_flag_shuffle_exits,
+				!_flag_shuffle_caves,
+				_flag_mirrored);
+
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < 16; x++)
 				{
-					_roomStates[y, x] = new OverworldRoomState();
+					_roomStates[y, x] = defaultState[y, x];
 				}
 			}
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Eto.Drawing;
@@ -103,16 +104,90 @@ namespace MetalTracker.Games.Zelda
 			return map;
 		}
 
-		public static DungeonRoomProps[,] GetDungeonMeta(bool q2, int level, bool mirrored)
+		public static OverworldRoomState[,] GetDefaultOverworldState(bool q2, bool dungeons, bool others, bool mirrored)
+		{
+			var caveDests = ZeldaResourceClient.GetCaveDestinations();
+			var exitDests = ZeldaResourceClient.GetExitDestinations();
+			var gameItems = ZeldaResourceClient.GetGameItems();
+
+			OverworldRoomState[,] states = new OverworldRoomState[8, 16];
+
+			string q = q2 ? "q2" : "q1";
+
+			string resName = $"MetalTracker.Games.Zelda.Res.{q}.overworldcaves.txt";
+
+			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(resName))
+			{
+				using (StreamReader sr = new StreamReader(str))
+				{
+					string metaString = sr.ReadToEnd();
+					string[] lines = metaString.Split("\r\n");
+					for (int y = 0; y < 8; y++)
+					{
+						string line = lines[y];
+						for (int x = 0; x < 16; x++)
+						{
+							char c = line[x];
+							var state = new OverworldRoomState();
+							if (c != '.')
+							{
+								if (others)
+								{
+									var caveDest = Array.Find(caveDests, d => d.Key == c.ToString());
+									if (caveDest != null)
+									{
+										state.Destination = caveDest;
+										if (caveDest.Key == "P")
+										{
+											state.Item1 = gameItems.First(i => i.Key == "potion1");
+											state.Item3 = gameItems.First(i => i.Key == "potion2");
+										}
+									}
+								}
+								if (dungeons)
+								{
+									var exitDest = Array.Find(exitDests, d => d.Key == c.ToString());
+									if (exitDest != null)
+									{
+										state.Destination = exitDest;
+									}
+								}
+							}
+							states[y, x] = state;
+						}
+					}
+				}
+			}
+
+			if (mirrored)
+			{
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < 8; x++)
+					{
+						var s0 = states[y, x];
+						var s1 = states[y, 15 - x];
+						states[y, x] = s1;
+						states[y, 15 - x] = s0;
+					}
+				}
+			}
+
+			return states;
+		}
+
+		public static DungeonRoomProps[,] GetDungeonMeta(bool q2, int level, int shuffleMode, bool mirrored)
 		{
 			string d = $"d{level}";
 			string q = q2 ? "q2" : "q1";
 
-			string resName = $"MetalTracker.Games.Zelda.Res.{q}.{d}meta.txt";
+			#region Load / Extract Meta and Shuffle Data
+
+			string metaResName = $"MetalTracker.Games.Zelda.Res.{q}.{d}meta.txt";
 
 			string metaString;
 
-			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(resName))
+			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(metaResName))
 			{
 				using (StreamReader sr = new StreamReader(str))
 				{
@@ -120,37 +195,59 @@ namespace MetalTracker.Games.Zelda
 				}
 			}
 
-			string[] lines = metaString.Split("\r\n");
-			int w = lines[0].Length;
+			string[] metaLines = metaString.Split("\r\n");
+			int w = metaLines[0].Length;
+
+			string shuffleResName = $"MetalTracker.Games.Zelda.Res.{q}.{d}shuffle.txt";
+
+			string shuffleString;
+
+			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(shuffleResName))
+			{
+				using (StreamReader sr = new StreamReader(str))
+				{
+					shuffleString = sr.ReadToEnd();
+				}
+			}
+
+			string[] shuffleLines = shuffleString.Split("\r\n");
+
+			#endregion
 
 			DungeonRoomProps[,] meta = new DungeonRoomProps[8, w];
 
 			for (int y = 0; y < 8; y++)
 			{
-				string line = lines[y];
+				string mline = metaLines[y];
+				string sline = shuffleLines[y];
 				for (int x = 0; x < w; x++)
 				{
-					char c = line[x];
+					char mc = mline[x];  // meta char
+					char sc = sline[x];  // shuffle char
 
 					DungeonRoomProps props;
 
-					if (c == '.')
+					if (mc == '.')
 					{
-						props = new DungeonRoomProps(false, false, false, false, '\0');
+						props = new DungeonRoomProps(false, false, false, false, '\0', '\0', false);
 					}
 					else
 					{
+						// item slot 1 (floor item) class
+
 						char s1c = '\0';
 
-						if (c == 'Q' || c == 'E' || c == 'U' || c == 'M')
+						if (mc == 'Q' || mc == 'E' || mc == 'U' || mc == 'M')
 						{
-							s1c = c;
+							s1c = mc;
 						}
 
-						bool destNorth = (y == 0) || lines[y - 1][x] == '.';
-						bool destSouth = (y == 7) || lines[y + 1][x] == '.';
-						bool destWest = (x == 0) || line[x - 1] == '.';
-						bool destEast = (x == w - 1) || line[x + 1] == '.';
+						// possible exits
+
+						bool destNorth = (y == 0) || metaLines[y - 1][x] == '.';
+						bool destSouth = (y == 7) || metaLines[y + 1][x] == '.';
+						bool destWest = (x == 0) || mline[x - 1] == '.';
+						bool destEast = (x == w - 1) || mline[x + 1] == '.';
 
 						if (level == 9)
 						{
@@ -161,7 +258,12 @@ namespace MetalTracker.Games.Zelda
 
 						bool lowerItem = DungeonItemBasements.Any(e => e.Item1 == q2 && e.Item2 == level && e.Item3 == x && e.Item4 == y);
 
-						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, s1c, lowerItem ? 'E' : '\0');
+						// if shuffle level is 2, room is shuffled
+						// if shuffle level is 1, room is shuffled if minor
+
+						bool shuffled = (shuffleMode == 2) || (shuffleMode == 1 && sc == 'm');
+
+						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, s1c, lowerItem ? 'E' : '\0', shuffled);
 					}
 
 					meta[y, x] = props;
