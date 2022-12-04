@@ -298,7 +298,6 @@ namespace MetalTracker.Trackers.Z1M1
 			else
 			{
 				int level = dropDown.SelectedIndex;
-				//_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, level, _sessionFlags.DungeonsMirrored[level - 1]);
 				_dungeonMaps[level - 1].Activate(true);
 			}
 		}
@@ -350,6 +349,24 @@ namespace MetalTracker.Trackers.Z1M1
 		private void ResetSessionState()
 		{
 			_overworldMap.ResetState();
+
+			if (!_sessionFlags.OtherEntrancesShuffled)
+			{
+				if (_sessionFlags.OverworldMirrored)
+				{
+					_overworldMap.SetDestination(5, 6, "m1|B");
+					_overworldMap.SetDestination(12, 0, "m1|K");
+					_overworldMap.SetDestination(11, 1, "m1|N");
+					_overworldMap.SetDestination(1, 1, "m1|R");
+				}
+				else
+				{
+					_overworldMap.SetDestination(10, 6, "m1|B");
+					_overworldMap.SetDestination(3, 0, "m1|K");
+					_overworldMap.SetDestination(4, 1, "m1|N");
+					_overworldMap.SetDestination(14, 1, "m1|R");
+				}
+			}
 
 			for (int i = 0; i < 9; i++)
 			{
