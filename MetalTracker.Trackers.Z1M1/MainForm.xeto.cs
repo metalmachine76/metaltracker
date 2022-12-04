@@ -268,7 +268,7 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleAboutClick(object sender, EventArgs e)
 		{
-			new AboutDialog().ShowDialog(this);
+			new AboutDlg().ShowModal(this);
 		}
 
 		#endregion

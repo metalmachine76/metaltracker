@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Eto.Forms;
 
 namespace MetalTracker.Trackers.Z1M1
@@ -11,7 +10,7 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 #if GTK
 			var platform = new Eto.GtkSharp.Platform();
-			SynchronizationContext.SetSynchronizationContext(new GLib.GLibSynchronizationContext());
+			System.Threading.SynchronizationContext.SetSynchronizationContext(new GLib.GLibSynchronizationContext());
 			new Application(platform).Run(new MainForm());
 #endif
 #if WPF
