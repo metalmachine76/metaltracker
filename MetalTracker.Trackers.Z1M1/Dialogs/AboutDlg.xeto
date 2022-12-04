@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Dialog
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs;assembly=EtoApp.1"
+	Title="About Metal Tracker for Z1M1"
+	Padding="10"
+  Load="HandleLoad"
+	>
+
+  <GroupBox Padding="10,10,10,10" Width="360">
+    <StackLayout HorizontalContentAlignment="Center">
+      <Label Height="30">Metal Tracker for Z1M1</Label>
+      <Label Height="30" ID="labelVersion">Version xxx</Label>
+      <Label Height="30">This is open source software.</Label>
+      <LinkButton Height="30" Click="HandleLinkClick">https://github.com/metalmachine76/metaltracker/</LinkButton>
+    </StackLayout>
+  </GroupBox>
+
+</Dialog>

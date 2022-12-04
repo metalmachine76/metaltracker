@@ -271,6 +271,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
+		public void SetDestination(int x, int y, string destCode)
+		{
+			var dest = _dests.Find(d => d.GetCode() == destCode);
+			_roomStates[y, x].Destination = dest;
+		}
+
 		#endregion
 
 		#region Event Handlers

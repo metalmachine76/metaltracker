@@ -76,7 +76,6 @@ namespace MetalTracker.Trackers.Z1M1
 		protected void HandlePreLoad(object sender, EventArgs e)
 		{
 			this.FindChild<DropDown>("dropDownSelectedMap").SelectedIndex = 0;
-			_itemTracker.Init();
 			UpdateTitle();
 		}
 
@@ -115,7 +114,6 @@ namespace MetalTracker.Trackers.Z1M1
 				_sessionFlags = newSessionFlags;
 				AssignSessionFlags();
 				ResetSessionState();
-				_itemTracker.Init();
 				_sessionFilename = null;
 				UpdateTitle();
 			}
@@ -195,13 +193,7 @@ namespace MetalTracker.Trackers.Z1M1
 			if (MessageBox.Show("This will reset all tracked data to default for the current flags. Proceed?", "Metal Tracker",
 					MessageBoxButtons.YesNo, MessageBoxType.Question) == DialogResult.Yes)
 			{
-				_overworldMap.ResetState();
-				for (int i = 0; i < 9; i++)
-				{
-					_dungeonMaps[i].ResetState();
-				}
-				_zebesMap.ResetState();
-				_itemTracker.Init();
+				ResetSessionState();
 			}
 		}
 
@@ -265,19 +257,18 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleHelpClick(object sender, EventArgs e)
 		{
-			try
+			ProcessStartInfo info = new ProcessStartInfo
 			{
-				Process.Start("notepad.exe", "readme.txt");
-			}
-			catch
-			{
-				MessageBox.Show("Could not open readme.txt file.", "Metal Tracker", MessageBoxType.Error);
-			}
+				UseShellExecute = true,
+				FileName = "readme.txt"
+			};
+
+			Process.Start(info);
 		}
 
 		protected void HandleAboutClick(object sender, EventArgs e)
 		{
-			new AboutDialog().ShowDialog(this);
+			new AboutDlg().ShowModal(this);
 		}
 
 		#endregion
@@ -306,7 +297,6 @@ namespace MetalTracker.Trackers.Z1M1
 			else
 			{
 				int level = dropDown.SelectedIndex;
-				//_dungeonMaps[level - 1].SetMapFlags(_sessionFlags.ZeldaQ2, level, _sessionFlags.DungeonsMirrored[level - 1]);
 				_dungeonMaps[level - 1].Activate(true);
 			}
 		}
@@ -359,12 +349,32 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			_overworldMap.ResetState();
 
+			if (!_sessionFlags.OtherEntrancesShuffled)
+			{
+				if (_sessionFlags.OverworldMirrored)
+				{
+					_overworldMap.SetDestination(5, 6, "m1|B");
+					_overworldMap.SetDestination(12, 0, "m1|K");
+					_overworldMap.SetDestination(11, 1, "m1|N");
+					_overworldMap.SetDestination(1, 1, "m1|R");
+				}
+				else
+				{
+					_overworldMap.SetDestination(10, 6, "m1|B");
+					_overworldMap.SetDestination(3, 0, "m1|K");
+					_overworldMap.SetDestination(4, 1, "m1|N");
+					_overworldMap.SetDestination(14, 1, "m1|R");
+				}
+			}
+
 			for (int i = 0; i < 9; i++)
 			{
 				_dungeonMaps[i].ResetState();
 			}
 
 			_zebesMap.ResetState();
+
+			_itemTracker.Init();
 		}
 
 		private bool LoadSession(string filename)
@@ -379,9 +389,9 @@ namespace MetalTracker.Trackers.Z1M1
 
 				AssignSessionFlags();
 
-				_itemTracker.SetInventory(session.Inventory);
-
 				ResetSessionState();
+
+				_itemTracker.SetInventory(session.Inventory);
 
 				var state = session.State;
 
