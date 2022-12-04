@@ -59,6 +59,7 @@ namespace MetalTracker.Games.Zelda
 			new GameItem("z1", "candle2", "Red Candle", 'E', GetIcon("candle2")),
 			new GameItem("z1", "boom1", "Wooden Boomerang", 'E', GetIcon("boom1")),
 			new GameItem("z1", "boom2", "Magical Boomerang", 'E', GetIcon("boom2")),
+			new GameItem("z1", "bow", "Bow", 'E', GetIcon("bow1")),
 			new GameItem("z1", "arrow1", "Wooden Arrows", 'E', GetIcon("arrow1")),
 			new GameItem("z1", "arrow2", "Silver Arrows", 'E', GetIcon("arrow2")),
 			new GameItem("z1", "sword1", "Wooden Sword", 'E', GetIcon("sword1")),
