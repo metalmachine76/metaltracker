@@ -84,7 +84,7 @@ namespace MetalTracker.Games.Zelda
 
 		public static Image GetIcon(string name)
 		{
-			return Bitmap.FromResource($"MetalTracker.Games.Zelda.Res.Icons.{name}.png");
+			return Bitmap.FromResource($"MetalTracker.Games.Zelda.Res.Icons.{name}.png", typeof(ZeldaResourceClient).Assembly);
 		}
 	}
 }

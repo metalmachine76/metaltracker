@@ -43,7 +43,7 @@ namespace MetalTracker.Games.Metroid
 
 		public static Image GetIcon(string name)
 		{
-			return Bitmap.FromResource($"MetalTracker.Games.Metroid.Res.Icons.{name}.png");
+			return Bitmap.FromResource($"MetalTracker.Games.Metroid.Res.Icons.{name}.png", typeof(MetroidResourceClient).Assembly);
 		}
 	}
 }
