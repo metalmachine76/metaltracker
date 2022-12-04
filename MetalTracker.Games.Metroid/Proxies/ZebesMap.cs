@@ -15,6 +15,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		const string Game = "metroid";
 		const string Map = "zebes";
 
+		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
@@ -22,6 +23,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private readonly Drawable _drawable;
 		private readonly ZebesRoomDetail _zebesRoomDetail;
 
+		private int _flag_shuffled;
 		private bool _flag_mirrored;
 		private Image _mapImage;
 		private ZebesRoomProps[,] _meta;
@@ -70,16 +72,17 @@ namespace MetalTracker.Games.Metroid.Proxies
 			ResetState();
 		}
 
-		public void SetMapFlags(bool mirrored)
+		public void SetMapFlags(int shuffleMode, bool mirrored)
 		{
 			if (mirrored != _flag_mirrored)
 			{
 				MirrorState();
 			}
 
+			_flag_shuffled = shuffleMode;
 			_flag_mirrored = mirrored;
 			_mapImage = InternalResourceClient.GetZebesImage(mirrored);
-			_meta = InternalResourceClient.GetZebesMeta(mirrored);
+			_meta = InternalResourceClient.GetZebesMeta(shuffleMode, mirrored);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -382,9 +385,16 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					var props = GetMeta(x, y);
 
-					if (props.SlotClass != '\0' && roomState.Item == null)
+					if (props.Shuffled)
 					{
-						DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 32, 30);
+					}
+					else
+					{
+						if (props.SlotClass != '\0' && roomState.Item == null)
+						{
+							DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+						}
 					}
 
 					if (roomState.Item != null)

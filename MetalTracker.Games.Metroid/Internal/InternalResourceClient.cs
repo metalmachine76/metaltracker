@@ -75,13 +75,13 @@ namespace MetalTracker.Games.Metroid.Internal
 				return Bitmap.FromResource("MetalTracker.Games.Metroid.Res.zebesmap.png");
 		}
 
-		public static ZebesRoomProps[,] GetZebesMeta(bool mirrored)
+		public static ZebesRoomProps[,] GetZebesMeta(int shuffleMode, bool mirrored)
 		{
 			ZebesRoomProps[,] meta = new ZebesRoomProps[32, 32];
 
-			string resName = $"MetalTracker.Games.Metroid.Res.zebesmeta.txt";
+			string metaResName = $"MetalTracker.Games.Metroid.Res.zebesmeta.txt";
 
-			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(resName))
+			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(metaResName))
 			{
 				using (StreamReader sr = new StreamReader(str))
 				{
@@ -99,6 +99,36 @@ namespace MetalTracker.Games.Metroid.Internal
 							props.Elevator = (c == 'U' || c == 'D');
 
 							meta[y, x] = props;
+						}
+					}
+				}
+			}
+
+			if (shuffleMode > 0)
+			{
+				string shuffleResName = $"MetalTracker.Games.Metroid.Res.zebesshuffle.txt";
+
+				using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(shuffleResName))
+				{
+					using (StreamReader sr = new StreamReader(str))
+					{
+						string metaString = sr.ReadToEnd();
+						string[] lines = metaString.Split("\r\n");
+						for (int y = 0; y < 32; y++)
+						{
+							string line = lines[y];
+							for (int x = 0; x < 32; x++)
+							{
+								char c = line[x];
+								if (shuffleMode == 2)
+								{
+									meta[y, x].Shuffled = c == 'm' || c == 'M';
+								}
+								else if (shuffleMode == 1)
+								{
+									meta[y, x].Shuffled = c == 'm';
+								}
+							}
 						}
 					}
 				}

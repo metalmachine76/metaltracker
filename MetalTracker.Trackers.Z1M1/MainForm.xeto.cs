@@ -339,7 +339,7 @@ namespace MetalTracker.Trackers.Z1M1
 				_dungeonMaps[i].SetMapFlags(_sessionFlags.ZeldaQ2, i + 1, _sessionFlags.DungeonRoomShuffleMode, _sessionFlags.DungeonsMirrored[i]);
 			}
 
-			_zebesMap.SetMapFlags(_sessionFlags.ZebesMirrored);
+			_zebesMap.SetMapFlags(_sessionFlags.ZebesRoomShuffleMode, _sessionFlags.ZebesMirrored);
 		}
 
 		private void ResetSessionState()

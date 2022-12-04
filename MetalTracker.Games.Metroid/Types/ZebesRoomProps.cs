@@ -8,6 +8,8 @@
 
 		public char SlotClass { get; set; } = '\0';
 
+		public bool Shuffled { get; set; }
+
 		public bool CanHaveDest()
 		{
 			return Elevator || IsVertical;
