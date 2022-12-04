@@ -257,14 +257,13 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleHelpClick(object sender, EventArgs e)
 		{
-			try
+			ProcessStartInfo info = new ProcessStartInfo
 			{
-				Process.Start("notepad.exe", "readme.txt");
-			}
-			catch
-			{
-				MessageBox.Show("Could not open readme.txt file.", "Metal Tracker", MessageBoxType.Error);
-			}
+				UseShellExecute = true,
+				FileName = "readme.txt"
+			};
+
+			Process.Start(info);
 		}
 
 		protected void HandleAboutClick(object sender, EventArgs e)
