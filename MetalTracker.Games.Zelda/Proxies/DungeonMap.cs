@@ -643,6 +643,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					var s0 = _roomStates[y, x];
 					var s1 = _roomStates[y, (_width - 1) - x];
+
+					s0.Mirror();
+					s1.Mirror();
+
 					_roomStates[y, x] = s1;
 					_roomStates[y, (_width - 1) - x] = s0;
 				}

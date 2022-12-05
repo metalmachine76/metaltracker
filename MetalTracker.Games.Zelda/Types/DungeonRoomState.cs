@@ -30,5 +30,13 @@ namespace MetalTracker.Games.Zelda.Types
 
 			return clone;
 		}
+
+		public void Mirror()
+		{
+			var e = this.DestEast;
+			var w = this.DestWest;
+			this.DestEast = w;
+			this.DestWest = e;
+		}
 	}
 }
