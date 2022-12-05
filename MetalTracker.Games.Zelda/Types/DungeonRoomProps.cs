@@ -35,5 +35,13 @@
 		{
 			return Slot2Class != '\0';
 		}
+
+		public void Mirror()
+		{
+			bool e = this.DestEast;
+			bool w = this.DestWest;
+			this.DestEast = w;
+			this.DestWest = e;
+		}
 	}
 }

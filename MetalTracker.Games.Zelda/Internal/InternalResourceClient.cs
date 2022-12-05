@@ -279,6 +279,10 @@ namespace MetalTracker.Games.Zelda
 					{
 						var m0 = meta[y, x];
 						var m1 = meta[y, (w - 1) - x];
+
+						m0.Mirror();
+						m1.Mirror();
+
 						meta[y, x] = m1;
 						meta[y, (w - 1) - x] = m0;
 					}
