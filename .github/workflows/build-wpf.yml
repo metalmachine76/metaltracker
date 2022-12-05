@@ -25,6 +25,9 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1.3
 
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=${{env.BUILD_CONFIGURATION}}
+
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
