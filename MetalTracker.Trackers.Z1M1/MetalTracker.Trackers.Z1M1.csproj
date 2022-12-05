@@ -3,11 +3,11 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <Configurations>DebugWpf;DebugGtk;ReleaseWPF;ReleaseGTK</Configurations>
-    <BuildPlatform Condition=" '$(Configuration)'=='DebugGtk'">Gtk</BuildPlatform>
-    <BuildPlatform Condition=" '$(Configuration)'=='DebugWpf'">Wpf</BuildPlatform>
-    <BuildPlatform Condition=" '$(Configuration)'=='ReleaseWPF' ">Wpf</BuildPlatform>
-    <BuildPlatform Condition=" '$(Configuration)'=='ReleaseGTK' ">Gtk</BuildPlatform>
+    <Configurations>DebugGtk;DebugWpf;ReleaseGtk;ReleaseWpf</Configurations>
+    <BuildPlatform Condition="'$(Configuration)'=='DebugGtk'">Gtk</BuildPlatform>
+    <BuildPlatform Condition="'$(Configuration)'=='DebugWpf'">Wpf</BuildPlatform>
+    <BuildPlatform Condition="'$(Configuration)'=='ReleaseGtk'">Gtk</BuildPlatform>
+    <BuildPlatform Condition="'$(Configuration)'=='ReleaseWpf'">Wpf</BuildPlatform>
     <UseXeto>True</UseXeto>
     <Version>1.0.4</Version>
   </PropertyGroup>
@@ -20,12 +20,12 @@
     <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseGTK|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseGtk|AnyCPU'">
     <Optimize>True</Optimize>
     <DefineConstants>$(DefineConstants)TRACE;GTK</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWPF|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWpf|AnyCPU'">
     <Optimize>True</Optimize>
     <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
   </PropertyGroup>
@@ -64,11 +64,11 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)'=='DebugGtk'">
+  <ItemGroup Condition="'$(Configuration)'=='DebugGtk'">
     <PackageReference Include="GtkSharp" Version="3.24.24.38" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(Configuration)'=='ReleaseGTK'">
+  <ItemGroup Condition="'$(Configuration)'=='ReleaseGtk'">
     <PackageReference Include="GtkSharp" Version="3.24.24.38" />
   </ItemGroup>
 
