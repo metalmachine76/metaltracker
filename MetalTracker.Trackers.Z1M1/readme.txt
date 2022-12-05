@@ -54,8 +54,8 @@ Map interaction is currently mouse-based only:
 
 - You can click and drag the maps which are larger than the visible area.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
-- Right-clicking applicable rooms will show a menu where you can choose an exit or destination to connect the room to.
-  (this is not implemented for dungeons yet)
+- Right-clicking applicable rooms will show a menu where you can choose a destination to connect the room to.
+- In dungeons, the exit will be assigned based on which edge of the room you are hovering over.
 - Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use
   is to shade a room if you've collected the item there, explored the room, or don't care about it.
 
