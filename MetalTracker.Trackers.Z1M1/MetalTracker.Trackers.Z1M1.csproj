@@ -20,14 +20,14 @@
     <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWPF|AnyCPU'">
-    <Optimize>True</Optimize>
-    <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseGTK|AnyCPU'">
     <Optimize>True</Optimize>
     <DefineConstants>$(DefineConstants)TRACE;GTK</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWPF|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DefineConstants>$(DefineConstants)TRACE;WPF</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,7 +64,11 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)'=='DebugGtk'">
+    <PackageReference Include="GtkSharp" Version="3.24.24.38" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)'=='ReleaseGTK'">
     <PackageReference Include="GtkSharp" Version="3.24.24.38" />
   </ItemGroup>
 
