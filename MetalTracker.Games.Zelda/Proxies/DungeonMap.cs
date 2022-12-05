@@ -50,6 +50,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private char _node = '\0';
 		private int _myClick = -1;
 		private int _mxClick = -1;
+		private char _nodeClick = '\0';
 		private bool _invalidateMap;
 		private bool _invalidateRoom;
 
@@ -302,26 +303,26 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleDestCommand(object sender, System.EventArgs e)
 		{
-			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _node != '\0')
+			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
 			{
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 
-				if (_node == 'N' && roomProps.DestNorth)
+				if (_nodeClick == 'N' && roomProps.DestNorth)
 				{
 					_mutator.ChangeDestNorth(_level, _mxClick, _myClick, roomState, dest);
 				}
-				else if (_node == 'S' && roomProps.DestSouth)
+				else if (_nodeClick == 'S' && roomProps.DestSouth)
 				{
 					_mutator.ChangeDestSouth(_level, _mxClick, _myClick, roomState, dest);
 				}
-				else if (_node == 'W' && roomProps.DestWest)
+				else if (_nodeClick == 'W' && roomProps.DestWest)
 				{
 					_mutator.ChangeDestWest(_level, _mxClick, _myClick, roomState, dest);
 				}
-				else if (_node == 'E' && roomProps.DestEast)
+				else if (_nodeClick == 'E' && roomProps.DestEast)
 				{
 					_mutator.ChangeDestEast(_level, _mxClick, _myClick, roomState, dest);
 				}
@@ -357,6 +358,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			HandleMouseMove(sender, e);
 			_mxClick = _mx;
 			_myClick = _my;
+			_nodeClick = _node;
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
 			{
@@ -365,19 +367,19 @@ namespace MetalTracker.Games.Zelda.Proxies
 				_dungeonRoomDetail.UpdateDetails(_level, _mxClick, _myClick, roomProps, roomState);
 				if (e.Buttons == MouseButtons.Alternate)
 				{
-					if (roomProps.DestNorth && _node == 'N')
+					if (roomProps.DestNorth && _nodeClick == 'N')
 					{
 						_destsMenu.Show();
 					}
-					else if (roomProps.DestSouth && _node == 'S')
+					else if (roomProps.DestSouth && _nodeClick == 'S')
 					{
 						_destsMenu.Show();
 					}
-					else if (roomProps.DestWest && _node == 'W')
+					else if (roomProps.DestWest && _nodeClick == 'W')
 					{
 						_destsMenu.Show();
 					}
-					else if (roomProps.DestEast && _node == 'E')
+					else if (roomProps.DestEast && _nodeClick == 'E')
 					{
 						_destsMenu.Show();
 					}
