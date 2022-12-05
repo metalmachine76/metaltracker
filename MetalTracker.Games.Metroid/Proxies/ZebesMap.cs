@@ -248,17 +248,12 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		private void HandleDestCommand(object sender, System.EventArgs e)
 		{
-			float dx = _mouseDownLoc.X - _offset.X;
-			float dy = _mouseDownLoc.Y - _offset.Y;
-			var mdx = dx < 0f ? -1 : 32 * (int)dx / 1024;
-			var mdy = dy < 0f ? -1 : 32 * (int)dy / 960;
-
-			if (mdx > -1 && mdx < 32 && mdy > -1 && mdy < 32)
+			if (_mxClick > -1 && _mxClick < 32 && _myClick > -1 && _myClick < 32)
 			{
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
-				var roomState = _roomStates[mdy, mdx];
-				_mutator.ChangeDestination(mdx, mdy, roomState, dest);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_mutator.ChangeDestination(_mxClick, _myClick, roomState, dest);
 				_drawable.Invalidate();
 				_zebesRoomDetail.Refresh();
 			}
@@ -302,6 +297,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var roomProps = GetMeta(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
+				{
+					_destsMenu.Show();
+				}
 			}
 		}
 
@@ -317,20 +316,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 			{
 				float dx = _mouseLoc.X - _offset.X;
 				float dy = _mouseLoc.Y - _offset.Y;
-				_mx = dx < 0f ? -1 : 32 * (int)dx / 1024;
-				_my = dy < 0f ? -1 : 32 * (int)dy / 960;
-			}
-
-			_drawable.ContextMenu = null;
-
-			if (_mx > -1 && _mx < 32 && _my > -1 && _my < 32)
-			{
-				var props = GetMeta(_mx, _my);
-
-				if (props.CanHaveDest())
-				{
-					_drawable.ContextMenu = _destsMenu;
-				}
+				_mx = dx < 0f ? -1 : (int)dx / 32;
+				_my = dy < 0f ? -1 : (int)dy / 30;
 			}
 
 			_drawable.Invalidate();

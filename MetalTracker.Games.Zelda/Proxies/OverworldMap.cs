@@ -288,17 +288,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleDestCommand(object sender, System.EventArgs e)
 		{
-			float dx = _mouseDownLoc.X - _offset.X;
-			float dy = _mouseDownLoc.Y - _offset.Y;
-			var mdx = dx < 0f ? -1 : 16 * (int)dx / 1024;
-			var mdy = dy < 0f ? -1 : 8 * (int)dy / 352;
-
-			if (mdx > -1 && mdx < 16 && mdy > -1 && mdy < 8)
+			if (_mxClick > -1 && _mxClick < 16 && _myClick > -1 && _myClick < 8)
 			{
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
-				var roomState = _roomStates[mdy, mdx];
-				_mutator.ChangeDestination(mdx, mdy, roomState, dest);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_mutator.ChangeDestination(_mxClick, _myClick, roomState, dest);
 				_drawable.Invalidate();
 				_overworldRoomDetail.Refresh();
 			}
@@ -340,6 +335,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 				var roomProps = GetMeta(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+				if (roomProps.DestHere && e.Buttons == MouseButtons.Alternate)
+				{
+					_destsMenu.Show();
+				}
 			}
 		}
 
@@ -357,16 +356,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 				float dy = _mouseLoc.Y - _offset.Y;
 				_mx = dx < 0f ? -1 : 16 * (int)dx / 1024;
 				_my = dy < 0f ? -1 : 8 * (int)dy / 352;
-			}
-
-			_drawable.ContextMenu = null;
-
-			if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
-			{
-				if (GetMeta(_mx, _my).DestHere)
-				{
-					_drawable.ContextMenu = _destsMenu;
-				}
 			}
 
 			_drawable.Invalidate();
