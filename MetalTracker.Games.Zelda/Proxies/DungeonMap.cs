@@ -148,6 +148,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
+		public void LocateRoom(int x, int y)
+		{
+			_mxClick = x;
+			_myClick = y;
+			_drawable.Invalidate();
+			var roomProps = GetProps(_mxClick, _myClick);
+			var roomState = _roomStates[_myClick, _mxClick];
+			_dungeonRoomDetail.UpdateDetails(_level, _mxClick, _myClick, roomProps, roomState);
+		}
+
 		public override string GetMapKey()
 		{
 			return _map;

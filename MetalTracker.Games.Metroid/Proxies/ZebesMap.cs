@@ -141,6 +141,18 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 		}
 
+		public void LocateRoom(int x, int y)
+		{
+			_offset.X = 256 - 32 * x - 16;
+			_offset.Y = 240 - 30 * y - 15;
+			_mxClick = x;
+			_myClick = y;
+			_drawable.Invalidate();
+			var roomProps = GetProps(_mxClick, _myClick);
+			var roomState = _roomStates[_myClick, _mxClick];
+			_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+		}
+
 		public override string GetMapKey()
 		{
 			return Map;
@@ -299,7 +311,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
-				var roomProps = GetMeta(_mxClick, _myClick);
+				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
@@ -375,7 +387,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					float x0 = x * 32 + offx;
 					float y0 = y * 30 + offy;
 
-					var props = GetMeta(x, y);
+					var props = GetProps(x, y);
 
 					if (props.Shuffled)
 					{
@@ -431,7 +443,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			}
 		}
 
-		private ZebesRoomProps GetMeta(int x, int y)
+		private ZebesRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
 		}

@@ -78,10 +78,12 @@ namespace MetalTracker.Trackers.Z1M1
 			if (map == _overworldMap.GetMapKey())
 			{
 				dropDown.SelectedIndex = 0;
+				_overworldMap.LocateRoom(x, y);
 			}
 			else if (map == _zebesMap.GetMapKey())
 			{
 				dropDown.SelectedIndex = 10;
+				_zebesMap.LocateRoom(x, y);
 			}
 			else
 			{
@@ -90,6 +92,7 @@ namespace MetalTracker.Trackers.Z1M1
 					if (map == _dungeonMaps[i].GetMapKey())
 					{
 						dropDown.SelectedIndex = i + 1;
+						_dungeonMaps[i].LocateRoom(x, y);
 					}
 				}
 			}

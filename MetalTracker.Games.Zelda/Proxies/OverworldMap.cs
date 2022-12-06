@@ -150,6 +150,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
+		public void LocateRoom(int x, int y)
+		{
+			_offset.X = 256 - 64 * x - 32;
+			_mxClick = x;
+			_myClick = y;
+			_drawable.Invalidate();
+			var roomProps = GetProps(_mxClick, _myClick);
+			var roomState = _roomStates[_myClick, _mxClick];
+			_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+		}
+
 		public override string GetMapKey()
 		{
 			return Map;
@@ -337,7 +348,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
-				var roomProps = GetMeta(_mxClick, _myClick);
+				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.DestHere && e.Buttons == MouseButtons.Alternate)
@@ -412,7 +423,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					float x0 = x * 64 + offx;
 					float y0 = y * 44 + offy;
 
-					var props = GetMeta(x, y);
+					var props = GetProps(x, y);
 
 					if (!props.DestHere && !props.ItemHere)
 					{
@@ -488,7 +499,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		private OverworldRoomProps GetMeta(int x, int y)
+		private OverworldRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
 		}
