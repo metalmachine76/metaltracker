@@ -57,6 +57,22 @@ namespace MetalTracker.Games.Zelda.Internal
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
+		public void ChangeTransport(int w, int x, int y, DungeonRoomState state, int transport)
+		{
+			var oldState = state.Clone();
+
+			if (state.Transport == transport)
+			{
+				state.Transport = -1;
+			}
+			else
+			{
+				state.Transport = transport;
+			}
+
+			SendCoOpUpdates(w, x, y, oldState, state);
+		}
+
 		private void SendCoOpUpdates(int w, int x, int y, DungeonRoomState oldState, DungeonRoomState newState)
 		{
 			if (_coOpClient == null) return;
@@ -88,6 +104,10 @@ namespace MetalTracker.Games.Zelda.Internal
 			if (newState.Item2 != oldState.Item2)
 			{
 				_coOpClient.SendItemLocation(Game, map, x, y, 1, newState.Item2?.GetCode());
+			}
+			if (newState.Transport != oldState.Transport)
+			{
+				// TODO
 			}
 		}
 	}

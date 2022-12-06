@@ -12,6 +12,7 @@ namespace MetalTracker.Games.Zelda.Types
 		public GameDest DestEast { get; set; }
 		public GameItem Item1 { get; set; }
 		public GameItem Item2 { get; set; }
+		public int Transport { get; set; } = -1;
 
 		// local state
 
@@ -27,6 +28,7 @@ namespace MetalTracker.Games.Zelda.Types
 			clone.DestEast = this.DestEast;
 			clone.Item1 = this.Item1;
 			clone.Item2 = this.Item2;
+			clone.Transport = this.Transport;
 
 			return clone;
 		}

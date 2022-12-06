@@ -31,6 +31,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _mapImage;
 		private DungeonRoomProps[,] _meta;
 		private int _width;
+		private int _numTransports;
 
 		private List<GameDest> _dests = new List<GameDest>();
 		private ContextMenu _destsMenu;
@@ -90,6 +91,25 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_meta = InternalResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
 			_width = _meta.GetLength(1);
 			_map = $"d{level}";
+
+			var stairsCount = 0;
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var props = _meta[y, x];
+					if (props != null)
+					{
+						if (props.Stairs)
+						{
+							stairsCount = stairsCount + 1;
+						}
+					}
+				}
+			}
+
+			_numTransports = stairsCount / 2;
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -131,7 +151,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 			if (active)
 			{
-				_dungeonRoomDetail.Build(_dests, _items);
+				_dungeonRoomDetail.Build(_dests, _items, _numTransports);
 			}
 		}
 
@@ -320,9 +340,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
 			{
+				var roomProps = GetProps(_mxClick, _myClick);
+
+				if (roomProps == null)
+				{
+					return;
+				}
+
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
-				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 
 				if (_nodeClick == 'N' && roomProps.DestNorth)

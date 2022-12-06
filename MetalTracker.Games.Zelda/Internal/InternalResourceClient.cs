@@ -229,7 +229,7 @@ namespace MetalTracker.Games.Zelda
 
 					if (mc == '.')
 					{
-						props = null; // new DungeonRoomProps(false, false, false, false, '\0', '\0', false, false);
+						props = null;
 					}
 					else
 					{

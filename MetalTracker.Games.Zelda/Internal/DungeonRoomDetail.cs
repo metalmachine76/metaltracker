@@ -18,6 +18,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownDestEast;
 		private DropDown _dropDownItem1;
 		private DropDown _dropDownItem2;
+		private List<Button> _transportButtons = new List<Button>();
 
 		private List<GameDest> _gameDests;
 		private List<GameItem> _gameItems;
@@ -38,7 +39,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameDest> gameDests, List<GameItem> gameItems)
+		public void Build(List<GameDest> gameDests, List<GameItem> gameItems, int transports)
 		{
 			if (_mainLayout == null)
 			{
@@ -94,7 +95,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 				_mainLayout.Items.Add(new Label { Text = "Items" });
 
-				var itemsLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
+				var itemsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
 
 				_dropDownItem1 = new DropDown { Height = 25 };
 				_dropDownItem2 = new DropDown { Height = 25 };
@@ -121,6 +122,29 @@ namespace MetalTracker.Games.Zelda.Internal
 				itemsLayout.Items.Add(_dropDownItem2);
 
 				_mainLayout.Items.Add(itemsLayout);
+
+				#endregion
+
+				#region Transports
+
+				if (transports > 0)
+				{
+					_mainLayout.Items.Add(new Label { Text = "Transports" });
+
+					var transportsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
+
+					for (int i = 0; i < transports; i++)
+					{
+						string text = ((char)('A' + i)).ToString();
+						Button buttonTransport = new Button { Text = text, Width = 20 };
+						transportsLayout.Items.Add(buttonTransport);
+						_transportButtons.Add(buttonTransport);
+						buttonTransport.Tag = i;
+						buttonTransport.Click += HandleTransportButtonClick;
+					}
+
+					_mainLayout.Items.Add(transportsLayout);
+				}
 
 				#endregion
 			}
@@ -180,6 +204,15 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeItem2(_w, _x, _y, _state, gameItem);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleTransportButtonClick(object sender, EventArgs e)
+		{
+			var button = (sender as Button);
+			int transport = (int)button.Tag;
+			_mutator.ChangeTransport(_w, _x, _y, _state, transport);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
