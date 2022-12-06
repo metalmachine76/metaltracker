@@ -1,5 +1,5 @@
 ﻿MetalTracker for Z1M1 
-Version 1.0
+Version 1.1
 
 
 MENU
@@ -19,7 +19,8 @@ Session
                Allows you to view or change various Z1M1 flags. Changing a mirrored flag
                will mirror any tracked data. Changing other flags will not affect currently
                tracked data.
-  Log       -> Session log will tell you where all major items and exits are located.
+  Log       -> Session log will tell you where all important (quest and equipment) items and exits are located.
+               Double-clicking an item or exit in the log will select the map and room it is located on, on the main UI window.
   Reset     -> Reset (clear) tracked data for current session.
 
 Co-Op
