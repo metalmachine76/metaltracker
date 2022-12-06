@@ -229,7 +229,7 @@ namespace MetalTracker.Games.Zelda
 
 					if (mc == '.')
 					{
-						props = new DungeonRoomProps(false, false, false, false, '\0', '\0', false);
+						props = null; // new DungeonRoomProps(false, false, false, false, '\0', '\0', false, false);
 					}
 					else
 					{
@@ -263,7 +263,7 @@ namespace MetalTracker.Games.Zelda
 
 						bool shuffled = (shuffleMode == 2) || (shuffleMode == 1 && sc == 'm');
 
-						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, s1c, lowerItem ? 'E' : '\0', shuffled);
+						props = new DungeonRoomProps(destNorth, destSouth, destWest, destEast, s1c, lowerItem ? 'E' : '\0', false, shuffled);
 					}
 
 					meta[y, x] = props;
@@ -277,14 +277,14 @@ namespace MetalTracker.Games.Zelda
 				{
 					for (int x = 0; x < m; x++)
 					{
-						var m0 = meta[y, x];
-						var m1 = meta[y, (w - 1) - x];
+						var p0 = meta[y, x];
+						var p1 = meta[y, (w - 1) - x];
 
-						m0.Mirror();
-						m1.Mirror();
+						p0?.Mirror();
+						p1?.Mirror();
 
-						meta[y, x] = m1;
-						meta[y, (w - 1) - x] = m0;
+						meta[y, x] = p1;
+						meta[y, (w - 1) - x] = p0;
 					}
 				}
 			}

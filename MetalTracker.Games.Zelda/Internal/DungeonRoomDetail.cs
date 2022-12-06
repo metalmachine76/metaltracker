@@ -40,87 +40,90 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		public void Build(List<GameDest> gameDests, List<GameItem> gameItems)
 		{
-			_gameDests = gameDests;
-			_gameItems = gameItems;
-
-			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
-
-			#region Destinations 
-
-			_mainLayout.Items.Add(new Label { Text = "Destinations" });
-
-			_dropDownDestNorth = new DropDown();
-			_dropDownDestSouth = new DropDown();
-			_dropDownDestWest = new DropDown();
-			_dropDownDestEast = new DropDown();
-
-			_dropDownDestNorth.Items.Add(null);
-			_dropDownDestSouth.Items.Add(null);
-			_dropDownDestWest.Items.Add(null);
-			_dropDownDestEast.Items.Add(null);
-
-			foreach (var gameDest in gameDests)
+			if (_mainLayout == null)
 			{
-				ListItem listItem = new ListItem
+				_gameDests = gameDests;
+				_gameItems = gameItems;
+
+				_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
+
+				#region Destinations 
+
+				_mainLayout.Items.Add(new Label { Text = "Destinations" });
+
+				_dropDownDestNorth = new DropDown();
+				_dropDownDestSouth = new DropDown();
+				_dropDownDestWest = new DropDown();
+				_dropDownDestEast = new DropDown();
+
+				_dropDownDestNorth.Items.Add(null);
+				_dropDownDestSouth.Items.Add(null);
+				_dropDownDestWest.Items.Add(null);
+				_dropDownDestEast.Items.Add(null);
+
+				foreach (var gameDest in gameDests)
 				{
-					Key = gameDest.GetCode(),
-					Text = gameDest.LongName,
-				};
+					ListItem listItem = new ListItem
+					{
+						Key = gameDest.GetCode(),
+						Text = gameDest.LongName,
+					};
 
-				_dropDownDestNorth.Items.Add(listItem);
-				_dropDownDestSouth.Items.Add(listItem);
-				_dropDownDestWest.Items.Add(listItem);
-				_dropDownDestEast.Items.Add(listItem);
-			}
+					_dropDownDestNorth.Items.Add(listItem);
+					_dropDownDestSouth.Items.Add(listItem);
+					_dropDownDestWest.Items.Add(listItem);
+					_dropDownDestEast.Items.Add(listItem);
+				}
 
-			_dropDownDestNorth.SelectedIndexChanged += HandleSelectedDestNorthChanged;
-			_dropDownDestSouth.SelectedIndexChanged += HandleSelectedDestSouthChanged;
-			_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
-			_dropDownDestEast.SelectedIndexChanged += HandleSelectedDestEastChanged;
+				_dropDownDestNorth.SelectedIndexChanged += HandleSelectedDestNorthChanged;
+				_dropDownDestSouth.SelectedIndexChanged += HandleSelectedDestSouthChanged;
+				_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
+				_dropDownDestEast.SelectedIndexChanged += HandleSelectedDestEastChanged;
 
-			TableLayout destsLayout = new TableLayout(
-				new TableRow(new TableCell(), new TableCell(_dropDownDestNorth), new TableCell()),
-				new TableRow(new TableCell(_dropDownDestWest), new TableCell(), new TableCell(_dropDownDestEast)),
-				new TableRow(new TableCell(), new TableCell(_dropDownDestSouth), new TableCell())
-			);
+				TableLayout destsLayout = new TableLayout(
+					new TableRow(new TableCell(), new TableCell(_dropDownDestNorth), new TableCell()),
+					new TableRow(new TableCell(_dropDownDestWest), new TableCell(), new TableCell(_dropDownDestEast)),
+					new TableRow(new TableCell(), new TableCell(_dropDownDestSouth), new TableCell())
+				);
 
-			_mainLayout.Items.Add(destsLayout);
+				_mainLayout.Items.Add(destsLayout);
 
-			#endregion
+				#endregion
 
-			#region Items Layout
+				#region Items Layout
 
-			_mainLayout.Items.Add(new Label { Text = "Items" });
+				_mainLayout.Items.Add(new Label { Text = "Items" });
 
-			var itemsLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
+				var itemsLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
-			_dropDownItem1 = new DropDown { Height = 25 };
-			_dropDownItem2 = new DropDown { Height = 25 };
+				_dropDownItem1 = new DropDown { Height = 25 };
+				_dropDownItem2 = new DropDown { Height = 25 };
 
-			_dropDownItem1.SelectedIndexChanged += HandleSelectedItem1Changed;
-			_dropDownItem2.SelectedIndexChanged += HandleSelectedItem2Changed;
+				_dropDownItem1.SelectedIndexChanged += HandleSelectedItem1Changed;
+				_dropDownItem2.SelectedIndexChanged += HandleSelectedItem2Changed;
 
-			_dropDownItem1.Items.Add(null);
-			_dropDownItem2.Items.Add(null);
+				_dropDownItem1.Items.Add(null);
+				_dropDownItem2.Items.Add(null);
 
-			foreach (var gameItem in gameItems)
-			{
-				ImageListItem listItem = new ImageListItem
+				foreach (var gameItem in gameItems)
 				{
-					Key = gameItem.GetCode(),
-					Image = gameItem.Icon,
-				};
+					ImageListItem listItem = new ImageListItem
+					{
+						Key = gameItem.GetCode(),
+						Image = gameItem.Icon,
+					};
 
-				_dropDownItem1.Items.Add(listItem);
-				_dropDownItem2.Items.Add(listItem);
+					_dropDownItem1.Items.Add(listItem);
+					_dropDownItem2.Items.Add(listItem);
+				}
+
+				itemsLayout.Items.Add(_dropDownItem1);
+				itemsLayout.Items.Add(_dropDownItem2);
+
+				_mainLayout.Items.Add(itemsLayout);
+
+				#endregion
 			}
-
-			itemsLayout.Items.Add(_dropDownItem1);
-			itemsLayout.Items.Add(_dropDownItem2);
-
-			_mainLayout.Items.Add(itemsLayout);
-
-			#endregion
 
 			_mainLayout.Visible = false;
 
@@ -197,7 +200,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			if (_props.CanHaveDest() || _props.CanHaveItem1() || _props.CanHaveItem2() || _props.Shuffled)
+			if (_props != null)
 			{
 				_mainLayout.Visible = true;
 

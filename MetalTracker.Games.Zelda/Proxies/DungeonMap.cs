@@ -482,12 +482,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 			{
 				for (int x = 0; x < _width; x++)
 				{
+					var props = GetProps(x, y);
+
+					if (props == null)
+					{
+						continue;
+					}
+
 					var roomState = _roomStates[y, x];
 
 					float x0 = x * 64 + offx;
 					float y0 = y * 44 + offy;
-
-					var props = GetProps(x, y);
 
 					if (props.Shuffled)
 					{
