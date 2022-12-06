@@ -84,8 +84,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_mirrored = mirrored;
 			_flag_shuffle_exits = shuffleExits;
 			_flag_shuffle_caves = shuffleCaves;
-			_mapImage = InternalResourceClient.GetOverworldImage(q2, mirrored);
-			_meta = InternalResourceClient.GetOverworldMeta(q2, mirrored);
+			_mapImage = OverworldResourceClient.GetOverworldImage(q2, mirrored);
+			_meta = OverworldResourceClient.GetOverworldMeta(q2, mirrored);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -133,7 +133,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void ResetState()
 		{
-			var defaultState = InternalResourceClient.GetDefaultOverworldState(
+			var defaultState = OverworldResourceClient.GetDefaultOverworldState(
 				_flag_q2,
 				!_flag_shuffle_exits,
 				!_flag_shuffle_caves,

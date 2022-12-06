@@ -41,6 +41,7 @@ namespace MetalTracker.CoOp
 				_hubConnection = hubConnectionBuilder
 					.WithUrl($"{ServerAddress}/coophub")
 					.AddMessagePackProtocol()
+					.WithAutomaticReconnect()
 					.Build();
 
 				_hubConnection.On<string, string, string, int, int, int, string>("EchoItemLocation", HandleEchoItemLocation);

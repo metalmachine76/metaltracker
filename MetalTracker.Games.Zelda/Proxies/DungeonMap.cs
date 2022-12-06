@@ -87,8 +87,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_q2 = q2;
 			_flag_mirrored = mirrored;
 			_level = level;
-			_mapImage = InternalResourceClient.GetDungeonImage(q2, level, mirrored);
-			_meta = InternalResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
+			_mapImage = DungeonResourceClient.GetDungeonImage(q2, level, mirrored);
+			_meta = DungeonResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
 			_width = _meta.GetLength(1);
 			_map = $"d{level}";
 
