@@ -7,37 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Res\Icons\boots0.png" />
-	  <None Remove="Res\Icons\boots1.png" />
-	  <None Remove="Res\Icons\energy.png" />
-	  <None Remove="Res\Icons\energytank.png" />
-	  <None Remove="Res\Icons\icebeam0.png" />
-	  <None Remove="Res\Icons\icebeam1.png" />
-	  <None Remove="Res\Icons\kraidtot0.png" />
-	  <None Remove="Res\Icons\kraidtot1.png" />
-	  <None Remove="Res\Icons\longbeam0.png" />
-	  <None Remove="Res\Icons\longbeam1.png" />
-	  <None Remove="Res\Icons\missile.png" />
-	  <None Remove="Res\Icons\missilepack.png" />
-	  <None Remove="Res\Icons\morphball0.png" />
-	  <None Remove="Res\Icons\morphball1.png" />
-	  <None Remove="Res\Icons\morphbombs0.png" />
-	  <None Remove="Res\Icons\morphbombs1.png" />
-	  <None Remove="Res\Icons\ridleytot0.png" />
-	  <None Remove="Res\Icons\ridleytot1.png" />
-	  <None Remove="Res\Icons\screwattack0.png" />
-	  <None Remove="Res\Icons\screwattack1.png" />
-	  <None Remove="Res\Icons\varia0.png" />
-	  <None Remove="Res\Icons\varia1.png" />
-	  <None Remove="Res\Icons\wavebeam0.png" />
-	  <None Remove="Res\Icons\wavebeam1.png" />
-	  <None Remove="Res\zebesmap.m.png" />
-	  <None Remove="Res\zebesmap.png" />
-	  <None Remove="Res\zebesmeta.txt" />
-	  <None Remove="Res\zebesshuffle.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="Res\Icons\boots0.png" />
 	  <EmbeddedResource Include="Res\Icons\boots1.png" />
 	  <EmbeddedResource Include="Res\Icons\energy.png" />

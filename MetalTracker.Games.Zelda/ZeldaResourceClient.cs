@@ -44,6 +44,7 @@ namespace MetalTracker.Games.Zelda
 			new GameItem("z1", "compass", "Compass", 'M', GetIcon("compass")),
 			new GameItem("z1", "tri", "Triforce Piece", 'Q', GetIcon("tri")),
 			new GameItem("z1", "heartcontainer", "Heart Container", 'U', GetIcon("heartcontainer")),
+			new GameItem("z1", "bombup", "Bombs Upgrade", 'U', GetIcon("bombup")),
 			new GameItem("z1", "bait", "Bait", 'E', GetIcon("bait1")),
 			new GameItem("z1", "letter", "Letter", 'E', GetIcon("letter1")),
 			new GameItem("z1", "raft", "Raft", 'E', GetIcon("raft1")),
