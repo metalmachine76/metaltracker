@@ -17,7 +17,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 153));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 153));
-		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
+		static Pen CurrentPen = new Pen(Colors.White, 2);
 
 		private readonly Drawable _drawable;
 		private readonly OverworldRoomDetail _overworldRoomDetail;

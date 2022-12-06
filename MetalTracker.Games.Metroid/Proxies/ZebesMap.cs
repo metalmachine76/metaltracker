@@ -18,7 +18,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
-		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
+		static Pen CurrentPen = new Pen(Colors.White, 2);
 
 		private readonly Drawable _drawable;
 		private readonly ZebesRoomDetail _zebesRoomDetail;
