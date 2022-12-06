@@ -71,6 +71,30 @@ namespace MetalTracker.Trackers.Z1M1
 			_itemTracker = new ItemTracker(itemTrackerContainer);
 		}
 
+		public void LocateGoal(string map, int x, int y)
+		{
+			DropDown dropDown = this.FindChild<DropDown>("dropDownSelectedMap");
+
+			if (map == _overworldMap.GetMapKey())
+			{
+				dropDown.SelectedIndex = 0;
+			}
+			else if (map == _zebesMap.GetMapKey())
+			{
+				dropDown.SelectedIndex = 10;
+			}
+			else
+			{
+				for (int i = 0; i < 9; i++)
+				{
+					if (map == _dungeonMaps[i].GetMapKey())
+					{
+						dropDown.SelectedIndex = i + 1;
+					}
+				}
+			}
+		}
+
 		#region Event Handlers
 
 		protected void HandlePreLoad(object sender, EventArgs e)
@@ -168,7 +192,7 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleShowSessionLogClick(object sender, EventArgs e)
 		{
-			SessionLogForm form = new SessionLogForm();
+			SessionLogForm form = new SessionLogForm(this);
 			form.AddMap(_overworldMap);
 			for (int i = 0; i < 9; i++)
 			{

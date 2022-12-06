@@ -5,6 +5,8 @@ namespace MetalTracker.Common.Bases
 {
 	public abstract class BaseMap
 	{
+		public abstract string GetMapKey();
+
 		public abstract List<StateEntry> GetDestStates();
 
 		public abstract List<StateEntry> GetItemStates();

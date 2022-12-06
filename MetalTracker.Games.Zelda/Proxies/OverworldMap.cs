@@ -150,6 +150,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
+		public override string GetMapKey()
+		{
+			return Map;
+		}
+
 		public override List<StateEntry> GetDestStates()
 		{
 			List<StateEntry> list = new List<StateEntry>();
@@ -232,17 +237,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.Item3 != null && state.Item3.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -262,7 +267,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Destination != null && state.Destination.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}");
+						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}

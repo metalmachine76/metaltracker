@@ -141,6 +141,11 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 		}
 
+		public override string GetMapKey()
+		{
+			return Map;
+		}
+
 		public override List<StateEntry> GetDestStates()
 		{
 			List<StateEntry> list = new List<StateEntry>();
@@ -208,7 +213,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item != null && state.Item.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}");
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -228,7 +233,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestElev != null && state.DestElev.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}");
+						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
 						list.Add(loc);
 					}
 				}

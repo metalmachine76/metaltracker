@@ -7,21 +7,27 @@ using MetalTracker.Common.Bases;
 
 namespace MetalTracker.Trackers.Z1M1.Forms
 {
-	public class SessionLogForm : Form
+	internal class SessionLogForm : Form
 	{
 		class SessionLogEntry
 		{
 			public string Name { get; set; }
 			public string Location { get; set; }
+			public string Map { get; set; }
+			public int X { get; set; }
+			public int Y { get; set; }
 		}
+
+		private MainForm _mainForm;
 
 		private List<BaseMap> _maps = new List<BaseMap>();
 
 		private UITimer _uITimer;
 
-		public SessionLogForm()
+		public SessionLogForm(MainForm mainForm)
 		{
 			XamlReader.Load(this);
+			_mainForm = mainForm;
 		}
 
 		public void AddMap(BaseMap map)
@@ -47,12 +53,22 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				Width = 200
 			});
 
+			gridView.CellDoubleClick += HandleCellDoubleClick;
+
 			Show("items");
 
 			_uITimer = new UITimer();
 			_uITimer.Interval = 5;
 			_uITimer.Elapsed += HandleTimerElapsed;
 			_uITimer.Start();
+		}
+
+		private void HandleCellDoubleClick(object sender, GridCellMouseEventArgs e)
+		{
+			if (e.Item != null && e.Item is SessionLogEntry entry)
+			{
+				_mainForm.LocateGoal(entry.Map, entry.X, entry.Y);
+			}
 		}
 
 		private void HandleTimerElapsed(object sender, EventArgs e)
@@ -87,7 +103,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				{
 					foreach (var loc in map.LogItemLocations())
 					{
-						entries.Add(new SessionLogEntry { Name = loc.Item.Name, Location = loc.Location });
+						entries.Add(new SessionLogEntry { Name = loc.Item.Name, Location = loc.Location, Map = loc.Map, X = loc.X, Y = loc.Y });
 					}
 				}
 			}
@@ -98,7 +114,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				{
 					foreach (var loc in map.LogExitLocations())
 					{
-						entries.Add(new SessionLogEntry { Name = loc.Dest.LongName, Location = loc.Location });
+						entries.Add(new SessionLogEntry { Name = loc.Dest.LongName, Location = loc.Location, Map = loc.Map, X = loc.X, Y = loc.Y });
 					}
 				}
 			}
@@ -106,6 +122,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			var sorted = entries.OrderBy(e => e.Name);
 
 			GridView gridView = FindChild<GridView>("gridViewSessionLog");
+
 			gridView.DataStore = sorted;
 		}
 	}
