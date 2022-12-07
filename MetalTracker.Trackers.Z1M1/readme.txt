@@ -44,12 +44,15 @@ The overworld, the 9 dungeons, and Zebes.
 
 Maps are divided into rooms, where each room is one game screen:
 
+- Portal connections on the map are shown in green.
 - If a room square is grayed out this means it is included in the shuffle (based on session flags).
-- If a room square is not grayed out, and it contains a letter, this indicates the item slot class for
-  the room, which can be useful for routing.
-- Portal connections on the map are shown in green. 
-- Non-portal connections (such as shops, take-any-road, etc) will be shown in white.
 - Items will be shown on the map with icons.
+
+Map specific features:
+
+- In dungeons and Zebes, item slot classes will be shown in white (unless the room is shuffled).
+- On the oveworld, non-portal connections (such as shops, take-any-road, etc) will be shown in white.
+- In dungeons, transport stairs will be shown in blue.
 
 Map interaction is currently mouse-based only:
 
@@ -76,8 +79,9 @@ CO-OP SUPPORT
 
 When you are connected to the co-op server and have joined a room, the following events will be synced from and to all players currently in the room:
 
-- when an exit is marked
+- when an exit or destination is marked
 - when an item is marked
+- when other details are changed in the "Room Detail" panel
 
 Note: The co-op server does not keep any state. It only replicates events to other players within a given room. This means that if you are disconnected 
 from the room, and later reconnect, any events that occurred while you were not connected won't show on your tracker. 

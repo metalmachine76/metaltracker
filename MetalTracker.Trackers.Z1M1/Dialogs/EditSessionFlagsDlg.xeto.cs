@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Eto.Forms;
 using Eto.Serialization.Xaml;
 using MetalTracker.Trackers.Z1M1.Internal;
@@ -9,6 +10,7 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 	{
 		private CheckBox checkBoxSecondQuest;
 		private CheckBox checkBoxMirroredOW;
+		private CheckBox checkBoxMirroredDs;
 		private CheckBox checkBoxMirroredL1;
 		private CheckBox checkBoxMirroredL2;
 		private CheckBox checkBoxMirroredL3;
@@ -28,12 +30,15 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 
 		public SessionFlags Flags { get; set; }
 
+		private bool _loading;
+
 		public EditSessionFlagsDlg(bool newSession)
 		{
 			XamlReader.Load(this);
 
 			checkBoxSecondQuest = this.FindChild<CheckBox>("checkBoxSecondQuest");
 			checkBoxMirroredOW = this.FindChild<CheckBox>("checkBoxMirroredOW");
+			checkBoxMirroredDs = this.FindChild<CheckBox>("checkBoxMirroredDs");
 			checkBoxMirroredL1 = this.FindChild<CheckBox>("checkBoxMirroredL1");
 			checkBoxMirroredL2 = this.FindChild<CheckBox>("checkBoxMirroredL2");
 			checkBoxMirroredL3 = this.FindChild<CheckBox>("checkBoxMirroredL3");
@@ -59,8 +64,21 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 
 		protected void HandleLoad(object sender, EventArgs e)
 		{
+			_loading = true;
+
 			checkBoxSecondQuest.Checked = Flags.ZeldaQ2;
 			checkBoxMirroredOW.Checked = Flags.OverworldMirrored;
+
+			checkBoxMirroredDs.Checked = null;
+			if (Flags.DungeonsMirrored.All(d => d == true))
+			{
+				checkBoxMirroredDs.Checked = true;
+			}
+			else if (Flags.DungeonsMirrored.All(d => d == false))
+			{
+				checkBoxMirroredDs.Checked = false;
+			}
+
 			checkBoxMirroredL1.Checked = Flags.DungeonsMirrored[0];
 			checkBoxMirroredL2.Checked = Flags.DungeonsMirrored[1];
 			checkBoxMirroredL3.Checked = Flags.DungeonsMirrored[2];
@@ -70,6 +88,7 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			checkBoxMirroredL7.Checked = Flags.DungeonsMirrored[6];
 			checkBoxMirroredL8.Checked = Flags.DungeonsMirrored[7];
 			checkBoxMirroredL9.Checked = Flags.DungeonsMirrored[8];
+
 			checkBoxMirroredZebes.Checked = Flags.ZebesMirrored;
 			checkBoxShuffleDungeons.Checked = Flags.DungeonEntrancesShuffled;
 			checkBoxShuffleOthers.Checked = Flags.OtherEntrancesShuffled;
@@ -77,6 +96,42 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			checkBoxShuffleAllDungeonRooms.Checked = Flags.DungeonRoomShuffleMode == 2;
 			checkBoxShuffleMinorZebesRooms.Checked = Flags.ZebesRoomShuffleMode > 0;
 			checkBoxShuffleAllZebesRooms.Checked = Flags.ZebesRoomShuffleMode == 2;
+
+			_loading = false;
+ 		}
+
+		protected void HandleAllDungeonsMirroredChanged(object sender, EventArgs e)
+		{
+			if (_loading) return;
+
+			_loading = true;
+
+			if (checkBoxMirroredDs.Checked == true)
+			{
+				checkBoxMirroredL1.Checked = true;
+				checkBoxMirroredL2.Checked = true;
+				checkBoxMirroredL3.Checked = true;
+				checkBoxMirroredL4.Checked = true;
+				checkBoxMirroredL5.Checked = true;
+				checkBoxMirroredL6.Checked = true;
+				checkBoxMirroredL7.Checked = true;
+				checkBoxMirroredL8.Checked = true;
+				checkBoxMirroredL9.Checked = true;
+			}
+			else if (checkBoxMirroredDs.Checked == false)
+			{
+				checkBoxMirroredL1.Checked = false;
+				checkBoxMirroredL2.Checked = false;
+				checkBoxMirroredL3.Checked = false;
+				checkBoxMirroredL4.Checked = false;
+				checkBoxMirroredL5.Checked = false;
+				checkBoxMirroredL6.Checked = false;
+				checkBoxMirroredL7.Checked = false;
+				checkBoxMirroredL8.Checked = false;
+				checkBoxMirroredL9.Checked = false;
+			}
+
+			_loading = false;
 		}
 
 		protected void HandleAllDungeonRoomsCheckedChanged(object sender, EventArgs e)
