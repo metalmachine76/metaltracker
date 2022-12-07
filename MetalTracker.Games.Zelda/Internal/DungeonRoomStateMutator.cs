@@ -74,31 +74,31 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			if (newState.DestNorth != oldState.DestNorth)
 			{
-				_coOpClient.SendDestLocation(Game, map, x, y, 0, newState.DestNorth?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 0, newState.DestNorth?.GetCode());
 			}
 			if (newState.DestSouth != oldState.DestSouth)
 			{
-				_coOpClient.SendDestLocation(Game, map, x, y, 1, newState.DestSouth?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 1, newState.DestSouth?.GetCode());
 			}
 			if (newState.DestWest != oldState.DestWest)
 			{
-				_coOpClient.SendDestLocation(Game, map, x, y, 2, newState.DestWest?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 2, newState.DestWest?.GetCode());
 			}
 			if (newState.DestEast != oldState.DestEast)
 			{
-				_coOpClient.SendDestLocation(Game, map, x, y, 3, newState.DestEast?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 3, newState.DestEast?.GetCode());
 			}
 			if (newState.Item1 != oldState.Item1)
 			{
-				_coOpClient.SendItemLocation(Game, map, x, y, 0, newState.Item1?.GetCode());
+				_coOpClient.SendLocation("item", Game, map, x, y, 0, newState.Item1?.GetCode());
 			}
 			if (newState.Item2 != oldState.Item2)
 			{
-				_coOpClient.SendItemLocation(Game, map, x, y, 1, newState.Item2?.GetCode());
+				_coOpClient.SendLocation("item", Game, map, x, y, 1, newState.Item2?.GetCode());
 			}
 			if (newState.Transport != oldState.Transport)
 			{
-				// TODO
+				_coOpClient.SendLocation("stair", Game, map, x, y, 0, newState.Transport);
 			}
 		}
 	}

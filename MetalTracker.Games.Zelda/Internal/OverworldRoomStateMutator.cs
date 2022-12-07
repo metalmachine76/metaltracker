@@ -70,19 +70,19 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			if (newState.Destination != oldState.Destination)
 			{
-				_coOpClient.SendDestLocation(Game, Map, x, y, 0, newState.Destination?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.Destination?.GetCode());
 			}
 			if (newState.Item1 != oldState.Item1)
 			{
-				_coOpClient.SendItemLocation(Game, Map, x, y, 0, newState.Item1?.GetCode());
+				_coOpClient.SendLocation("item", Game, Map, x, y, 0, newState.Item1?.GetCode());
 			}
 			if (newState.Item2 != oldState.Item2)
 			{
-				_coOpClient.SendItemLocation(Game, Map, x, y, 1, newState.Item2?.GetCode());
+				_coOpClient.SendLocation("item", Game, Map, x, y, 1, newState.Item2?.GetCode());
 			}
 			if (newState.Item3 != oldState.Item3)
 			{
-				_coOpClient.SendItemLocation(Game, Map, x, y, 2, newState.Item3?.GetCode());
+				_coOpClient.SendLocation("item", Game, Map, x, y, 2, newState.Item3?.GetCode());
 			}
 		}
 	}

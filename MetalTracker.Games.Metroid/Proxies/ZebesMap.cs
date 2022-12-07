@@ -109,8 +109,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
 		{
-			coOpClient.FoundDest += HandleCoOpClientFoundDest;
-			coOpClient.FoundItem += HandleCoOpClientFoundItem;
+			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
 			_timer = new UITimer();
 			_timer.Interval = 0.5;
@@ -439,32 +438,22 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region CoOp Event Handlers
 
-		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
+		private void HandleCoOpClientFound(object sender, FoundEventArgs e)
 		{
 			if (e.Game == Game && e.Map == Map)
 			{
 				var roomState = _roomStates[e.Y, e.X];
-				var dest = _dests.Find(d => d.GetCode() == e.Code);
 
-				roomState.DestElev = dest;
-
-				_invalidateMap = true;
-
-				if (e.X == _mxClick && e.Y == _myClick)
+				if (e.Type == "dest")
 				{
-					_invalidateRoom = true;
+					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					roomState.DestElev = dest;
 				}
-			}
-		}
-
-		private void HandleCoOpClientFoundItem(object sender, FoundEventArgs e)
-		{
-			if (e.Game == Game && e.Map == Map)
-			{
-				var roomState = _roomStates[e.Y, e.X];
-				var item = _items.Find(i => i.GetCode() == e.Code);
-
-				roomState.Item = item;
+				else if (e.Type == "item")
+				{
+					var item = _items.Find(i => i.GetCode() == e.Code);
+					roomState.Item = item;
+				}
 
 				_invalidateMap = true;
 

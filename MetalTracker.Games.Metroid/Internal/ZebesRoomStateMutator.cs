@@ -41,11 +41,11 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			if (newState.DestElev != oldState.DestElev)
 			{
-				_coOpClient.SendDestLocation(Game, Map, x, y, 0, newState.DestElev?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.DestElev?.GetCode());
 			}
 			if (newState.Item != oldState.Item)
 			{
-				_coOpClient.SendItemLocation(Game, Map, x, y, 0, newState.Item?.GetCode());
+				_coOpClient.SendLocation("item", Game, Map, x, y, 0, newState.Item?.GetCode());
 			}
 		}
 	}
