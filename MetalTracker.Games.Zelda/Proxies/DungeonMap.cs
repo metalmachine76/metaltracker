@@ -602,6 +602,23 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					e.Graphics.FillRectangle(CursorBrush, x0 + 48, y0 + 11, 16, 22);
 				}
+
+				var roomState = _roomStates[_my, _mx];
+
+				if (roomState.Transport != null)
+				{
+					var rooms = FindTransportRooms(roomState.Transport);
+					if (rooms.Count == 2)
+					{
+						e.Graphics.AntiAlias = true;
+						float tx0 = rooms[0].X * 64 + offx + 32;
+						float ty0 = rooms[0].Y * 44 + offy + 22;
+						float tx1 = rooms[1].X * 64 + offx + 32;
+						float ty1 = rooms[1].Y * 44 + offy + 22;
+						e.Graphics.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
+						e.Graphics.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
+					}
+				}
 			}
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
@@ -627,6 +644,24 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private DungeonRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
+		}
+
+		private List<Point> FindTransportRooms(string transport)
+		{
+			List<Point> points = new List<Point>();
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					if (_roomStates[y, x].Transport == transport)
+					{
+						points.Add(new Point(x, y));
+					}
+				}
+			}
+
+			return points;
 		}
 
 		#endregion
