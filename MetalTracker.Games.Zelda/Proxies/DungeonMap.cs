@@ -105,7 +105,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var props = _meta[y, x];
 					if (props != null)
 					{
-						if (props.HasTransports)
+						if (props.HasStairs)
 						{
 							stairsCount = stairsCount + 1;
 						}

@@ -262,7 +262,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestEast.Enabled = _props.DestEast;
 				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
 				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
-				_dropDownTransports.Enabled = _props.Shuffled || _props.HasTransports;
+				_dropDownTransports.Enabled = _props.Shuffled || _props.HasStairs;
 			}
 			else
 			{

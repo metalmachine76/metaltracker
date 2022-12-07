@@ -164,7 +164,7 @@ namespace MetalTracker.Games.Zelda
 
 					if (tc != '.')
 					{
-						state.Transport = tc.ToString();
+						state.Transport = shuffleMode == 0 ? tc.ToString() : null;
 					}
 
 					stateGrid[y, x] = state;
