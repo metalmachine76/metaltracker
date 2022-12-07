@@ -69,8 +69,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_overworldRoomDetail = new OverworldRoomDetail(detailPanel, _mutator);
 			_overworldRoomDetail.DetailChanged += HandleRoomDetailChanged;
-
-			ResetState();
 		}
 
 		public void SetMapFlags(bool q2, bool shuffleExits, bool shuffleCaves, bool mirrored)

@@ -76,8 +76,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
-
-			//ResetState();
 		}
 
 		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
@@ -530,11 +528,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (props.Shuffled)
 					{
 						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
-					}
-					else if (roomState == null)
-					{
-						e.Graphics.FillRectangle(Brushes.Beige, x0, y0, 64, 44);
-						return;
 					}
 					else
 					{

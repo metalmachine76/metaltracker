@@ -68,8 +68,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_zebesRoomDetail = new ZebesRoomDetail(detailPanel, _mutator);
 			_zebesRoomDetail.DetailChanged += HandleRoomDetailChanged;
-
-			ResetState();
 		}
 
 		public void SetMapFlags(int shuffleMode, bool mirrored)
