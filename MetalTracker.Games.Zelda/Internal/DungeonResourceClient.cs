@@ -171,6 +171,26 @@ namespace MetalTracker.Games.Zelda
 				}
 			}
 
+			if (mirrored)
+			{
+				int m = w / 2;
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < m; x++)
+					{
+						var s0 = stateGrid[y, x];
+						var s1 = stateGrid[y, (w - 1) - x];
+
+						s0?.Mirror();
+						s1?.Mirror();
+
+						stateGrid[y, x] = s1;
+						stateGrid[y, (w - 1) - x] = s0;
+					}
+				}
+			}
+
+
 			return stateGrid;
 		}
 
