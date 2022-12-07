@@ -150,7 +150,7 @@ namespace MetalTracker.Games.Zelda
 
 			int w = stairsLines[0].Length;
 
-			DungeonRoomState[,] stateGrid = new DungeonRoomState[8, w];
+			DungeonRoomState[,] stateGrid = new DungeonRoomState[8, 8];
 
 			for (int y = 0; y < 8; y++)
 			{

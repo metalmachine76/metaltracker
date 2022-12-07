@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Eto.Drawing;
@@ -110,10 +111,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 							stairsCount = stairsCount + 1;
 						}
 					}
+					if (_roomStates[y, x] == null)
+					{
+						_roomStates[y, x] = new DungeonRoomState();
+					}
 				}
 			}
 
 			_numTransports = stairsCount / 2;
+
+			_dungeonRoomDetail.Populate(_dests, _items, _numTransports);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -151,10 +158,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public void Activate(bool active)
 		{
 			_active = active;
-			_drawable.Invalidate();
 			if (active)
 			{
-				_dungeonRoomDetail.Build(_dests, _items, _numTransports);
+				_drawable.Invalidate();
+				_dungeonRoomDetail.Activate();
 			}
 		}
 
@@ -515,7 +522,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 						continue;
 					}
 
-					var roomState = _roomStates[y, x];
+					DungeonRoomState roomState = _roomStates[y, x];
 
 					float x0 = x * 64 + offx;
 					float y0 = y * 44 + offy;
@@ -523,6 +530,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (props.Shuffled)
 					{
 						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
+					}
+					else if (roomState == null)
+					{
+						e.Graphics.FillRectangle(Brushes.Beige, x0, y0, 64, 44);
+						return;
 					}
 					else
 					{

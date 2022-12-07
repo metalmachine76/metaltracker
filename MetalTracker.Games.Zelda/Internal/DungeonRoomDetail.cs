@@ -37,125 +37,184 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			_detailPanel = detailPanel;
 			_mutator = mutator;
-		}
 
-		public void Build(List<GameDest> gameDests, List<GameItem> gameItems, int numTransports)
-		{
-			if (_mainLayout == null)
-			{
-				_gameDests = gameDests;
-				_gameItems = gameItems;
+			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
-				_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
+			#region Destinations 
 
-				#region Destinations 
+			_mainLayout.Items.Add(new Label { Text = "Destinations" });
 
-				_mainLayout.Items.Add(new Label { Text = "Destinations" });
+			_dropDownDestNorth = new DropDown();
+			_dropDownDestSouth = new DropDown();
+			_dropDownDestWest = new DropDown();
+			_dropDownDestEast = new DropDown();
 
-				_dropDownDestNorth = new DropDown();
-				_dropDownDestSouth = new DropDown();
-				_dropDownDestWest = new DropDown();
-				_dropDownDestEast = new DropDown();
+			_dropDownDestNorth.SelectedIndexChanged += HandleSelectedDestNorthChanged;
+			_dropDownDestSouth.SelectedIndexChanged += HandleSelectedDestSouthChanged;
+			_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
+			_dropDownDestEast.SelectedIndexChanged += HandleSelectedDestEastChanged;
 
-				_dropDownDestNorth.Items.Add(null);
-				_dropDownDestSouth.Items.Add(null);
-				_dropDownDestWest.Items.Add(null);
-				_dropDownDestEast.Items.Add(null);
+			TableLayout destsLayout = new TableLayout(
+				new TableRow(new TableCell(), new TableCell(_dropDownDestNorth), new TableCell()),
+				new TableRow(new TableCell(_dropDownDestWest), new TableCell(), new TableCell(_dropDownDestEast)),
+				new TableRow(new TableCell(), new TableCell(_dropDownDestSouth), new TableCell())
+			);
 
-				foreach (var gameDest in gameDests)
-				{
-					ListItem listItem = new ListItem
-					{
-						Key = gameDest.GetCode(),
-						Text = gameDest.LongName,
-					};
+			_mainLayout.Items.Add(destsLayout);
 
-					_dropDownDestNorth.Items.Add(listItem);
-					_dropDownDestSouth.Items.Add(listItem);
-					_dropDownDestWest.Items.Add(listItem);
-					_dropDownDestEast.Items.Add(listItem);
-				}
+			#endregion
 
-				_dropDownDestNorth.SelectedIndexChanged += HandleSelectedDestNorthChanged;
-				_dropDownDestSouth.SelectedIndexChanged += HandleSelectedDestSouthChanged;
-				_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
-				_dropDownDestEast.SelectedIndexChanged += HandleSelectedDestEastChanged;
+			#region Items Layout
 
-				TableLayout destsLayout = new TableLayout(
-					new TableRow(new TableCell(), new TableCell(_dropDownDestNorth), new TableCell()),
-					new TableRow(new TableCell(_dropDownDestWest), new TableCell(), new TableCell(_dropDownDestEast)),
-					new TableRow(new TableCell(), new TableCell(_dropDownDestSouth), new TableCell())
-				);
+			_mainLayout.Items.Add(new Label { Text = "Items" });
 
-				_mainLayout.Items.Add(destsLayout);
+			var itemsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
 
-				#endregion
+			_dropDownItem1 = new DropDown { Height = 25 };
+			_dropDownItem2 = new DropDown { Height = 25 };
 
-				#region Items Layout
+			_dropDownItem1.SelectedIndexChanged += HandleSelectedItem1Changed;
+			_dropDownItem2.SelectedIndexChanged += HandleSelectedItem2Changed;
 
-				_mainLayout.Items.Add(new Label { Text = "Items" });
+			itemsLayout.Items.Add(_dropDownItem1);
+			itemsLayout.Items.Add(_dropDownItem2);
 
-				var itemsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
+			_mainLayout.Items.Add(itemsLayout);
 
-				_dropDownItem1 = new DropDown { Height = 25 };
-				_dropDownItem2 = new DropDown { Height = 25 };
+			#endregion
 
-				_dropDownItem1.SelectedIndexChanged += HandleSelectedItem1Changed;
-				_dropDownItem2.SelectedIndexChanged += HandleSelectedItem2Changed;
+			#region Transports
 
-				_dropDownItem1.Items.Add(null);
-				_dropDownItem2.Items.Add(null);
+			_mainLayout.Items.Add(new Label { Text = "Transport" });
 
-				foreach (var gameItem in gameItems)
-				{
-					ImageListItem listItem = new ImageListItem
-					{
-						Key = gameItem.GetCode(),
-						Image = gameItem.Icon,
-					};
+			_dropDownTransports = new DropDown { Height = 25 };
 
-					_dropDownItem1.Items.Add(listItem);
-					_dropDownItem2.Items.Add(listItem);
-				}
+			_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
 
-				itemsLayout.Items.Add(_dropDownItem1);
-				itemsLayout.Items.Add(_dropDownItem2);
+			_mainLayout.Items.Add(_dropDownTransports);
 
-				_mainLayout.Items.Add(itemsLayout);
-
-				#endregion
-
-				#region Transports
-
-				_mainLayout.Items.Add(new Label { Text = "Transport" });
-
-				_dropDownTransports = new DropDown { Height = 25 };
-
-				_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
-
-				_dropDownTransports.Items.Add(new ListItem { Key = null, Text = " " });
-
-				for (int i = 0; i < numTransports; i++)
-				{
-					string k = ((char)('A' + i)).ToString();
-
-					ListItem listItem = new ListItem
-					{
-						Key = k,
-						Text = k,
-					};
-
-					_dropDownTransports.Items.Add(listItem);
-				}
-
-				_mainLayout.Items.Add(_dropDownTransports);
-
-				#endregion
-			}
+			#endregion
 
 			_mainLayout.Visible = false;
+		}
 
+		public void Populate(List<GameDest> gameDests, List<GameItem> gameItems, int numTransports)
+		{
+			#region Destinations 
+
+			_gameDests = gameDests;
+
+			_dropDownDestNorth.Items.Add(null);
+			_dropDownDestSouth.Items.Add(null);
+			_dropDownDestWest.Items.Add(null);
+			_dropDownDestEast.Items.Add(null);
+
+			foreach (var gameDest in gameDests)
+			{
+				ListItem listItem = new ListItem
+				{
+					Key = gameDest.GetCode(),
+					Text = gameDest.LongName,
+				};
+
+				_dropDownDestNorth.Items.Add(listItem);
+				_dropDownDestSouth.Items.Add(listItem);
+				_dropDownDestWest.Items.Add(listItem);
+				_dropDownDestEast.Items.Add(listItem);
+			}
+
+			#endregion
+
+			#region Items
+
+			_gameItems = gameItems;
+
+			_dropDownItem1.Items.Add(null);
+			_dropDownItem2.Items.Add(null);
+
+			foreach (var gameItem in gameItems)
+			{
+				ImageListItem listItem = new ImageListItem
+				{
+					Key = gameItem.GetCode(),
+					Image = gameItem.Icon,
+				};
+
+				_dropDownItem1.Items.Add(listItem);
+				_dropDownItem2.Items.Add(listItem);
+			}
+
+			#endregion
+
+			#region Transports
+
+			_dropDownTransports.Items.Clear();
+
+			_dropDownTransports.Items.Add(new ListItem { Key = null, Text = null });
+
+			for (int i = 0; i < numTransports; i++)
+			{
+				string k = ((char)('A' + i)).ToString();
+
+				ListItem listItem = new ListItem
+				{
+					Key = k,
+					Text = k,
+				};
+
+				_dropDownTransports.Items.Add(listItem);
+			}
+
+			#endregion
+		}
+
+		public void Activate()
+		{
 			_detailPanel.Content = _mainLayout;
+		}
+
+		public void UpdateDetails(int w, int x, int y, DungeonRoomProps props, DungeonRoomState state)
+		{
+			_w = w;
+			_x = x;
+			_y = y;
+			_props = props;
+			_state = state;
+			Refresh();
+		}
+
+		public void Refresh()
+		{
+			if (_refreshing) return;
+
+			_refreshing = true;
+
+			if (_props != null)
+			{
+				_mainLayout.Visible = true;
+
+				_dropDownDestNorth.SelectedKey = _state.DestNorth?.GetCode();
+				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
+				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
+				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
+				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
+				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
+				_dropDownTransports.SelectedKey = _state.Transport;
+
+				_dropDownDestNorth.Enabled = _props.DestNorth;
+				_dropDownDestSouth.Enabled = _props.DestSouth;
+				_dropDownDestWest.Enabled = _props.DestWest;
+				_dropDownDestEast.Enabled = _props.DestEast;
+				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
+				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
+				_dropDownTransports.Enabled = _props.Shuffled || _props.HasStairs;
+			}
+			else
+			{
+				_mainLayout.Visible = false;
+			}
+
+			_refreshing = false;
 		}
 
 		private void HandleSelectedDestNorthChanged(object sender, EventArgs e)
@@ -226,50 +285,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mutator.ChangeTransport(_w, _x, _y, _state, transport);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		public void UpdateDetails(int w, int x, int y, DungeonRoomProps props, DungeonRoomState state)
-		{
-			_w = w;
-			_x = x;
-			_y = y;
-			_props = props;
-			_state = state;
-			Refresh();
-		}
-
-		public void Refresh()
-		{
-			if (_refreshing) return;
-
-			_refreshing = true;
-
-			if (_props != null)
-			{
-				_mainLayout.Visible = true;
-
-				_dropDownDestNorth.SelectedKey = _state.DestNorth?.GetCode();
-				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
-				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
-				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
-				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
-				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
-				_dropDownTransports.SelectedKey = _state.Transport;
-
-				_dropDownDestNorth.Enabled = _props.DestNorth;
-				_dropDownDestSouth.Enabled = _props.DestSouth;
-				_dropDownDestWest.Enabled = _props.DestWest;
-				_dropDownDestEast.Enabled = _props.DestEast;
-				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
-				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
-				_dropDownTransports.Enabled = _props.Shuffled || _props.HasStairs;
-			}
-			else
-			{
-				_mainLayout.Visible = false;
-			}
-
-			_refreshing = false;
 		}
 	}
 }
