@@ -189,6 +189,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < _width; x++)
 				{
 					var state = _roomStates[y, x];
+
+					// dests
+
 					if (state.DestNorth != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestNorth.GetCode() };
@@ -209,6 +212,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.DestEast.GetCode() };
 						mapState.Dests.Add(entry);
 					}
+
+					// items
+
 					if (state.Item1 != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
@@ -218,6 +224,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
 						mapState.Items.Add(entry);
+					}
+
+					// stairs
+
+					if (state.Transport != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Transport };
+						mapState.Stairs.Add(entry);
 					}
 				}
 			}
@@ -245,6 +259,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
 					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
+			}
+
+			foreach (var entry in mapState.Stairs)
+			{
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].Transport = entry.Code;
 			}
 		}
 
@@ -528,6 +548,13 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (roomState.Explored)
 					{
 						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+					}
+
+					if (roomState.Transport != null)
+					{
+						Brush textBrush = Brushes.CornflowerBlue;
+						Font textFont = Fonts.Sans(12);
+						DrawText(e.Graphics, x0 + 29, y0 + 16, 36, 28, $"{roomState.Transport}", textFont, textBrush);
 					}
 
 					if (roomState.DestNorth != null)
