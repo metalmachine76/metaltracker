@@ -70,7 +70,7 @@ namespace MetalTracker.Games.Zelda
 				{
 					char mc = mline[x];  // meta char
 					char sc = sline[x];  // shuffle char
-					char tc = sline[x];  // stairs char
+					char tc = tline[x];  // stairs char
 
 					DungeonRoomProps props;
 
@@ -143,7 +143,35 @@ namespace MetalTracker.Games.Zelda
 
 		public static DungeonRoomState[,] GetDefaultDungeonState(bool q2, int level, int shuffleMode, bool mirrored)
 		{
-			return null;
+			string d = $"d{level}";
+			string q = q2 ? "q2" : "q1";
+
+			string[] stairsLines = GetResourceLines($"MetalTracker.Games.Zelda.Res.{q}.{d}stairs.txt");
+
+			int w = stairsLines[0].Length;
+
+			DungeonRoomState[,] stateGrid = new DungeonRoomState[8, w];
+
+			for (int y = 0; y < 8; y++)
+			{
+				string tline = stairsLines[y];
+
+				for (int x = 0; x < w; x++)
+				{
+					char tc = tline[x];  // stairs char
+
+					DungeonRoomState state = new DungeonRoomState();
+
+					if (tc != '.')
+					{
+						state.Transport = tc.ToString();
+					}
+
+					stateGrid[y, x] = state;
+				}
+			}
+
+			return stateGrid;
 		}
 
 		private static string[] GetResourceLines(string resName)

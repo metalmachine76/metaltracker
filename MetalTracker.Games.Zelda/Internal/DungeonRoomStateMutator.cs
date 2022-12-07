@@ -57,19 +57,10 @@ namespace MetalTracker.Games.Zelda.Internal
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
-		public void ChangeTransport(int w, int x, int y, DungeonRoomState state, int transport)
+		public void ChangeTransport(int w, int x, int y, DungeonRoomState state, string transport)
 		{
 			var oldState = state.Clone();
-
-			if (state.Transport == transport)
-			{
-				state.Transport = -1;
-			}
-			else
-			{
-				state.Transport = transport;
-			}
-
+			state.Transport = transport;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 

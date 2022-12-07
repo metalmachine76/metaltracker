@@ -18,7 +18,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownDestEast;
 		private DropDown _dropDownItem1;
 		private DropDown _dropDownItem2;
-		private List<Button> _transportButtons = new List<Button>();
+		private DropDown _dropDownTransports;
 
 		private List<GameDest> _gameDests;
 		private List<GameItem> _gameItems;
@@ -39,7 +39,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameDest> gameDests, List<GameItem> gameItems, int transports)
+		public void Build(List<GameDest> gameDests, List<GameItem> gameItems, int numTransports)
 		{
 			if (_mainLayout == null)
 			{
@@ -127,23 +127,30 @@ namespace MetalTracker.Games.Zelda.Internal
 
 				#region Transports
 
-				if (transports > 0)
+				if (numTransports > 0)
 				{
-					_mainLayout.Items.Add(new Label { Text = "Transports" });
+					_mainLayout.Items.Add(new Label { Text = "Transport" });
 
-					var transportsLayout = new StackLayout { Orientation = Orientation.Horizontal, VerticalContentAlignment = VerticalAlignment.Center };
+					_dropDownTransports = new DropDown { Height = 25 };
 
-					for (int i = 0; i < transports; i++)
+					_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
+
+					_dropDownTransports.Items.Add(new ListItem { Key = null, Text = " " });
+
+					for (int i = 0; i < numTransports; i++)
 					{
-						string text = ((char)('A' + i)).ToString();
-						Button buttonTransport = new Button { Text = text, Width = 20 };
-						transportsLayout.Items.Add(buttonTransport);
-						_transportButtons.Add(buttonTransport);
-						buttonTransport.Tag = i;
-						buttonTransport.Click += HandleTransportButtonClick;
+						string k = ((char)('A' + i)).ToString();
+
+						ListItem listItem = new ListItem
+						{
+							Key = k,
+							Text = k,
+						};
+
+						_dropDownTransports.Items.Add(listItem);
 					}
 
-					_mainLayout.Items.Add(transportsLayout);
+					_mainLayout.Items.Add(_dropDownTransports);
 				}
 
 				#endregion
@@ -156,6 +163,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedDestNorthChanged(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestNorth(_w, _x, _y, _state, gameDest);
@@ -165,6 +173,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedDestSouthChanged(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestSouth(_w, _x, _y, _state, gameDest);
@@ -174,6 +183,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedDestWestChanged(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestWest(_w, _x, _y, _state, gameDest);
@@ -183,6 +193,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedDestEastChanged(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestEast(_w, _x, _y, _state, gameDest);
@@ -192,6 +203,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedItem1Changed(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeItem1(_w, _x, _y, _state, gameItem);
@@ -201,6 +213,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private void HandleSelectedItem2Changed(object sender, EventArgs e)
 		{
+			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeItem2(_w, _x, _y, _state, gameItem);
@@ -208,10 +221,11 @@ namespace MetalTracker.Games.Zelda.Internal
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void HandleTransportButtonClick(object sender, EventArgs e)
+		private void HandleSelectedStairChanged(object sender, EventArgs e)
 		{
-			var button = (sender as Button);
-			int transport = (int)button.Tag;
+			if (_refreshing) return;
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			string transport = listItem?.Key;
 			_mutator.ChangeTransport(_w, _x, _y, _state, transport);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -243,6 +257,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
 				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
 				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
+				_dropDownTransports.SelectedKey = _state.Transport;
 
 				_dropDownDestNorth.Enabled = _props.DestNorth;
 				_dropDownDestSouth.Enabled = _props.DestSouth;
@@ -250,6 +265,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestEast.Enabled = _props.DestEast;
 				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
 				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
+				_dropDownTransports.Enabled = _props.HasTransports;
 			}
 			else
 			{

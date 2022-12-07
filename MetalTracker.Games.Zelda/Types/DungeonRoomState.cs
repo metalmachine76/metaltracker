@@ -12,7 +12,7 @@ namespace MetalTracker.Games.Zelda.Types
 		public GameDest DestEast { get; set; }
 		public GameItem Item1 { get; set; }
 		public GameItem Item2 { get; set; }
-		public int Transport { get; set; } = -1;
+		public string Transport { get; set; }
 
 		// local state
 
