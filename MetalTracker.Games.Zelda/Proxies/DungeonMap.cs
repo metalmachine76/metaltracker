@@ -26,8 +26,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private readonly DungeonRoomDetail _dungeonRoomDetail;
 
 		private bool _flag_q2;
+		private int _flag_level;
 		private bool _flag_mirrored;
-		private int _level;
+		private int _flag_shuffle;
+
 		private Image _mapImage;
 		private DungeonRoomProps[,] _meta;
 		private int _width;
@@ -74,7 +76,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
 
-			ResetState();
+			//ResetState();
 		}
 
 		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
@@ -85,8 +87,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			_flag_q2 = q2;
+			_flag_level = level;
+			_flag_shuffle = shuffleMode;
 			_flag_mirrored = mirrored;
-			_level = level;
+
 			_mapImage = DungeonResourceClient.GetDungeonImage(q2, level, mirrored);
 			_meta = DungeonResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
 			_width = _meta.GetLength(1);
@@ -157,14 +161,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void ResetState()
 		{
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 8; x++)
-				{
-					_roomStates[y, x] = new DungeonRoomState();
-				}
-			}
-
+			_roomStates = DungeonResourceClient.GetDefaultDungeonState(_flag_q2, _flag_level, _flag_shuffle, _flag_mirrored);
 			_drawable.Invalidate();
 		}
 
@@ -175,7 +172,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 			var roomProps = GetProps(_mxClick, _myClick);
 			var roomState = _roomStates[_myClick, _mxClick];
-			_dungeonRoomDetail.UpdateDetails(_level, _mxClick, _myClick, roomProps, roomState);
+			_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
 		}
 
 		public override string GetMapKey()
@@ -280,12 +277,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_level} (floor)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _map, x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_level} (basement)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -305,22 +302,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level}", _map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level}", _map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level}", _map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level}", _map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -353,19 +350,19 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (_nodeClick == 'N' && roomProps.DestNorth)
 				{
-					_mutator.ChangeDestNorth(_level, _mxClick, _myClick, roomState, dest);
+					_mutator.ChangeDestNorth(_flag_level, _mxClick, _myClick, roomState, dest);
 				}
 				else if (_nodeClick == 'S' && roomProps.DestSouth)
 				{
-					_mutator.ChangeDestSouth(_level, _mxClick, _myClick, roomState, dest);
+					_mutator.ChangeDestSouth(_flag_level, _mxClick, _myClick, roomState, dest);
 				}
 				else if (_nodeClick == 'W' && roomProps.DestWest)
 				{
-					_mutator.ChangeDestWest(_level, _mxClick, _myClick, roomState, dest);
+					_mutator.ChangeDestWest(_flag_level, _mxClick, _myClick, roomState, dest);
 				}
 				else if (_nodeClick == 'E' && roomProps.DestEast)
 				{
-					_mutator.ChangeDestEast(_level, _mxClick, _myClick, roomState, dest);
+					_mutator.ChangeDestEast(_flag_level, _mxClick, _myClick, roomState, dest);
 				}
 
 				_drawable.Invalidate();
@@ -405,7 +402,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
-				_dungeonRoomDetail.UpdateDetails(_level, _mxClick, _myClick, roomProps, roomState);
+				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
 				if (e.Buttons == MouseButtons.Alternate)
 				{
 					if (roomProps.DestNorth && _nodeClick == 'N')
