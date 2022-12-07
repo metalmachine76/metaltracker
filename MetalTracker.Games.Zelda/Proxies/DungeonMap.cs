@@ -503,6 +503,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 				e.Graphics.DrawImage(_mapImage, offx, offy, _width * 64, 352);
 			}
 
+			// draw room state
+
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < _width; x++)
@@ -579,6 +581,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 			}
 
+			// draw "current room" box
+
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			{
+				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+			}
+
+			// draw hover indicators
+
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < _width && _my > -1 && _my < 8)
 			{
 				float x0 = _mx * 64 + offx;
@@ -619,11 +630,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 						e.Graphics.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
 					}
 				}
-			}
-
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
-			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
 			}
 		}
 

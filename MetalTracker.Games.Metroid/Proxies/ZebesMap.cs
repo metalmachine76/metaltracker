@@ -359,6 +359,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 960);
 			}
 
+			// draw room states
+
 			for (int y = 0; y < 32; y++)
 			{
 				for (int x = 0; x < 32; x++)
@@ -399,14 +401,18 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 			}
 
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
-			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
-			}
+			// draw "current room" box
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
 				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 32 + offx, _myClick * 30 + offy, 31, 29);
+			}
+
+			// draw hover indicators
+
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
+			{
+				e.Graphics.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
 			}
 		}
 
