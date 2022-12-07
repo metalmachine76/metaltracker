@@ -180,9 +180,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return _map;
 		}
 
-		public override List<StateEntry> GetDestStates()
+		public DungeonMapState PersistState()
 		{
-			List<StateEntry> list = new List<StateEntry>();
+			DungeonMapState mapState = new DungeonMapState();
 
 			for (int y = 0; y < 8; y++)
 			{
@@ -192,57 +192,42 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (state.DestNorth != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestNorth.GetCode() };
-						list.Add(entry);
+						mapState.Dests.Add(entry);
 					}
 					if (state.DestSouth != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.DestSouth.GetCode() };
-						list.Add(entry);
+						mapState.Dests.Add(entry);
 					}
 					if (state.DestWest != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.DestWest.GetCode() };
-						list.Add(entry);
+						mapState.Dests.Add(entry);
 					}
 					if (state.DestEast != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.DestEast.GetCode() };
-						list.Add(entry);
+						mapState.Dests.Add(entry);
 					}
-				}
-			}
-
-			return list;
-		}
-
-		public override List<StateEntry> GetItemStates()
-		{
-			List<StateEntry> list = new List<StateEntry>();
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < _width; x++)
-				{
-					var state = _roomStates[y, x];
 					if (state.Item1 != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
-						list.Add(entry);
+						mapState.Items.Add(entry);
 					}
 					if (state.Item2 != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
-						list.Add(entry);
+						mapState.Items.Add(entry);
 					}
 				}
 			}
 
-			return list;
+			return mapState;
 		}
 
-		public override void SetDestStates(List<StateEntry> entries)
+		public void RestoreState(DungeonMapState mapState)
 		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Dests)
 			{
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].DestNorth = _dests.Find(i => i.GetCode() == entry.Code);
@@ -253,11 +238,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 				else if (entry.Slot == 3)
 					_roomStates[entry.Y, entry.X].DestEast = _dests.Find(i => i.GetCode() == entry.Code);
 			}
-		}
 
-		public override void SetItemStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Items)
 			{
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);

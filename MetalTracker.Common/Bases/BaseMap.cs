@@ -7,14 +7,6 @@ namespace MetalTracker.Common.Bases
 	{
 		public abstract string GetMapKey();
 
-		public abstract List<StateEntry> GetDestStates();
-
-		public abstract List<StateEntry> GetItemStates();
-
-		public abstract void SetDestStates(List<StateEntry> entries);
-
-		public abstract void SetItemStates(List<StateEntry> entries);
-
 		public abstract List<LocationOfDest> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();

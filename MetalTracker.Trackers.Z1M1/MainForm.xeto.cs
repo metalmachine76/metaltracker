@@ -420,31 +420,17 @@ namespace MetalTracker.Trackers.Z1M1
 
 				_itemTracker.SetInventory(session.Inventory);
 
-				var state = session.State;
-
-				_overworldMap.SetDestStates(state.DestStateLists[0]);
-				_dungeonMaps[0].SetDestStates(state.DestStateLists[1]);
-				_dungeonMaps[1].SetDestStates(state.DestStateLists[2]);
-				_dungeonMaps[2].SetDestStates(state.DestStateLists[3]);
-				_dungeonMaps[3].SetDestStates(state.DestStateLists[4]);
-				_dungeonMaps[4].SetDestStates(state.DestStateLists[5]);
-				_dungeonMaps[5].SetDestStates(state.DestStateLists[6]);
-				_dungeonMaps[6].SetDestStates(state.DestStateLists[7]);
-				_dungeonMaps[7].SetDestStates(state.DestStateLists[8]);
-				_dungeonMaps[8].SetDestStates(state.DestStateLists[9]);
-				_zebesMap.SetDestStates(state.DestStateLists[10]);
-
-				_overworldMap.SetItemStates(state.ItemStateLists[0]);
-				_dungeonMaps[0].SetItemStates(state.ItemStateLists[1]);
-				_dungeonMaps[1].SetItemStates(state.ItemStateLists[2]);
-				_dungeonMaps[2].SetItemStates(state.ItemStateLists[3]);
-				_dungeonMaps[3].SetItemStates(state.ItemStateLists[4]);
-				_dungeonMaps[4].SetItemStates(state.ItemStateLists[5]);
-				_dungeonMaps[5].SetItemStates(state.ItemStateLists[6]);
-				_dungeonMaps[6].SetItemStates(state.ItemStateLists[7]);
-				_dungeonMaps[7].SetItemStates(state.ItemStateLists[8]);
-				_dungeonMaps[8].SetItemStates(state.ItemStateLists[9]);
-				_zebesMap.SetItemStates(state.ItemStateLists[10]);
+				_overworldMap.RestoreState(session.Overworld);
+				_dungeonMaps[0].RestoreState(session.Level1);
+				_dungeonMaps[1].RestoreState(session.Level2);
+				_dungeonMaps[2].RestoreState(session.Level3);
+				_dungeonMaps[3].RestoreState(session.Level4);
+				_dungeonMaps[4].RestoreState(session.Level5);
+				_dungeonMaps[5].RestoreState(session.Level6);
+				_dungeonMaps[6].RestoreState(session.Level7);
+				_dungeonMaps[7].RestoreState(session.Level8);
+				_dungeonMaps[8].RestoreState(session.Level9);
+				_zebesMap.RestoreState(session.Zebes);
 
 				return true;
 			}
@@ -457,41 +443,21 @@ namespace MetalTracker.Trackers.Z1M1
 
 		private bool SaveSession(string filename)
 		{
-			SessionState state = new SessionState();
-
-			state.DestStateLists[0] = _overworldMap.GetDestStates();
-			state.DestStateLists[1] = _dungeonMaps[0].GetDestStates();
-			state.DestStateLists[2] = _dungeonMaps[1].GetDestStates();
-			state.DestStateLists[3] = _dungeonMaps[2].GetDestStates();
-			state.DestStateLists[4] = _dungeonMaps[3].GetDestStates();
-			state.DestStateLists[5] = _dungeonMaps[4].GetDestStates();
-			state.DestStateLists[6] = _dungeonMaps[5].GetDestStates();
-			state.DestStateLists[7] = _dungeonMaps[6].GetDestStates();
-			state.DestStateLists[8] = _dungeonMaps[7].GetDestStates();
-			state.DestStateLists[9] = _dungeonMaps[8].GetDestStates();
-			state.DestStateLists[10] = _zebesMap.GetDestStates();
-
-			state.ItemStateLists[0] = _overworldMap.GetItemStates();
-			state.ItemStateLists[1] = _dungeonMaps[0].GetItemStates();
-			state.ItemStateLists[2] = _dungeonMaps[1].GetItemStates();
-			state.ItemStateLists[3] = _dungeonMaps[2].GetItemStates();
-			state.ItemStateLists[4] = _dungeonMaps[3].GetItemStates();
-			state.ItemStateLists[5] = _dungeonMaps[4].GetItemStates();
-			state.ItemStateLists[6] = _dungeonMaps[5].GetItemStates();
-			state.ItemStateLists[7] = _dungeonMaps[6].GetItemStates();
-			state.ItemStateLists[8] = _dungeonMaps[7].GetItemStates();
-			state.ItemStateLists[9] = _dungeonMaps[8].GetItemStates();
-			state.ItemStateLists[10] = _zebesMap.GetItemStates();
-
-			SessionFlags flags = _sessionFlags;
-
-			var inventory = _itemTracker.GetInventory();
-
 			Session session = new Session
 			{
 				Flags = _sessionFlags,
-				State = state,
-				Inventory = inventory
+				Inventory = _itemTracker.GetInventory(),
+				Overworld = _overworldMap.PersistState(),
+				Level1 = _dungeonMaps[0].PersistState(),
+				Level2 = _dungeonMaps[1].PersistState(),
+				Level3 = _dungeonMaps[2].PersistState(),
+				Level4 = _dungeonMaps[3].PersistState(),
+				Level5 = _dungeonMaps[4].PersistState(),
+				Level6 = _dungeonMaps[5].PersistState(),
+				Level7 = _dungeonMaps[6].PersistState(),
+				Level8 = _dungeonMaps[7].PersistState(),
+				Level9 = _dungeonMaps[8].PersistState(),
+				Zebes = _zebesMap.PersistState()
 			};
 
 			string serialized = System.Text.Json.JsonSerializer.Serialize(session);

@@ -158,57 +158,38 @@ namespace MetalTracker.Games.Metroid.Proxies
 			return Map;
 		}
 
-		public override List<StateEntry> GetDestStates()
+		public ZebesMapState PersistState()
 		{
-			List<StateEntry> list = new List<StateEntry>();
+			ZebesMapState mapState = new ZebesMapState();
 
 			for (int y = 0; y < 32; y++)
 			{
 				for (int x = 0; x < 32; x++)
 				{
-					var state = _roomStates[y, x];
-					if (state.DestElev != null)
+					var roomState = _roomStates[y, x];
+					if (roomState.DestElev != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestElev.GetCode() };
-						list.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestElev.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.Item != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item.GetCode() };
+						mapState.Items.Add(entry);
 					}
 				}
 			}
 
-			return list;
+			return mapState;
 		}
 
-		public override List<StateEntry> GetItemStates()
+		public void RestoreState(ZebesMapState mapState)
 		{
-			List<StateEntry> list = new List<StateEntry>();
-
-			for (int y = 0; y < 32; y++)
-			{
-				for (int x = 0; x < 32; x++)
-				{
-					var state = _roomStates[y, x];
-					if (state.Item != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item.GetCode() };
-						list.Add(entry);
-					}
-				}
-			}
-
-			return list;
-		}
-
-		public override void SetDestStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Dests)
 			{
 				_roomStates[entry.Y, entry.X].DestElev = _dests.Find(i => i.GetCode() == entry.Code);
 			}
-		}
-
-		public override void SetItemStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Items)
 			{
 				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
 			}

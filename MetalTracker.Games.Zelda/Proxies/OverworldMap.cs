@@ -166,67 +166,49 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return Map;
 		}
 
-		public override List<StateEntry> GetDestStates()
+		public OverworldMapState PersistState()
 		{
-			List<StateEntry> list = new List<StateEntry>();
+			OverworldMapState mapState = new OverworldMapState();
 
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < 16; x++)
 				{
-					var state = _roomStates[y, x];
-					if (state.Destination != null)
+					var roomState = _roomStates[y, x];
+					if (roomState.Destination != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Destination.GetCode() };
-						list.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Destination.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.Item1 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
+						mapState.Items.Add(entry);
+					}
+					if (roomState.Item2 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.Item2.GetCode() };
+						mapState.Items.Add(entry);
+					}
+					if (roomState.Item3 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.Item3.GetCode() };
+						mapState.Items.Add(entry);
 					}
 				}
 			}
 
-			return list;
+			return mapState;
 		}
 
-		public override List<StateEntry> GetItemStates()
+		public void RestoreState(OverworldMapState mapState)
 		{
-			List<StateEntry> list = new List<StateEntry>();
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 16; x++)
-				{
-					var state = _roomStates[y, x];
-					if (state.Item1 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
-						list.Add(entry);
-					}
-					if (state.Item2 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
-						list.Add(entry);
-					}
-					if (state.Item3 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.Item3.GetCode() };
-						list.Add(entry);
-					}
-				}
-			}
-
-			return list;
-		}
-
-		public override void SetDestStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Dests)
 			{
 				_roomStates[entry.Y, entry.X].Destination = _dests.Find(i => i.GetCode() == entry.Code);
 			}
-		}
 
-		public override void SetItemStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Items)
 			{
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
