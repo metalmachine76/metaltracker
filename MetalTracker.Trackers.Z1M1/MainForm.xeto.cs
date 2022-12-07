@@ -115,9 +115,35 @@ namespace MetalTracker.Trackers.Z1M1
 				CreateCoOpClient();
 			}
 
-			AssignSessionFlags();
+			if (File.Exists("last.mts"))
+			{
+				try
+				{
+					DoLoadSession("last.mts");
+				}
+				catch
+				{
+					AssignSessionFlags();
+					ResetSessionState();
+				}
+			}
+			else
+			{
+				AssignSessionFlags();
+				ResetSessionState();
+			}
+		}
 
-			ResetSessionState();
+		protected void HandleClosing(object sender, EventArgs e)
+		{
+			try
+			{
+				DoSaveSession("last.mts");
+			}
+			catch
+			{
+				//
+			}
 		}
 
 		protected void HandleClosed(object sender, EventArgs e)
@@ -408,30 +434,7 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			try
 			{
-				string serialized = File.ReadAllText(filename);
-
-				Session session = System.Text.Json.JsonSerializer.Deserialize<Session>(serialized);
-
-				_sessionFlags = session.Flags;
-
-				AssignSessionFlags();
-
-				ResetSessionState();
-
-				_itemTracker.SetInventory(session.Inventory);
-
-				_overworldMap.RestoreState(session.Overworld);
-				_dungeonMaps[0].RestoreState(session.Level1);
-				_dungeonMaps[1].RestoreState(session.Level2);
-				_dungeonMaps[2].RestoreState(session.Level3);
-				_dungeonMaps[3].RestoreState(session.Level4);
-				_dungeonMaps[4].RestoreState(session.Level5);
-				_dungeonMaps[5].RestoreState(session.Level6);
-				_dungeonMaps[6].RestoreState(session.Level7);
-				_dungeonMaps[7].RestoreState(session.Level8);
-				_dungeonMaps[8].RestoreState(session.Level9);
-				_zebesMap.RestoreState(session.Zebes);
-
+				DoLoadSession(filename);
 				return true;
 			}
 			catch (Exception ex)
@@ -441,7 +444,48 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 		}
 
+		private void DoLoadSession(string filename)
+		{
+			string serialized = File.ReadAllText(filename);
+
+			Session session = System.Text.Json.JsonSerializer.Deserialize<Session>(serialized);
+
+			_sessionFlags = session.Flags;
+
+			AssignSessionFlags();
+
+			ResetSessionState();
+
+			_itemTracker.SetInventory(session.Inventory);
+
+			_overworldMap.RestoreState(session.Overworld);
+			_dungeonMaps[0].RestoreState(session.Level1);
+			_dungeonMaps[1].RestoreState(session.Level2);
+			_dungeonMaps[2].RestoreState(session.Level3);
+			_dungeonMaps[3].RestoreState(session.Level4);
+			_dungeonMaps[4].RestoreState(session.Level5);
+			_dungeonMaps[5].RestoreState(session.Level6);
+			_dungeonMaps[6].RestoreState(session.Level7);
+			_dungeonMaps[7].RestoreState(session.Level8);
+			_dungeonMaps[8].RestoreState(session.Level9);
+			_zebesMap.RestoreState(session.Zebes);
+		}
+
 		private bool SaveSession(string filename)
+		{
+			try
+			{
+				DoSaveSession(filename);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"An error occurred while saving:\r\n\r\n{ex.Message}", "Metal Tracker", MessageBoxType.Error);
+				return false;
+			}
+		}
+
+		private void DoSaveSession(string filename)
 		{
 			Session session = new Session
 			{
@@ -462,16 +506,7 @@ namespace MetalTracker.Trackers.Z1M1
 
 			string serialized = System.Text.Json.JsonSerializer.Serialize(session);
 
-			try
-			{
-				File.WriteAllText(filename, serialized);
-				return true;
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"An error occurred while saving:\r\n\r\n{ex.Message}", "Metal Tracker", MessageBoxType.Error);
-				return false;
-			}
+			File.WriteAllText(filename, serialized);
 		}
 	}
 }

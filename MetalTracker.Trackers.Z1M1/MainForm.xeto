@@ -8,6 +8,7 @@
 	Padding="10"
 	PreLoad="HandlePreLoad"
 	Load="HandleLoad"
+	Closing="HandleClosing"
 	Closed="HandleClosed"
 	Maximizable="False"
 	Resizable="False"
