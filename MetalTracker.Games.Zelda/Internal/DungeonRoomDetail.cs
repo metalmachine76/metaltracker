@@ -127,31 +127,28 @@ namespace MetalTracker.Games.Zelda.Internal
 
 				#region Transports
 
-				if (numTransports > 0)
+				_mainLayout.Items.Add(new Label { Text = "Transport" });
+
+				_dropDownTransports = new DropDown { Height = 25 };
+
+				_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
+
+				_dropDownTransports.Items.Add(new ListItem { Key = null, Text = " " });
+
+				for (int i = 0; i < numTransports; i++)
 				{
-					_mainLayout.Items.Add(new Label { Text = "Transport" });
+					string k = ((char)('A' + i)).ToString();
 
-					_dropDownTransports = new DropDown { Height = 25 };
-
-					_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
-
-					_dropDownTransports.Items.Add(new ListItem { Key = null, Text = " " });
-
-					for (int i = 0; i < numTransports; i++)
+					ListItem listItem = new ListItem
 					{
-						string k = ((char)('A' + i)).ToString();
+						Key = k,
+						Text = k,
+					};
 
-						ListItem listItem = new ListItem
-						{
-							Key = k,
-							Text = k,
-						};
-
-						_dropDownTransports.Items.Add(listItem);
-					}
-
-					_mainLayout.Items.Add(_dropDownTransports);
+					_dropDownTransports.Items.Add(listItem);
 				}
+
+				_mainLayout.Items.Add(_dropDownTransports);
 
 				#endregion
 			}
@@ -265,7 +262,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestEast.Enabled = _props.DestEast;
 				_dropDownItem1.Enabled = _props.Shuffled || _props.CanHaveItem1();
 				_dropDownItem2.Enabled = _props.Shuffled || _props.CanHaveItem2();
-				_dropDownTransports.Enabled = _props.HasTransports;
+				_dropDownTransports.Enabled = _props.Shuffled || _props.HasTransports;
 			}
 			else
 			{
