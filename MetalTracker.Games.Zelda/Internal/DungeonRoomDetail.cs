@@ -37,6 +37,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private List<GameDest> _gameDests = new List<GameDest>();
 		private List<GameItem> _gameItems;
+		private List<DungeonWall> _walls;
 
 		private int _level;
 		private int _x;
@@ -52,6 +53,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			_detailPanel = detailPanel;
 			_mutator = mutator;
+
+			_walls = DungeonResourceClient.GetDungeonWalls();
 
 			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
@@ -74,12 +77,17 @@ namespace MetalTracker.Games.Zelda.Internal
 			_dropDownWallWest.Items.Add(null);
 			_dropDownWallEast.Items.Add(null);
 
-			foreach (var type in Enum.GetValues<DungeonWallType>())
+			_dropDownWallNorth.SelectedIndexChanged += HandleSelectedWallNorthChanged;
+			_dropDownWallSouth.SelectedIndexChanged += HandleSelectedWallSouthChanged;
+			_dropDownWallWest.SelectedIndexChanged += HandleSelectedWallWestChanged;
+			_dropDownWallEast.SelectedIndexChanged += HandleSelectedWallEastChanged;
+
+			foreach (var wall in _walls)
 			{
 				ListItem listItem = new ListItem
 				{
-					Key = ((int)(type)).ToString(),
-					Text = type.ToString(),
+					Key = wall.Code,
+					Text = wall.Name
 				};
 
 				_dropDownWallNorth.Items.Add(listItem);
@@ -185,7 +193,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			_dropDownDestEast.Items.Add(listItem);
 		}
 
-
 		public void SetTransports(int numTransports)
 		{
 			_dropDownTransports.Items.Clear();
@@ -235,6 +242,12 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
 				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
 				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
+
+				_dropDownWallNorth.SelectedKey = _state.WallNorth?.Code;
+				_dropDownWallSouth.SelectedKey = _state.WallSouth?.Code;
+				_dropDownWallWest.SelectedKey = _state.WallWest?.Code;
+				_dropDownWallEast.SelectedKey = _state.WallEast?.Code;
+
 				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
 				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 				_dropDownTransports.SelectedKey = _state.Transport;
@@ -297,6 +310,46 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestEast(_level, _x, _y, _state, gameDest);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedWallNorthChanged(object sender, EventArgs e)
+		{
+			if (_refreshing) return;
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var wall = _walls.Find(d => d.Code == listItem.Key);
+			_mutator.ChangeWallNorth(_level, _x, _y, _state, wall);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedWallSouthChanged(object sender, EventArgs e)
+		{
+			if (_refreshing) return;
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var wall = _walls.Find(d => d.Code == listItem.Key);
+			_mutator.ChangeWallSouth(_level, _x, _y, _state, wall);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedWallWestChanged(object sender, EventArgs e)
+		{
+			if (_refreshing) return;
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var wall = _walls.Find(d => d.Code == listItem.Key);
+			_mutator.ChangeWallWest(_level, _x, _y, _state, wall);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedWallEastChanged(object sender, EventArgs e)
+		{
+			if (_refreshing) return;
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var wall = _walls.Find(d => d.Code == listItem.Key);
+			_mutator.ChangeWallEast(_level, _x, _y, _state, wall);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}

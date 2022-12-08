@@ -8,6 +8,16 @@ namespace MetalTracker.Games.Zelda.Internal
 {
 	internal static class DungeonResourceClient
 	{
+		static List<DungeonWall> DungeonWalls = new List<DungeonWall>
+		{
+			new DungeonWall("O", "Open"),
+			new DungeonWall("L", "Locked"),
+			new DungeonWall("S", "Shutter"),
+			new DungeonWall("B", "Bomb"),
+			new DungeonWall("P", "Push"),
+			new DungeonWall("W", "Wall")
+		};
+
 		static List<(bool, int, int, int)> DungeonItemBasements = new List<(bool, int, int, int)>
 		{
 			(false, 1, 1, 2),
@@ -192,6 +202,11 @@ namespace MetalTracker.Games.Zelda.Internal
 
 
 			return stateGrid;
+		}
+
+		public static List<DungeonWall> GetDungeonWalls()
+		{
+			return DungeonWalls;
 		}
 
 		private static string[] GetResourceLines(string resName)
