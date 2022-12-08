@@ -51,7 +51,7 @@ Maps are divided into rooms, where each room is one game screen:
 Map specific features:
 
 - In dungeons and Zebes, item slot classes will be shown in white (unless the room is shuffled).
-- On the oveworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
+- On the overworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
 - In dungeons, transport stairs will be shown in blue.
 
 Map interaction is currently mouse-based only:
