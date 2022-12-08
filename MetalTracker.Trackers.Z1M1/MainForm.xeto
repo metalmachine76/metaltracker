@@ -8,6 +8,7 @@
 	Padding="10"
 	PreLoad="HandlePreLoad"
 	Load="HandleLoad"
+	Closing="HandleClosing"
 	Closed="HandleClosed"
 	Maximizable="False"
 	Resizable="False"
@@ -64,9 +65,9 @@
 			</StackLayout>
 		</GroupBox>
 		<StackLayout>
-			<GroupBox ID="groupBoxItemTracker" Width="400" Height="300" Text="Inventory / Goals" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxItemTracker" Width="400" Height="275" Text="Inventory / Goals" Padding="5,5,5,5">
 			</GroupBox>
-			<GroupBox ID="groupBoxRoomDetail" Width="400" Height="250" Text="Room Detail" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxRoomDetail" Width="400" Height="275" Text="Room Detail" Padding="5,5,5,5">
 			</GroupBox>
 		</StackLayout>
 	</StackLayout>

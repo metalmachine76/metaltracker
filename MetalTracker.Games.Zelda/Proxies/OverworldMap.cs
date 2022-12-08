@@ -6,18 +6,19 @@ using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
 using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Zelda.Internal;
+using MetalTracker.Games.Zelda.Internal.Types;
 using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda.Proxies
 {
-	public class OverworldMap : BaseMap
+    public class OverworldMap : BaseMap
 	{
 		const string Game = "zelda";
 		const string Map = "ow";
 
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 153));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 153));
-		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
+		static Pen CurrentPen = new Pen(Colors.White, 2);
 
 		private readonly Drawable _drawable;
 		private readonly OverworldRoomDetail _overworldRoomDetail;
@@ -69,8 +70,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_overworldRoomDetail = new OverworldRoomDetail(detailPanel, _mutator);
 			_overworldRoomDetail.DetailChanged += HandleRoomDetailChanged;
-
-			ResetState();
 		}
 
 		public void SetMapFlags(bool q2, bool shuffleExits, bool shuffleCaves, bool mirrored)
@@ -84,8 +83,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_mirrored = mirrored;
 			_flag_shuffle_exits = shuffleExits;
 			_flag_shuffle_caves = shuffleCaves;
-			_mapImage = InternalResourceClient.GetOverworldImage(q2, mirrored);
-			_meta = InternalResourceClient.GetOverworldMeta(q2, mirrored);
+			_mapImage = OverworldResourceClient.GetOverworldImage(q2, mirrored);
+			_meta = OverworldResourceClient.GetOverworldMeta(q2, mirrored);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -112,8 +111,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
 		{
-			coOpClient.FoundDest += HandleCoOpClientFoundDest;
-			coOpClient.FoundItem += HandleCoOpClientFoundItem;
+			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
 			_timer = new UITimer();
 			_timer.Interval = 0.5;
@@ -133,7 +131,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void ResetState()
 		{
-			var defaultState = InternalResourceClient.GetDefaultOverworldState(
+			var defaultState = OverworldResourceClient.GetDefaultOverworldState(
 				_flag_q2,
 				!_flag_shuffle_exits,
 				!_flag_shuffle_caves,
@@ -150,67 +148,65 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
-		public override List<StateEntry> GetDestStates()
+		public void LocateRoom(int x, int y)
 		{
-			List<StateEntry> list = new List<StateEntry>();
+			_offset.X = 256 - 64 * x - 32;
+			_mxClick = x;
+			_myClick = y;
+			_drawable.Invalidate();
+			var roomProps = GetProps(_mxClick, _myClick);
+			var roomState = _roomStates[_myClick, _mxClick];
+			_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+		}
+
+		public override string GetMapKey()
+		{
+			return Map;
+		}
+
+		public OverworldMapState PersistState()
+		{
+			OverworldMapState mapState = new OverworldMapState();
 
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < 16; x++)
 				{
-					var state = _roomStates[y, x];
-					if (state.Destination != null)
+					var roomState = _roomStates[y, x];
+					if (roomState.Destination != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Destination.GetCode() };
-						list.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Destination.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.Item1 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
+						mapState.Items.Add(entry);
+					}
+					if (roomState.Item2 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.Item2.GetCode() };
+						mapState.Items.Add(entry);
+					}
+					if (roomState.Item3 != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.Item3.GetCode() };
+						mapState.Items.Add(entry);
 					}
 				}
 			}
 
-			return list;
+			return mapState;
 		}
 
-		public override List<StateEntry> GetItemStates()
+		public void RestoreState(OverworldMapState mapState)
 		{
-			List<StateEntry> list = new List<StateEntry>();
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 16; x++)
-				{
-					var state = _roomStates[y, x];
-					if (state.Item1 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
-						list.Add(entry);
-					}
-					if (state.Item2 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
-						list.Add(entry);
-					}
-					if (state.Item3 != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.Item3.GetCode() };
-						list.Add(entry);
-					}
-				}
-			}
-
-			return list;
-		}
-
-		public override void SetDestStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Dests)
 			{
 				_roomStates[entry.Y, entry.X].Destination = _dests.Find(i => i.GetCode() == entry.Code);
 			}
-		}
 
-		public override void SetItemStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Items)
 			{
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
@@ -232,17 +228,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.Item3 != null && state.Item3.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}");
+						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -262,7 +258,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Destination != null && state.Destination.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}");
+						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -332,7 +328,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
-				var roomProps = GetMeta(_mxClick, _myClick);
+				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.DestHere && e.Buttons == MouseButtons.Alternate)
@@ -398,6 +394,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 352);
 			}
 
+			// draw room state
+
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < 16; x++)
@@ -407,7 +405,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					float x0 = x * 64 + offx;
 					float y0 = y * 44 + offy;
 
-					var props = GetMeta(x, y);
+					var props = GetProps(x, y);
 
 					if (!props.DestHere && !props.ItemHere)
 					{
@@ -458,14 +456,18 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 			}
 
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
-			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
-			}
+			// draw "current room" box
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
 				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+			}
+
+			// draw hover indicators
+
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
+			{
+				e.Graphics.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
 			}
 		}
 
@@ -483,7 +485,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		private OverworldRoomProps GetMeta(int x, int y)
+		private OverworldRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
 		}
@@ -492,36 +494,27 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		#region CoOp Event Handlers
 
-		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
+		private void HandleCoOpClientFound(object sender, FoundEventArgs e)
 		{
 			if (e.Game == Game && e.Map == Map)
 			{
 				var roomState = _roomStates[e.Y, e.X];
-				var dest = _dests.Find(d => d.GetCode() == e.Code);
-				roomState.Destination = dest;
 
-				_invalidateMap = true;
-
-				if (e.X == _mxClick && e.Y == _myClick)
+				if (e.Type == "dest")
 				{
-					_invalidateRoom = true;
+					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					roomState.Destination = dest;
 				}
-			}
-		}
-
-		private void HandleCoOpClientFoundItem(object sender, FoundEventArgs e)
-		{
-			if (e.Game == Game && e.Map == Map)
-			{
-				var roomState = _roomStates[e.Y, e.X];
-				var item = _items.Find(i => i.GetCode() == e.Code);
-
-				if (e.Slot == 0)
-					roomState.Item1 = item;
-				if (e.Slot == 1)
-					roomState.Item2 = item;
-				if (e.Slot == 2)
-					roomState.Item3 = item;
+				else if (e.Type == "item")
+				{
+					var item = _items.Find(i => i.GetCode() == e.Code);
+					if (e.Slot == 0)
+						roomState.Item1 = item;
+					if (e.Slot == 1)
+						roomState.Item2 = item;
+					if (e.Slot == 2)
+						roomState.Item3 = item;
+				}
 
 				_invalidateMap = true;
 

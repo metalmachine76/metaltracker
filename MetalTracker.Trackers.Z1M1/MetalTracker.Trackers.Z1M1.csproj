@@ -9,7 +9,7 @@
     <BuildPlatform Condition="'$(Configuration)'=='ReleaseGtk'">Gtk</BuildPlatform>
     <BuildPlatform Condition="'$(Configuration)'=='ReleaseWpf'">Wpf</BuildPlatform>
     <UseXeto>True</UseXeto>
-    <Version>1.0.4</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGtk|AnyCPU'">

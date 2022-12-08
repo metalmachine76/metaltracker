@@ -2,14 +2,10 @@
 {
 	public interface ICoOpClient
 	{
-		event EventHandler<FoundEventArgs> FoundItem;
-
-		event EventHandler<FoundEventArgs> FoundDest;
+		event EventHandler<FoundEventArgs> Found;
 
 		bool IsConnected();
 
-		Task SendItemLocation(string game, string map, int x, int y, int slot, string code);
-
-		Task SendDestLocation(string game, string map, int x, int y, int slot, string code);
+		Task SendLocation(string type, string game, string map, int x, int y, int slot, string code);
 	}
 }

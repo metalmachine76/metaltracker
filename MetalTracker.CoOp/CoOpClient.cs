@@ -13,8 +13,7 @@ namespace MetalTracker.CoOp
 		public string PlayerColor { get; private set; }
 		public string RoomId { get; private set; }
 
-		public event EventHandler<FoundEventArgs> FoundItem;
-		public event EventHandler<FoundEventArgs> FoundDest;
+		public event EventHandler<FoundEventArgs> Found;
 
 		private HubConnection _hubConnection;
 		private Exception _connectionError;
@@ -41,10 +40,10 @@ namespace MetalTracker.CoOp
 				_hubConnection = hubConnectionBuilder
 					.WithUrl($"{ServerAddress}/coophub")
 					.AddMessagePackProtocol()
+					.WithAutomaticReconnect()
 					.Build();
 
-				_hubConnection.On<string, string, string, int, int, int, string>("EchoItemLocation", HandleEchoItemLocation);
-				_hubConnection.On<string, string, string, int, int, int, string>("EchoDestLocation", HandleEchoDestLocation);
+				_hubConnection.On<string, string, string, string, int, int, int, string>("EchoLocation", HandleEchoLocation);
 
 				_hubConnection.Closed += HubConnectionClosed;
 
@@ -127,35 +126,21 @@ namespace MetalTracker.CoOp
 			return await _hubConnection.InvokeAsync<PlayerSummary>("GetPlayer", playerId);
 		}
 
-		public async Task SendItemLocation(string game, string map, int x, int y, int slot, string code)
+		public async Task SendLocation(string type, string game, string map, int x, int y, int slot, string code)
 		{
-			await _hubConnection.InvokeAsync("SendItemLocation", game, map, x, y, slot, code);
-		}
-
-		public async Task SendDestLocation(string game, string map, int x, int y, int slot, string code)
-		{
-			await _hubConnection.InvokeAsync("SendDestLocation", game, map, x, y, slot, code);
+			await _hubConnection.InvokeAsync("SendLocation", type, game, map, x, y, slot, code);
 		}
 
 		#endregion
 
 		#region Incoming message handlers
 
-		private void HandleEchoDestLocation(string playerId, string game, string map, int x, int y, int slot, string code)
+		private void HandleEchoLocation(string playerId, string type, string game, string map, int x, int y, int slot, string code)
 		{
 			if (playerId != this.PlayerId)
 			{
-				FoundEventArgs args = new FoundEventArgs(playerId, game, map, x, y, slot, code);
-				FoundDest?.Invoke(this, args);
-			}
-		}
-
-		private void HandleEchoItemLocation(string playerId, string game, string map, int x, int y, int slot, string code)
-		{
-			if (playerId != this.PlayerId)
-			{
-				FoundEventArgs args = new FoundEventArgs(playerId, game, map, x, y, slot, code);
-				FoundItem?.Invoke(this, args);
+				FoundEventArgs args = new FoundEventArgs(playerId, type, game, map, x, y, slot, code);
+				Found?.Invoke(this, args);
 			}
 		}
 

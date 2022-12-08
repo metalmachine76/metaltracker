@@ -6,11 +6,12 @@ using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
 using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Metroid.Internal;
+using MetalTracker.Games.Metroid.Internal.Types;
 using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Proxies
 {
-	public class ZebesMap : BaseMap
+    public class ZebesMap : BaseMap
 	{
 		const string Game = "metroid";
 		const string Map = "zebes";
@@ -18,7 +19,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
-		static Pen CurrentPen = new Pen(Colors.White, 1) { DashStyle = DashStyles.Dot };
+		static Pen CurrentPen = new Pen(Colors.White, 2);
 
 		private readonly Drawable _drawable;
 		private readonly ZebesRoomDetail _zebesRoomDetail;
@@ -68,8 +69,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_zebesRoomDetail = new ZebesRoomDetail(detailPanel, _mutator);
 			_zebesRoomDetail.DetailChanged += HandleRoomDetailChanged;
-
-			ResetState();
 		}
 
 		public void SetMapFlags(int shuffleMode, bool mirrored)
@@ -109,8 +108,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
 		{
-			coOpClient.FoundDest += HandleCoOpClientFoundDest;
-			coOpClient.FoundItem += HandleCoOpClientFoundItem;
+			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
 			_timer = new UITimer();
 			_timer.Interval = 0.5;
@@ -141,57 +139,55 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 		}
 
-		public override List<StateEntry> GetDestStates()
+		public void LocateRoom(int x, int y)
 		{
-			List<StateEntry> list = new List<StateEntry>();
+			_offset.X = 256 - 32 * x - 16;
+			_offset.Y = 240 - 30 * y - 15;
+			_mxClick = x;
+			_myClick = y;
+			_drawable.Invalidate();
+			var roomProps = GetProps(_mxClick, _myClick);
+			var roomState = _roomStates[_myClick, _mxClick];
+			_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+		}
+
+		public override string GetMapKey()
+		{
+			return Map;
+		}
+
+		public ZebesMapState PersistState()
+		{
+			ZebesMapState mapState = new ZebesMapState();
 
 			for (int y = 0; y < 32; y++)
 			{
 				for (int x = 0; x < 32; x++)
 				{
-					var state = _roomStates[y, x];
-					if (state.DestElev != null)
+					var roomState = _roomStates[y, x];
+					if (roomState.DestElev != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestElev.GetCode() };
-						list.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestElev.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.Item != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item.GetCode() };
+						mapState.Items.Add(entry);
 					}
 				}
 			}
 
-			return list;
+			return mapState;
 		}
 
-		public override List<StateEntry> GetItemStates()
+		public void RestoreState(ZebesMapState mapState)
 		{
-			List<StateEntry> list = new List<StateEntry>();
-
-			for (int y = 0; y < 32; y++)
-			{
-				for (int x = 0; x < 32; x++)
-				{
-					var state = _roomStates[y, x];
-					if (state.Item != null)
-					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item.GetCode() };
-						list.Add(entry);
-					}
-				}
-			}
-
-			return list;
-		}
-
-		public override void SetDestStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Dests)
 			{
 				_roomStates[entry.Y, entry.X].DestElev = _dests.Find(i => i.GetCode() == entry.Code);
 			}
-		}
-
-		public override void SetItemStates(List<StateEntry> entries)
-		{
-			foreach (var entry in entries)
+			foreach (var entry in mapState.Items)
 			{
 				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
 			}
@@ -208,7 +204,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item != null && state.Item.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}");
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -228,7 +224,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestElev != null && state.DestElev.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}");
+						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -294,7 +290,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
-				var roomProps = GetMeta(_mxClick, _myClick);
+				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
@@ -361,6 +357,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 960);
 			}
 
+			// draw room states
+
 			for (int y = 0; y < 32; y++)
 			{
 				for (int x = 0; x < 32; x++)
@@ -370,7 +368,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					float x0 = x * 32 + offx;
 					float y0 = y * 30 + offy;
 
-					var props = GetMeta(x, y);
+					var props = GetProps(x, y);
 
 					if (props.Shuffled)
 					{
@@ -401,14 +399,18 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 			}
 
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
-			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
-			}
+			// draw "current room" box
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
 				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 32 + offx, _myClick * 30 + offy, 31, 29);
+			}
+
+			// draw hover indicators
+
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
+			{
+				e.Graphics.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
 			}
 		}
 
@@ -426,7 +428,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			}
 		}
 
-		private ZebesRoomProps GetMeta(int x, int y)
+		private ZebesRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
 		}
@@ -435,32 +437,22 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region CoOp Event Handlers
 
-		private void HandleCoOpClientFoundDest(object sender, FoundEventArgs e)
+		private void HandleCoOpClientFound(object sender, FoundEventArgs e)
 		{
 			if (e.Game == Game && e.Map == Map)
 			{
 				var roomState = _roomStates[e.Y, e.X];
-				var dest = _dests.Find(d => d.GetCode() == e.Code);
 
-				roomState.DestElev = dest;
-
-				_invalidateMap = true;
-
-				if (e.X == _mxClick && e.Y == _myClick)
+				if (e.Type == "dest")
 				{
-					_invalidateRoom = true;
+					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					roomState.DestElev = dest;
 				}
-			}
-		}
-
-		private void HandleCoOpClientFoundItem(object sender, FoundEventArgs e)
-		{
-			if (e.Game == Game && e.Map == Map)
-			{
-				var roomState = _roomStates[e.Y, e.X];
-				var item = _items.Find(i => i.GetCode() == e.Code);
-
-				roomState.Item = item;
+				else if (e.Type == "item")
+				{
+					var item = _items.Find(i => i.GetCode() == e.Code);
+					roomState.Item = item;
+				}
 
 				_invalidateMap = true;
 

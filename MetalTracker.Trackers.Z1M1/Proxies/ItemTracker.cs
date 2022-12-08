@@ -21,6 +21,8 @@ namespace MetalTracker.Trackers.Z1M1.Proxies
 
 		public void Init()
 		{
+			_trackedItemViews.Clear();
+
 			var mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
 			// zelda rows

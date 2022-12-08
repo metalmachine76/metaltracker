@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Eto.Forms;
 using MetalTracker.Common.Types;
-using MetalTracker.Games.Metroid.Types;
+using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	internal class ZebesRoomDetail
+    internal class ZebesRoomDetail
 	{
 		private readonly Panel _detailPanel;
 		private readonly ZebesRoomStateMutator _mutator;

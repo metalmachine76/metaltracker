@@ -71,6 +71,33 @@ namespace MetalTracker.Trackers.Z1M1
 			_itemTracker = new ItemTracker(itemTrackerContainer);
 		}
 
+		public void LocateGoal(string map, int x, int y)
+		{
+			DropDown dropDown = this.FindChild<DropDown>("dropDownSelectedMap");
+
+			if (map == _overworldMap.GetMapKey())
+			{
+				dropDown.SelectedIndex = 0;
+				_overworldMap.LocateRoom(x, y);
+			}
+			else if (map == _zebesMap.GetMapKey())
+			{
+				dropDown.SelectedIndex = 10;
+				_zebesMap.LocateRoom(x, y);
+			}
+			else
+			{
+				for (int i = 0; i < 9; i++)
+				{
+					if (map == _dungeonMaps[i].GetMapKey())
+					{
+						dropDown.SelectedIndex = i + 1;
+						_dungeonMaps[i].LocateRoom(x, y);
+					}
+				}
+			}
+		}
+
 		#region Event Handlers
 
 		protected void HandlePreLoad(object sender, EventArgs e)
@@ -88,9 +115,35 @@ namespace MetalTracker.Trackers.Z1M1
 				CreateCoOpClient();
 			}
 
-			AssignSessionFlags();
+			if (File.Exists("last.mts"))
+			{
+				try
+				{
+					DoLoadSession("last.mts");
+				}
+				catch
+				{
+					AssignSessionFlags();
+					ResetSessionState();
+				}
+			}
+			else
+			{
+				AssignSessionFlags();
+				ResetSessionState();
+			}
+		}
 
-			ResetSessionState();
+		protected void HandleClosing(object sender, EventArgs e)
+		{
+			try
+			{
+				DoSaveSession("last.mts");
+			}
+			catch
+			{
+				//
+			}
 		}
 
 		protected void HandleClosed(object sender, EventArgs e)
@@ -168,7 +221,7 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleShowSessionLogClick(object sender, EventArgs e)
 		{
-			SessionLogForm form = new SessionLogForm();
+			SessionLogForm form = new SessionLogForm(this);
 			form.AddMap(_overworldMap);
 			for (int i = 0; i < 9; i++)
 			{
@@ -381,44 +434,7 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			try
 			{
-				string serialized = File.ReadAllText(filename);
-
-				Session session = System.Text.Json.JsonSerializer.Deserialize<Session>(serialized);
-
-				_sessionFlags = session.Flags;
-
-				AssignSessionFlags();
-
-				ResetSessionState();
-
-				_itemTracker.SetInventory(session.Inventory);
-
-				var state = session.State;
-
-				_overworldMap.SetDestStates(state.DestStateLists[0]);
-				_dungeonMaps[0].SetDestStates(state.DestStateLists[1]);
-				_dungeonMaps[1].SetDestStates(state.DestStateLists[2]);
-				_dungeonMaps[2].SetDestStates(state.DestStateLists[3]);
-				_dungeonMaps[3].SetDestStates(state.DestStateLists[4]);
-				_dungeonMaps[4].SetDestStates(state.DestStateLists[5]);
-				_dungeonMaps[5].SetDestStates(state.DestStateLists[6]);
-				_dungeonMaps[6].SetDestStates(state.DestStateLists[7]);
-				_dungeonMaps[7].SetDestStates(state.DestStateLists[8]);
-				_dungeonMaps[8].SetDestStates(state.DestStateLists[9]);
-				_zebesMap.SetDestStates(state.DestStateLists[10]);
-
-				_overworldMap.SetItemStates(state.ItemStateLists[0]);
-				_dungeonMaps[0].SetItemStates(state.ItemStateLists[1]);
-				_dungeonMaps[1].SetItemStates(state.ItemStateLists[2]);
-				_dungeonMaps[2].SetItemStates(state.ItemStateLists[3]);
-				_dungeonMaps[3].SetItemStates(state.ItemStateLists[4]);
-				_dungeonMaps[4].SetItemStates(state.ItemStateLists[5]);
-				_dungeonMaps[5].SetItemStates(state.ItemStateLists[6]);
-				_dungeonMaps[6].SetItemStates(state.ItemStateLists[7]);
-				_dungeonMaps[7].SetItemStates(state.ItemStateLists[8]);
-				_dungeonMaps[8].SetItemStates(state.ItemStateLists[9]);
-				_zebesMap.SetItemStates(state.ItemStateLists[10]);
-
+				DoLoadSession(filename);
 				return true;
 			}
 			catch (Exception ex)
@@ -428,50 +444,38 @@ namespace MetalTracker.Trackers.Z1M1
 			}
 		}
 
+		private void DoLoadSession(string filename)
+		{
+			string serialized = File.ReadAllText(filename);
+
+			Session session = System.Text.Json.JsonSerializer.Deserialize<Session>(serialized);
+
+			_sessionFlags = session.Flags;
+
+			AssignSessionFlags();
+
+			ResetSessionState();
+
+			_itemTracker.SetInventory(session.Inventory);
+
+			_overworldMap.RestoreState(session.Overworld);
+			_dungeonMaps[0].RestoreState(session.Level1);
+			_dungeonMaps[1].RestoreState(session.Level2);
+			_dungeonMaps[2].RestoreState(session.Level3);
+			_dungeonMaps[3].RestoreState(session.Level4);
+			_dungeonMaps[4].RestoreState(session.Level5);
+			_dungeonMaps[5].RestoreState(session.Level6);
+			_dungeonMaps[6].RestoreState(session.Level7);
+			_dungeonMaps[7].RestoreState(session.Level8);
+			_dungeonMaps[8].RestoreState(session.Level9);
+			_zebesMap.RestoreState(session.Zebes);
+		}
+
 		private bool SaveSession(string filename)
 		{
-			SessionState state = new SessionState();
-
-			state.DestStateLists[0] = _overworldMap.GetDestStates();
-			state.DestStateLists[1] = _dungeonMaps[0].GetDestStates();
-			state.DestStateLists[2] = _dungeonMaps[1].GetDestStates();
-			state.DestStateLists[3] = _dungeonMaps[2].GetDestStates();
-			state.DestStateLists[4] = _dungeonMaps[3].GetDestStates();
-			state.DestStateLists[5] = _dungeonMaps[4].GetDestStates();
-			state.DestStateLists[6] = _dungeonMaps[5].GetDestStates();
-			state.DestStateLists[7] = _dungeonMaps[6].GetDestStates();
-			state.DestStateLists[8] = _dungeonMaps[7].GetDestStates();
-			state.DestStateLists[9] = _dungeonMaps[8].GetDestStates();
-			state.DestStateLists[10] = _zebesMap.GetDestStates();
-
-			state.ItemStateLists[0] = _overworldMap.GetItemStates();
-			state.ItemStateLists[1] = _dungeonMaps[0].GetItemStates();
-			state.ItemStateLists[2] = _dungeonMaps[1].GetItemStates();
-			state.ItemStateLists[3] = _dungeonMaps[2].GetItemStates();
-			state.ItemStateLists[4] = _dungeonMaps[3].GetItemStates();
-			state.ItemStateLists[5] = _dungeonMaps[4].GetItemStates();
-			state.ItemStateLists[6] = _dungeonMaps[5].GetItemStates();
-			state.ItemStateLists[7] = _dungeonMaps[6].GetItemStates();
-			state.ItemStateLists[8] = _dungeonMaps[7].GetItemStates();
-			state.ItemStateLists[9] = _dungeonMaps[8].GetItemStates();
-			state.ItemStateLists[10] = _zebesMap.GetItemStates();
-
-			SessionFlags flags = _sessionFlags;
-
-			var inventory = _itemTracker.GetInventory();
-
-			Session session = new Session
-			{
-				Flags = _sessionFlags,
-				State = state,
-				Inventory = inventory
-			};
-
-			string serialized = System.Text.Json.JsonSerializer.Serialize(session);
-
 			try
 			{
-				File.WriteAllText(filename, serialized);
+				DoSaveSession(filename);
 				return true;
 			}
 			catch (Exception ex)
@@ -479,6 +483,30 @@ namespace MetalTracker.Trackers.Z1M1
 				MessageBox.Show($"An error occurred while saving:\r\n\r\n{ex.Message}", "Metal Tracker", MessageBoxType.Error);
 				return false;
 			}
+		}
+
+		private void DoSaveSession(string filename)
+		{
+			Session session = new Session
+			{
+				Flags = _sessionFlags,
+				Inventory = _itemTracker.GetInventory(),
+				Overworld = _overworldMap.PersistState(),
+				Level1 = _dungeonMaps[0].PersistState(),
+				Level2 = _dungeonMaps[1].PersistState(),
+				Level3 = _dungeonMaps[2].PersistState(),
+				Level4 = _dungeonMaps[3].PersistState(),
+				Level5 = _dungeonMaps[4].PersistState(),
+				Level6 = _dungeonMaps[5].PersistState(),
+				Level7 = _dungeonMaps[6].PersistState(),
+				Level8 = _dungeonMaps[7].PersistState(),
+				Level9 = _dungeonMaps[8].PersistState(),
+				Zebes = _zebesMap.PersistState()
+			};
+
+			string serialized = System.Text.Json.JsonSerializer.Serialize(session);
+
+			File.WriteAllText(filename, serialized);
 		}
 	}
 }

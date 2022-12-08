@@ -1,5 +1,5 @@
 ﻿MetalTracker for Z1M1 
-Version 1.0
+Version 1.1
 
 
 MENU
@@ -19,7 +19,8 @@ Session
                Allows you to view or change various Z1M1 flags. Changing a mirrored flag
                will mirror any tracked data. Changing other flags will not affect currently
                tracked data.
-  Log       -> Session log will tell you where all major items and exits are located.
+  Log       -> Session log will tell you where all important (quest and equipment) items and exits are located.
+               Double-clicking an item or exit in the log will select the map and room it is located on, on the main UI window.
   Reset     -> Reset (clear) tracked data for current session.
 
 Co-Op
@@ -43,19 +44,24 @@ The overworld, the 9 dungeons, and Zebes.
 
 Maps are divided into rooms, where each room is one game screen:
 
+- Connections to other game areas are shown in green on the map.
 - If a room square is grayed out this means it is included in the shuffle (based on session flags).
-- If a room square is not grayed out, and it contains a letter, this indicates the item slot class for
-  the room, which can be useful for routing.
-- Portal connections on the map are shown in green. 
-- Non-portal connections (such as shops, take-any-road, etc) will be shown in white.
-- Items will be shown on the map with icons.
+- Items will be shown on the map with item icons.
+
+Map specific features:
+
+- In dungeons and Zebes, item slot classes will be shown in white (unless the room is shuffled).
+- On the overworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
+- In dungeons, transport stairs will be shown in blue.
 
 Map interaction is currently mouse-based only:
 
 - You can click and drag the maps which are larger than the visible area.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
-- Right-clicking applicable rooms will show a menu where you can choose a destination to connect the room to.
-- In dungeons, the exit will be assigned based on which edge of the room you are hovering over.
+- Right-clicking applicable rooms will show a context menu:
+  - On the overworld, you can choose a cave destination or exit to connect the room to.
+  - In dungeons, the menu will either contain exits or wall types, depending on room location and which edge is highlighted.
+  - In Zebes, you can choose an exit to connect the room to.
 - Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use
   is to shade a room if you've collected the item there, explored the room, or don't care about it.
 
@@ -75,8 +81,9 @@ CO-OP SUPPORT
 
 When you are connected to the co-op server and have joined a room, the following events will be synced from and to all players currently in the room:
 
-- when an exit is marked
+- when an exit or destination is marked
 - when an item is marked
+- when other details are changed in the "Room Detail" panel
 
 Note: The co-op server does not keep any state. It only replicates events to other players within a given room. This means that if you are disconnected 
 from the room, and later reconnect, any events that occurred while you were not connected won't show on your tracker. 

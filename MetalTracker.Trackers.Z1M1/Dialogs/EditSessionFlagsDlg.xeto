@@ -15,7 +15,8 @@
 			<StackLayout Padding="20,10,20,10">
 				<CheckBox ID="checkBoxSecondQuest" Height="25">Second Quest</CheckBox>
 				<CheckBox ID="checkBoxMirroredOW" Height="25">Mirrored Overworld</CheckBox>
-				<CheckBox ID="checkBoxMirroredL1" Height="25">Mirrored Dungeon L1</CheckBox>
+        <CheckBox ID="checkBoxMirroredDs" Height="25" CheckedChanged="HandleAllDungeonsMirroredChanged" ThreeState="True">Mirrored Dungeons (all)</CheckBox>
+        <CheckBox ID="checkBoxMirroredL1" Height="25">Mirrored Dungeon L1</CheckBox>
 				<CheckBox ID="checkBoxMirroredL2" Height="25">Mirrored Dungeon L2</CheckBox>
 				<CheckBox ID="checkBoxMirroredL3" Height="25">Mirrored Dungeon L3</CheckBox>
 				<CheckBox ID="checkBoxMirroredL4" Height="25">Mirrored Dungeon L4</CheckBox>
