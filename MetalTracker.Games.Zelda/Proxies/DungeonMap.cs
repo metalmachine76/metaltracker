@@ -856,6 +856,19 @@ namespace MetalTracker.Games.Zelda.Proxies
 					else if (e.Slot == 1)
 						roomState.Item2 = item;
 				}
+				else if (e.Type == "wall")
+				{
+					var wall = _walls.Find(w => w.Code == e.Code);
+
+					if (e.Slot == 0)
+						roomState.WallNorth = wall;
+					else if (e.Slot == 1)
+						roomState.WallSouth = wall;
+					else if (e.Slot == 2)
+						roomState.WallWest = wall;
+					else if (e.Slot == 3)
+						roomState.WallEast = wall;
+				}
 				else if (e.Type == "stair")
 				{
 					roomState.Transport = e.Code;
