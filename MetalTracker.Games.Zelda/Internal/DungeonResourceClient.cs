@@ -10,12 +10,12 @@ namespace MetalTracker.Games.Zelda.Internal
 	{
 		static List<DungeonWall> DungeonWalls = new List<DungeonWall>
 		{
-			new DungeonWall("O", "Open"),
-			new DungeonWall("L", "Locked"),
-			new DungeonWall("S", "Shutter"),
-			new DungeonWall("B", "Bomb"),
-			new DungeonWall("P", "Push"),
-			new DungeonWall("W", "Wall")
+			new DungeonWall("O", 0, "Open"),
+			new DungeonWall("L", 1, "Locked"),
+			new DungeonWall("S", 2, "Shutter"),
+			new DungeonWall("B", 3, "Bomb"),
+			new DungeonWall("P", 4, "Push"),
+			new DungeonWall("W", 5, "Wall")
 		};
 
 		static List<(bool, int, int, int)> DungeonItemBasements = new List<(bool, int, int, int)>
@@ -195,6 +195,17 @@ namespace MetalTracker.Games.Zelda.Internal
 
 
 			return stateGrid;
+		}
+
+		public static Image GetDungeonWallIcons(string side)
+		{
+			Bitmap bmp;
+
+			string resName = $"MetalTracker.Games.Zelda.Res.dwalls.{side}.png";
+
+			bmp = Bitmap.FromResource(resName);
+
+			return bmp;
 		}
 
 		public static List<DungeonWall> GetDungeonWalls()

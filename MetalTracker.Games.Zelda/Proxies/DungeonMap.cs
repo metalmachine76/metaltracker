@@ -13,7 +13,7 @@ using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda.Proxies
 {
-    public class DungeonMap : BaseMap
+	public class DungeonMap : BaseMap
 	{
 		const string Game = "zelda";
 
@@ -46,6 +46,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private ContextMenu _destsMenu;
 		private ContextMenu _wallsMenu;
+
+		private Image _walls_n;
+		private Image _walls_s;
+		private Image _walls_w;
+		private Image _walls_e;
 
 		private bool _active;
 		private bool _mousePresent;
@@ -94,6 +99,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
+
+			_walls_n = DungeonResourceClient.GetDungeonWallIcons("n");
+			_walls_s = DungeonResourceClient.GetDungeonWallIcons("s");
+			_walls_w = DungeonResourceClient.GetDungeonWallIcons("w");
+			_walls_e = DungeonResourceClient.GetDungeonWallIcons("e");
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -613,14 +623,39 @@ namespace MetalTracker.Games.Zelda.Proxies
 						}
 					}
 
+					if (roomState.WallNorth != null)
+					{
+						// paint north wall type
+						RectangleF sr = new RectangleF(12 * roomState.WallNorth.Ordinal, 0, 12, 12);
+						e.Graphics.DrawImage(_walls_n, sr, new PointF(x0 + 32 - 6, y0));
+					}
+					if (roomState.WallSouth != null)
+					{
+						// paint south wall type
+						RectangleF sr = new RectangleF(12 * roomState.WallSouth.Ordinal, 0, 12, 12);
+						e.Graphics.DrawImage(_walls_s, sr, new PointF(x0 + 32 - 6, y0 + 44 - 12));
+					}
+					if (roomState.WallWest != null)
+					{
+						// paint west wall type
+						RectangleF sr = new RectangleF(0, 12 * roomState.WallWest.Ordinal, 12, 12);
+						e.Graphics.DrawImage(_walls_w, sr, new PointF(x0, y0 + 22 - 6));
+					}
+					if (roomState.WallEast != null)
+					{
+						// paint east wall type
+						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
+						e.Graphics.DrawImage(_walls_w, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
+					}
+
 					if (roomState.Item1 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 17, y0 + 7, 18, 18);
+						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
 					}
 
 					if (roomState.Item2 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 29, y0 + 16, 18, 18);
+						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
 					}
 
 					if (roomState.Explored)
