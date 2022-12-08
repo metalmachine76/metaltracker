@@ -247,6 +247,29 @@ namespace MetalTracker.Games.Zelda.Proxies
 						mapState.Dests.Add(entry);
 					}
 
+					// walls
+
+					if (state.WallNorth != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.WallNorth.Code };
+						mapState.Walls.Add(entry);
+					}
+					if (state.WallSouth != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.WallSouth.Code };
+						mapState.Walls.Add(entry);
+					}
+					if (state.WallWest != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.WallWest.Code };
+						mapState.Walls.Add(entry);
+					}
+					if (state.WallEast != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.WallEast.Code };
+						mapState.Walls.Add(entry);
+					}
+
 					// items
 
 					if (state.Item1 != null)
@@ -285,6 +308,18 @@ namespace MetalTracker.Games.Zelda.Proxies
 					_roomStates[entry.Y, entry.X].DestWest = _dests.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 3)
 					_roomStates[entry.Y, entry.X].DestEast = _dests.Find(i => i.GetCode() == entry.Code);
+			}
+
+			foreach (var entry in mapState.Walls)
+			{
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].WallNorth = _walls.Find(i => i.Code == entry.Code);
+				else if (entry.Slot == 1)
+					_roomStates[entry.Y, entry.X].WallSouth = _walls.Find(i => i.Code == entry.Code);
+				else if (entry.Slot == 2)
+					_roomStates[entry.Y, entry.X].WallWest = _walls.Find(i => i.Code == entry.Code);
+				else if (entry.Slot == 3)
+					_roomStates[entry.Y, entry.X].WallEast = _walls.Find(i => i.Code == entry.Code);
 			}
 
 			foreach (var entry in mapState.Items)
