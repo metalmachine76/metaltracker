@@ -4,7 +4,7 @@ using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Trackers.Z1M1.Internal
 {
-	internal class Session
+    internal class Session
 	{
 		public SessionFlags Flags { get; set; }
 		public OverworldMapState Overworld { get; set; }

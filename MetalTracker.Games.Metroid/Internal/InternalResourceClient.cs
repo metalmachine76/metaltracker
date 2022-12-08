@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Eto.Drawing;
-using MetalTracker.Games.Metroid.Types;
+using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	internal static class InternalResourceClient
+    internal static class InternalResourceClient
 	{
 		static List<(int, int, char)> ItemSlots = new List<(int, int, char)>
 		{

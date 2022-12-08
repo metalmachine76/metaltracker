@@ -6,11 +6,12 @@ using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
 using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Metroid.Internal;
+using MetalTracker.Games.Metroid.Internal.Types;
 using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Proxies
 {
-	public class ZebesMap : BaseMap
+    public class ZebesMap : BaseMap
 	{
 		const string Game = "metroid";
 		const string Map = "zebes";

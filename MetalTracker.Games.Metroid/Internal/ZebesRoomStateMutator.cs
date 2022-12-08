@@ -1,10 +1,10 @@
 ﻿using MetalTracker.Common.Types;
 using MetalTracker.CoOp.Interface;
-using MetalTracker.Games.Metroid.Types;
+using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	internal class ZebesRoomStateMutator
+    internal class ZebesRoomStateMutator
 	{
 		const string Game = "metroid";
 		const string Map = "zebes";
