@@ -38,10 +38,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private int _numTransports;
 
 		private List<GameDest> _dests = new List<GameDest>();
-		private ContextMenu _destsMenu;
 		private List<GameItem> _items = new List<GameItem>();
+		private List<DungeonWall> _walls = new List<DungeonWall>();
+
 		private UITimer _timer;
 		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
+
+		private ContextMenu _destsMenu;
+		private ContextMenu _wallsMenu;
 
 		private bool _active;
 		private bool _mousePresent;
@@ -72,8 +76,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Paint += HandlePaint;
 
 			_destsMenu = new ContextMenu();
-			_destsMenu.Opening += HandleDestsMenuOpening;
-			_destsMenu.Closed += HandleDestsMenuClosed;
+			_destsMenu.Opening += HandleContextMenuOpening;
+			_destsMenu.Closed += HandleContextMenuClosed;
+
+			_wallsMenu = new ContextMenu();
+			_wallsMenu.Opening += HandleContextMenuOpening;
+			_wallsMenu.Closed += HandleContextMenuClosed;
+
+			foreach (var wall in DungeonResourceClient.GetDungeonWalls())
+			{
+				Command cmd = new Command();
+				cmd.Executed += HandleWallCommand;
+				cmd.CommandParameter = wall;
+				_wallsMenu.Items.Add(new ButtonMenuItem { Text = wall.Name, Command = cmd });
+				_walls.Add(wall);
+			}
 
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
@@ -379,12 +396,49 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		private void HandleDestsMenuOpening(object sender, System.EventArgs e)
+		private void HandleWallCommand(object sender, System.EventArgs e)
+		{
+			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+
+				if (roomProps == null)
+				{
+					return;
+				}
+
+				var cmd = sender as Command;
+				var wall = cmd.CommandParameter as DungeonWall;
+				var roomState = _roomStates[_myClick, _mxClick];
+
+				if (_nodeClick == 'N' && !roomProps.DestNorth)
+				{
+					_mutator.ChangeWallNorth(_flag_level, _mxClick, _myClick, roomState, wall);
+				}
+				else if (_nodeClick == 'S' && !roomProps.DestSouth)
+				{
+					_mutator.ChangeWallSouth(_flag_level, _mxClick, _myClick, roomState, wall);
+				}
+				else if (_nodeClick == 'W' && !roomProps.DestWest)
+				{
+					_mutator.ChangeWallWest(_flag_level, _mxClick, _myClick, roomState, wall);
+				}
+				else if (_nodeClick == 'E' && !roomProps.DestEast)
+				{
+					_mutator.ChangeWallEast(_flag_level, _mxClick, _myClick, roomState, wall);
+				}
+
+				_drawable.Invalidate();
+				_dungeonRoomDetail.Refresh();
+			}
+		}
+
+		private void HandleContextMenuOpening(object sender, System.EventArgs e)
 		{
 			_menuShowing = true;
 		}
 
-		private void HandleDestsMenuClosed(object sender, System.EventArgs e)
+		private void HandleContextMenuClosed(object sender, System.EventArgs e)
 		{
 			_menuShowing = false;
 		}
@@ -410,25 +464,40 @@ namespace MetalTracker.Games.Zelda.Proxies
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
+
+				if (roomProps == null) return;
+
 				var roomState = _roomStates[_myClick, _mxClick];
 				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
 				if (e.Buttons == MouseButtons.Alternate)
 				{
-					if (roomProps.DestNorth && _nodeClick == 'N')
+					if (_nodeClick == 'N')
 					{
-						_destsMenu.Show();
+						if (roomProps.DestNorth)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
 					}
-					else if (roomProps.DestSouth && _nodeClick == 'S')
+					else if (_nodeClick == 'S')
 					{
-						_destsMenu.Show();
+						if (roomProps.DestSouth)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
 					}
-					else if (roomProps.DestWest && _nodeClick == 'W')
+					else if (_nodeClick == 'W')
 					{
-						_destsMenu.Show();
+						if (roomProps.DestWest)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
 					}
-					else if (roomProps.DestEast && _nodeClick == 'E')
+					else if (_nodeClick == 'E')
 					{
-						_destsMenu.Show();
+						if (roomProps.DestEast)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
 					}
 				}
 			}

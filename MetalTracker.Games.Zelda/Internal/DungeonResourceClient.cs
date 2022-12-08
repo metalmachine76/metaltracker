@@ -106,13 +106,6 @@ namespace MetalTracker.Games.Zelda.Internal
 						bool destWest = (x == 0) || mline[x - 1] == '.';
 						bool destEast = (x == w - 1) || mline[x + 1] == '.';
 
-						if (level == 9)
-						{
-							destNorth = false;
-							destWest = false;
-							destEast = false;
-						}
-
 						bool lowerItem = DungeonItemBasements.Any(e => e.Item1 == q2 && e.Item2 == level && e.Item3 == x && e.Item4 == y);
 
 						// if shuffle level is 2, room is shuffled

@@ -117,8 +117,6 @@ namespace MetalTracker.Games.Zelda.Internal
 				new TableRow(new TableCell(), new TableCell(_panelSouth), new TableCell())
 			);
 
-			_dirsLayout.BackgroundColor = Colors.Blue;
-
 			_mainLayout.Items.Add(_dirsLayout);
 
 			#endregion
