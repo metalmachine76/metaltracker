@@ -6,11 +6,12 @@ using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
 using MetalTracker.CoOp.Interface;
 using MetalTracker.Games.Zelda.Internal;
+using MetalTracker.Games.Zelda.Internal.Types;
 using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda.Proxies
 {
-	public class OverworldMap : BaseMap
+    public class OverworldMap : BaseMap
 	{
 		const string Game = "zelda";
 		const string Map = "ow";

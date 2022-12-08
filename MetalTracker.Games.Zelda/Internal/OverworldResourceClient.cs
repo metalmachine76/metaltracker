@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using Eto.Drawing;
-using MetalTracker.Games.Zelda.Types;
+using MetalTracker.Games.Zelda.Internal.Types;
 
-namespace MetalTracker.Games.Zelda
+namespace MetalTracker.Games.Zelda.Internal
 {
 	internal static class OverworldResourceClient
 	{

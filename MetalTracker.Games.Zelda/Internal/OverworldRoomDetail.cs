@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Eto.Forms;
 using MetalTracker.Common.Types;
-using MetalTracker.Games.Zelda.Types;
+using MetalTracker.Games.Zelda.Internal.Types;
 
 namespace MetalTracker.Games.Zelda.Internal
 {
