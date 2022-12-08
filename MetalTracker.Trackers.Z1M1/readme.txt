@@ -44,22 +44,24 @@ The overworld, the 9 dungeons, and Zebes.
 
 Maps are divided into rooms, where each room is one game screen:
 
-- Portal connections on the map are shown in green.
+- Connections to other game areas are shown in green on the map.
 - If a room square is grayed out this means it is included in the shuffle (based on session flags).
-- Items will be shown on the map with icons.
+- Items will be shown on the map with item icons.
 
 Map specific features:
 
 - In dungeons and Zebes, item slot classes will be shown in white (unless the room is shuffled).
-- On the oveworld, non-portal connections (such as shops, take-any-road, etc) will be shown in white.
+- On the oveworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
 - In dungeons, transport stairs will be shown in blue.
 
 Map interaction is currently mouse-based only:
 
 - You can click and drag the maps which are larger than the visible area.
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
-- Right-clicking applicable rooms will show a menu where you can choose a destination to connect the room to.
-- In dungeons, the exit will be assigned based on which edge of the room you are hovering over.
+- Right-clicking applicable rooms will show a context menu:
+  - On the overworld, you can choose a cave destination or exit to connect the room to.
+  - In dungeons, the menu will either contain exits or wall types, depending on room location and which edge is highlighted.
+  - In Zebes, you can choose an exit to connect the room to.
 - Double-clicking a room will shade the room. Double-clicking again will remove the shade. Suggested use
   is to shade a room if you've collected the item there, explored the room, or don't care about it.
 

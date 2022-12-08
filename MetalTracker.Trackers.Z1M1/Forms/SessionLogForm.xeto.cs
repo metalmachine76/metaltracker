@@ -68,6 +68,8 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			if (e.Item != null && e.Item is SessionLogEntry entry)
 			{
 				_mainForm.LocateGoal(entry.Map, entry.X, entry.Y);
+				GridView gridView = FindChild<GridView>("gridViewSessionLog");
+				gridView.UnselectAll();
 			}
 		}
 
