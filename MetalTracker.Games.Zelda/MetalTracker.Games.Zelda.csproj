@@ -11,6 +11,8 @@
 	  <None Remove="Res\dwalls.n.png" />
 	  <None Remove="Res\dwalls.s.png" />
 	  <None Remove="Res\dwalls.w.png" />
+	  <None Remove="Res\Icons\bombsup.png" />
+	  <None Remove="Res\Icons\bombup.png" />
 	  <None Remove="Res\Icons\compass.png" />
 	  <None Remove="Res\Icons\heart.png" />
 	  <None Remove="Res\Icons\map.png" />
@@ -128,6 +130,7 @@
 	  <EmbeddedResource Include="Res\Icons\arrow1.png" />
 	  <EmbeddedResource Include="Res\Icons\arrow2.png" />
 	  <EmbeddedResource Include="Res\Icons\bait0.png" />
+	  <EmbeddedResource Include="Res\Icons\bombsup.png" />
 	  <EmbeddedResource Include="Res\Icons\book0.png" />
 	  <EmbeddedResource Include="Res\Icons\boom0.png" />
 	  <EmbeddedResource Include="Res\Icons\boom1.png" />
