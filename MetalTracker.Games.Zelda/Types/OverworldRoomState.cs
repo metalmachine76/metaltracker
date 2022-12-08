@@ -2,7 +2,7 @@
 
 namespace MetalTracker.Games.Zelda.Types
 {
-	public class OverworldRoomState
+	internal class OverworldRoomState
 	{
 		// shared state
 

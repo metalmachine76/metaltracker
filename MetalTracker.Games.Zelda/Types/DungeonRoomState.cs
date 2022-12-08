@@ -2,7 +2,7 @@
 
 namespace MetalTracker.Games.Zelda.Types
 {
-    public class DungeonRoomState
+	internal class DungeonRoomState
 	{
 		// shared state
 
@@ -10,6 +10,10 @@ namespace MetalTracker.Games.Zelda.Types
 		public GameDest DestSouth { get; set; }
 		public GameDest DestWest { get; set; }
 		public GameDest DestEast { get; set; }
+		public DungeonWallType? WallNorth { get; set; }
+		public DungeonWallType? WallSouth { get; set; }
+		public DungeonWallType? WallWest { get; set; }
+		public DungeonWallType? WallEast { get; set; }
 		public GameItem Item1 { get; set; }
 		public GameItem Item2 { get; set; }
 		public string Transport { get; set; }

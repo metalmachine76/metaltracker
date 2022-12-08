@@ -1,6 +1,6 @@
 ﻿namespace MetalTracker.Games.Zelda.Types
 {
-	public class DungeonRoomProps
+	internal class DungeonRoomProps
 	{
 		public bool DestNorth { get; private set; }
 		public bool DestSouth { get; private set; }

@@ -1,6 +1,6 @@
 ﻿namespace MetalTracker.Games.Metroid.Types
 {
-	public class ZebesRoomProps
+	internal class ZebesRoomProps
 	{
 		public bool Elevator { get; set; }
 

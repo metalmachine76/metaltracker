@@ -5,7 +5,7 @@ using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	public static class InternalResourceClient
+	internal static class InternalResourceClient
 	{
 		static List<(int, int, char)> ItemSlots = new List<(int, int, char)>
 		{

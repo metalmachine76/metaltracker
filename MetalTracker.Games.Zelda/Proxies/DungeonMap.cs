@@ -78,6 +78,30 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
 		}
 
+		public void SetGameItems(IEnumerable<GameItem> gameItems)
+		{
+			_items = gameItems.ToList();
+			_dungeonRoomDetail.PopulateItems(_items);
+		}
+
+		public void AddDestinations(IEnumerable<GameDest> destinations)
+		{
+			if (_destsMenu.Items.Count > 0)
+			{
+				_destsMenu.Items.AddSeparator();
+			}
+
+			foreach (var dest in destinations)
+			{
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = dest;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
+				_dests.Add(dest);
+				_dungeonRoomDetail.AddDest(dest);
+			}
+		}
+
 		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
 		{
 			if (mirrored != _flag_mirrored)
@@ -118,29 +142,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_numTransports = stairsCount / 2;
 
-			_dungeonRoomDetail.Populate(_dests, _items, _numTransports);
-		}
-
-		public void SetGameItems(IEnumerable<GameItem> gameItems)
-		{
-			_items = gameItems.ToList();
-		}
-
-		public void AddDestinations(IEnumerable<GameDest> destinations)
-		{
-			if (_destsMenu.Items.Count > 0)
-			{
-				_destsMenu.Items.AddSeparator();
-			}
-
-			foreach (var dest in destinations)
-			{
-				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
-				cmd.CommandParameter = dest;
-				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
-				_dests.Add(dest);
-			}
+			_dungeonRoomDetail.SetTransports(_numTransports);
 		}
 
 		public void SetCoOpClient(ICoOpClient coOpClient)

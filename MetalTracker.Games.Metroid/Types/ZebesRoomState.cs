@@ -2,7 +2,7 @@
 
 namespace MetalTracker.Games.Metroid.Types
 {
-	public class ZebesRoomState
+	internal class ZebesRoomState
 	{
 		// shared state
 

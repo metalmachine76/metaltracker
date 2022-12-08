@@ -1,6 +1,6 @@
 ﻿namespace MetalTracker.Games.Zelda.Types
 {
-	public class OverworldRoomProps
+	internal class OverworldRoomProps
 	{
 		public bool ItemHere { get; private set; }
 
