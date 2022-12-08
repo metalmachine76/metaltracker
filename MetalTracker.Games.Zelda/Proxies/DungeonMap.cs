@@ -509,11 +509,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
 
 				if (roomProps == null) return;
 
-				var roomState = _roomStates[_myClick, _mxClick];
-				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
 				if (e.Buttons == MouseButtons.Alternate)
 				{
 					if (_nodeClick == 'N')
@@ -650,13 +650,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						if (props.Slot1Class != '\0' && roomState.Item1 == null)
 						{
-							DrawText(e.Graphics, x0 - 6, y0 + 5, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(e.Graphics, x0 - 11, y0 + 13, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 						if (props.Slot2Class != '\0' && roomState.Item2 == null)
 						{
-							DrawText(e.Graphics, x0 + 6, y0 + 17, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(e.Graphics, x0 + 11, y0 + 13, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 					}
+
+					// walls
 
 					if (roomState.WallNorth != null)
 					{
@@ -680,46 +682,50 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						// paint east wall type
 						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
-						e.Graphics.DrawImage(_walls_w, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
+						e.Graphics.DrawImage(_walls_e, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
 					}
+
+					// items
 
 					if (roomState.Item1 != null)
 					{
 						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
 					}
-
 					if (roomState.Item2 != null)
 					{
 						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
 					}
+
+					// explored 
 
 					if (roomState.Explored)
 					{
 						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
 					}
 
+					// transport
+
 					if (roomState.Transport != null)
 					{
 						Brush textBrush = Brushes.CornflowerBlue;
 						Font textFont = Fonts.Sans(12);
-						DrawText(e.Graphics, x0 + 29, y0 + 16, 36, 28, $"{roomState.Transport}", textFont, textBrush);
+						DrawText(e.Graphics, x0, y0 + 13, 64, 33, $"{roomState.Transport}", textFont, textBrush);
 					}
+
+					// exits
 
 					if (roomState.DestNorth != null)
 					{
 						DrawDest(e.Graphics, x0, y0 - 11, 64, 44, roomState.DestNorth);
 					}
-
 					if (roomState.DestSouth != null)
 					{
 						DrawDest(e.Graphics, x0, y0 + 33, 64, 44, roomState.DestSouth);
 					}
-
 					if (roomState.DestWest != null)
 					{
 						DrawDest(e.Graphics, x0 - 32, y0 + 11, 64, 44, roomState.DestWest);
 					}
-
 					if (roomState.DestEast != null)
 					{
 						DrawDest(e.Graphics, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
