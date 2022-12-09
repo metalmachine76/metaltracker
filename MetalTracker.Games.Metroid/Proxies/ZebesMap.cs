@@ -312,6 +312,18 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 				e.Handled = true;
 			}
+			else if (e.Key == Keys.Enter)
+			{
+				if (_mx > -1 && _mx < 32 && _my > -1 && _my < 32)
+				{
+					var roomProps = GetProps(_mx, _my);
+					if (roomProps.CanHaveDest())
+					{
+						_destsMenu.Show(_drawable);
+					}
+				}
+				e.Handled = true;
+			}
 
 			if (e.Handled)
 			{

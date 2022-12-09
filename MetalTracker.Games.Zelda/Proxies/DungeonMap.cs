@@ -559,6 +559,45 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 				e.Handled = true;
 			}
+			else if (e.Key == Keys.Enter)
+			{
+				if (_mx > -1 && _mx < _width && _my > -1 && _my < 8)
+				{
+					var roomProps = GetProps(_mxClick, _myClick);
+					if (roomProps != null)
+					{
+						if (_nodeClick == 'N')
+						{
+							if (roomProps.DestNorth)
+								_destsMenu.Show(_drawable);
+							else
+								_wallsMenu.Show(_drawable);
+						}
+						else if (_nodeClick == 'S')
+						{
+							if (roomProps.DestSouth)
+								_destsMenu.Show(_drawable);
+							else
+								_wallsMenu.Show(_drawable);
+						}
+						else if (_nodeClick == 'W')
+						{
+							if (roomProps.DestWest)
+								_destsMenu.Show(_drawable);
+							else
+								_wallsMenu.Show(_drawable);
+						}
+						else if (_nodeClick == 'E')
+						{
+							if (roomProps.DestEast)
+								_destsMenu.Show(_drawable);
+							else
+								_wallsMenu.Show(_drawable);
+						}
+					}
+				}
+				e.Handled = true;
+			}
 
 			if (e.Handled)
 			{

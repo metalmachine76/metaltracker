@@ -350,6 +350,18 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 				e.Handled = true;
 			}
+			else if (e.Key == Keys.Enter)
+			{
+				if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
+				{
+					var roomProps = GetProps(_mx, _my);
+					if (roomProps.DestHere)
+					{
+						_destsMenu.Show(_drawable);
+					}
+				}
+				e.Handled = true;
+			}
 
 			if (e.Handled)
 			{
