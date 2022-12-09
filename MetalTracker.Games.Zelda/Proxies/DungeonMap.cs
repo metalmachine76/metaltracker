@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Eto.Drawing;
@@ -73,6 +72,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public DungeonMap(Drawable drawable, Panel detailPanel)
 		{
 			_drawable = drawable;
+			_drawable.KeyDown += HandleKeyDown;
 			_drawable.MouseLeave += HandleMouseLeave;
 			_drawable.MouseMove += HandleMouseMove;
 			_drawable.MouseDown += HandleMouseDown;
@@ -204,9 +204,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_mxClick = x;
 			_myClick = y;
 			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
+			UpdateDetails();
 		}
 
 		public override string GetMapKey()
@@ -486,6 +484,83 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private void HandleContextMenuClosed(object sender, System.EventArgs e)
 		{
 			_menuShowing = false;
+		}
+
+		private void HandleKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!_active) return;
+
+			if (e.Key == Keys.Up)
+			{
+				if (_nodeClick == 'N')
+				{
+					if (_myClick > 0)
+					{
+						_myClick = _myClick - 1;
+					}
+				}
+				else
+				{
+					_nodeClick = 'N';
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Down)
+			{
+				if (_nodeClick == 'S')
+				{
+					if (_myClick < 7)
+					{
+						_myClick = _myClick + 1;
+					}
+				}
+				else
+				{
+					_nodeClick = 'S';
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Left)
+			{
+				if (_nodeClick == 'W')
+				{
+					if (_mxClick > 0)
+					{
+						_mxClick = _mxClick - 1;
+					}
+				}
+				else
+				{
+					_nodeClick = 'W';
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Right)
+			{
+				if (_nodeClick == 'E')
+				{
+					if (_mxClick < _width - 1)
+					{
+						_mxClick = _mxClick + 1;
+						//_nodeClick = 'W';
+					}
+				}
+				else
+				{
+					_nodeClick = 'E';
+				}
+				e.Handled = true;
+			}
+
+			if (e.Handled)
+			{
+				_mousePresent = true;
+				_mx = _mxClick;
+				_my = _myClick;
+				_node = _nodeClick;
+				_drawable.Invalidate();
+				UpdateDetails();
+			}
 		}
 
 		private void HandleMouseDown(object sender, MouseEventArgs e)
@@ -820,6 +895,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			return points;
+		}
+
+		private void UpdateDetails()
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
+			}
 		}
 
 		#endregion

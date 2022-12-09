@@ -345,6 +345,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			if (e.Handled)
 			{
+				_mousePresent = true;
 				_mx = _mxClick;
 				_my = _myClick;
 				_drawable.Invalidate();
