@@ -61,7 +61,7 @@
 						<ListItem Text="Zebes" />
 					</DropDown>
 				</StackLayout>
-				<Drawable ID="drawableCurrentMap" Width="512" Height="480" BackgroundColor="#333366"></Drawable>
+				<Drawable ID="drawableCurrentMap" Width="512" Height="480" BackgroundColor="#333366" CanFocus="True"></Drawable>
 			</StackLayout>
 		</GroupBox>
 		<StackLayout>

@@ -57,6 +57,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public OverworldMap(Drawable drawable, Panel detailPanel)
 		{
 			_drawable = drawable;
+			_drawable.KeyDown += HandleKeyDown;
 			_drawable.MouseLeave += HandleMouseLeave;
 			_drawable.MouseMove += HandleMouseMove;
 			_drawable.MouseDown += HandleMouseDown;
@@ -154,9 +155,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_mxClick = x;
 			_myClick = y;
 			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+			UpdateDetails();
 		}
 
 		public override string GetMapKey()
@@ -305,6 +304,54 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
+		private void HandleKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!_active) return;
+
+			if (e.Key == Keys.Up)
+			{
+				if (_myClick > 0)
+				{
+					_myClick = _myClick - 1;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Down)
+			{
+				if (_myClick < 7)
+				{
+					_myClick = _myClick + 1;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Left)
+			{
+				if (_mxClick > 0)
+				{
+					_mxClick = _mxClick - 1;
+					_offset.X = _offset.X + 64;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Right)
+			{
+				if (_mxClick < 15)
+				{
+					_mxClick = _mxClick + 1;
+					_offset.X = _offset.X - 64;
+				}
+				e.Handled = true;
+			}
+
+			if (e.Handled)
+			{
+				_mx = _mxClick;
+				_my = _myClick;
+				_drawable.Invalidate();
+				UpdateDetails();
+			}
+		}
+
 		private void HandleMouseDown(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -328,9 +375,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
+				UpdateDetails();
 				var roomProps = GetProps(_mxClick, _myClick);
-				var roomState = _roomStates[_myClick, _mxClick];
-				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.DestHere && e.Buttons == MouseButtons.Alternate)
 				{
 					_destsMenu.Show();
@@ -490,6 +536,32 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return _meta[y, x];
 		}
 
+		private void UpdateDetails()
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+			}
+		}
+
+		private void MirrorState()
+		{
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < 8; x++)
+				{
+					var s0 = _roomStates[y, x];
+					var s1 = _roomStates[y, 15 - x];
+					_roomStates[y, x] = s1;
+					_roomStates[y, 15 - x] = s0;
+				}
+			}
+
+			_drawable.Invalidate();
+		}
+
 		#endregion
 
 		#region CoOp Event Handlers
@@ -526,21 +598,5 @@ namespace MetalTracker.Games.Zelda.Proxies
 		}
 
 		#endregion
-
-		public void MirrorState()
-		{
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 8; x++)
-				{
-					var s0 = _roomStates[y, x];
-					var s1 = _roomStates[y, 15 - x];
-					_roomStates[y, x] = s1;
-					_roomStates[y, 15 - x] = s0;
-				}
-			}
-
-			_drawable.Invalidate();
-		}
 	}
 }
