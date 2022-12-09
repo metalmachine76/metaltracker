@@ -342,6 +342,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 				e.Handled = true;
 			}
+			else if (e.Key == Keys.Space)
+			{
+				if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
+				{
+					_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
+				}
+				e.Handled = true;
+			}
 
 			if (e.Handled)
 			{

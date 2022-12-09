@@ -304,6 +304,14 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 				e.Handled = true;
 			}
+			else if (e.Key == Keys.Space)
+			{
+				if (_mx > -1 && _mx < 32 && _my > -1 && _my < 32)
+				{
+					_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
+				}
+				e.Handled = true;
+			}
 
 			if (e.Handled)
 			{
