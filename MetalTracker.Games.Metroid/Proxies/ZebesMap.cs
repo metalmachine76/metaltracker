@@ -56,6 +56,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		public ZebesMap(Drawable drawable, Panel detailPanel)
 		{
 			_drawable = drawable;
+			_drawable.KeyDown += HandleKeyDown;
 			_drawable.MouseLeave += HandleMouseLeave;
 			_drawable.MouseMove += HandleMouseMove;
 			_drawable.MouseDown += HandleMouseDown;
@@ -146,9 +147,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_mxClick = x;
 			_myClick = y;
 			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+			UpdateDetails();
 		}
 
 		public override string GetMapKey()
@@ -265,6 +264,57 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_menuShowing = false;
 		}
 
+		private void HandleKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!_active) return;
+
+			if (e.Key == Keys.Up)
+			{
+				if (_myClick > 0)
+				{
+					_myClick = _myClick - 1;
+					_offset.Y = _offset.Y + 30;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Down)
+			{
+				if (_myClick < 31)
+				{
+					_myClick = _myClick + 1;
+					_offset.Y = _offset.Y - 30;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Left)
+			{
+				if (_mxClick > 0)
+				{
+					_mxClick = _mxClick - 1;
+					_offset.X = _offset.X + 32;
+				}
+				e.Handled = true;
+			}
+			else if (e.Key == Keys.Right)
+			{
+				if (_mxClick < 31)
+				{
+					_mxClick = _mxClick + 1;
+					_offset.X = _offset.X - 32;
+				}
+				e.Handled = true;
+			}
+
+			if (e.Handled)
+			{
+				_mousePresent = true;
+				_mx = _mxClick;
+				_my = _myClick;
+				_drawable.Invalidate();
+				UpdateDetails();
+			}
+		}
+
 		private void HandleMouseDown(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -290,9 +340,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
+				UpdateDetails();
 				var roomProps = GetProps(_mxClick, _myClick);
-				var roomState = _roomStates[_myClick, _mxClick];
-				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
 				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
 				{
 					_destsMenu.Show();
@@ -431,6 +480,16 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private ZebesRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
+		}
+
+		private void UpdateDetails()
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+			}
 		}
 
 		#endregion
