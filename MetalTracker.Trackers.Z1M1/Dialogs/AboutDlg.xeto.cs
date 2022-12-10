@@ -6,7 +6,7 @@ using Eto.Serialization.Xaml;
 
 namespace MetalTracker.Trackers.Z1M1.Dialogs
 {
-	public class AboutDlg : Dialog
+	internal class AboutDlg : Dialog
 	{
 		public AboutDlg()
 		{

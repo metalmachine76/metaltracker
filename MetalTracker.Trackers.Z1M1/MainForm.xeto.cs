@@ -18,7 +18,7 @@ using MetalTracker.Trackers.Z1M1.Proxies;
 
 namespace MetalTracker.Trackers.Z1M1
 {
-	internal class MainForm : Form
+	public class MainForm : Form
 	{
 		private readonly OverworldMap _overworldMap = null;
 		private readonly DungeonMap[] _dungeonMaps = new DungeonMap[9];
