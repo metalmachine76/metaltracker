@@ -1,7 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using Eto.Drawing;
+using MetalTracker.Common;
 using MetalTracker.Games.Zelda.Internal.Types;
 
 namespace MetalTracker.Games.Zelda.Internal
@@ -122,19 +122,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		private static string[] GetResourceLines(string resName)
 		{
-			string resString;
-
-			using (var str = typeof(OverworldResourceClient).Assembly.GetManifestResourceStream(resName))
-			{
-				using (StreamReader sr = new StreamReader(str))
-				{
-					resString = sr.ReadToEnd();
-				}
-			}
-
-			string[] resLines = resString.Split("\r\n");
-
-			return resLines;
+			return ResourceClient.GetResourceLines(typeof(OverworldResourceClient).Assembly, resName);
 		}
 	}
 }
