@@ -96,9 +96,6 @@ namespace MetalTracker.Trackers.Z1M1.Dialogs
 			GridView gridView = this.FindChild<GridView>("gridViewRoomList");
 			gridView.DataStore = null;
 			var rooms = await _coOpClient.ListRooms();
-#if GTK
-			rooms.Add(new RoomSummary());
-#endif
 			gridView.DataStore = rooms;
 		}
 	}

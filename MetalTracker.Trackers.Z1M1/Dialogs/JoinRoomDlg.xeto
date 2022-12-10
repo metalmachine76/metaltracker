@@ -15,7 +15,7 @@
 
 		<StackLayout HorizontalContentAlignment="Left">
 			<LinkButton Click="HandleRefresh">Refresh</LinkButton>
-			<GridView Width="400" Height="200" GridLines="Horizontal" ID="gridViewRoomList" AllowMultipleSelection="False" SelectionChanged="HandleSelectionChanged" />
+			<GridView Width="400" Height="200" GridLines="Horizontal" ID="gridViewRoomList" SelectionChanged="HandleSelectionChanged" />
 		</StackLayout>
 
 		<StackLayout HorizontalContentAlignment="Center">
