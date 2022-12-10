@@ -1,5 +1,5 @@
 ﻿MetalTracker for Z1M1 
-Version 1.1
+Version 1.2
 
 
 MENU
