@@ -165,15 +165,29 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var roomState = _roomStates[y, x];
+
+					// exits
+
 					if (roomState.DestElev != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestElev.GetCode() };
 						mapState.Dests.Add(entry);
 					}
+
+					// items
+
 					if (roomState.Item != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item.GetCode() };
 						mapState.Items.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -190,6 +204,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 			foreach (var entry in mapState.Items)
 			{
 				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
+			}
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
 			}
 		}
 

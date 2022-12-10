@@ -222,73 +222,81 @@ namespace MetalTracker.Games.Zelda.Proxies
 			{
 				for (int x = 0; x < _width; x++)
 				{
-					var state = _roomStates[y, x];
+					var roomState = _roomStates[y, x];
 
 					// dests
 
-					if (state.DestNorth != null)
+					if (roomState.DestNorth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestNorth.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestNorth.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestSouth != null)
+					if (roomState.DestSouth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.DestSouth.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestSouth.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestWest != null)
+					if (roomState.DestWest != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.DestWest.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestWest.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestEast != null)
+					if (roomState.DestEast != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.DestEast.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestEast.GetCode() };
 						mapState.Dests.Add(entry);
 					}
 
 					// walls
 
-					if (state.WallNorth != null)
+					if (roomState.WallNorth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.WallNorth.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.WallNorth.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallSouth != null)
+					if (roomState.WallSouth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.WallSouth.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.WallSouth.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallWest != null)
+					if (roomState.WallWest != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.WallWest.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.WallWest.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallEast != null)
+					if (roomState.WallEast != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.WallEast.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.WallEast.Code };
 						mapState.Walls.Add(entry);
 					}
 
 					// items
 
-					if (state.Item1 != null)
+					if (roomState.Item1 != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
 						mapState.Items.Add(entry);
 					}
-					if (state.Item2 != null)
+					if (roomState.Item2 != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.Item2.GetCode() };
 						mapState.Items.Add(entry);
 					}
 
 					// stairs
 
-					if (state.Transport != null)
+					if (roomState.Transport != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Transport };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Transport };
 						mapState.Stairs.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -334,6 +342,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 			{
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].Transport = entry.Code;
+			}
+
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
 			}
 		}
 

@@ -173,11 +173,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < 16; x++)
 				{
 					var roomState = _roomStates[y, x];
+
+					// destination
+
 					if (roomState.Destination != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Destination.GetCode() };
 						mapState.Dests.Add(entry);
 					}
+
+					// items
+
 					if (roomState.Item1 != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
@@ -192,6 +198,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.Item3.GetCode() };
 						mapState.Items.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -214,6 +228,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
 					_roomStates[entry.Y, entry.X].Item3 = _items.Find(i => i.GetCode() == entry.Code);
+			}
+
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
 			}
 		}
 
