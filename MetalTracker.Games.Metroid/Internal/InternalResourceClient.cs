@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Eto.Drawing;
+using MetalTracker.Common;
 using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-    internal static class InternalResourceClient
+	internal static class InternalResourceClient
 	{
 		static List<(int, int, char)> ItemSlots = new List<(int, int, char)>
 		{
@@ -81,26 +81,20 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			string metaResName = $"MetalTracker.Games.Metroid.Res.zebesmeta.txt";
 
-			using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(metaResName))
+			string[] metaLines = GetResourceLines(metaResName);
+
+			for (int y = 0; y < 32; y++)
 			{
-				using (StreamReader sr = new StreamReader(str))
+				string line = metaLines[y];
+				for (int x = 0; x < 32; x++)
 				{
-					string metaString = sr.ReadToEnd();
-					string[] lines = metaString.Split("\r\n");
-					for (int y = 0; y < 32; y++)
-					{
-						string line = lines[y];
-						for (int x = 0; x < 32; x++)
-						{
-							char c = line[x];
-							var props = new ZebesRoomProps();
+					char c = line[x];
+					var props = new ZebesRoomProps();
 
-							props.IsVertical = (c == '|');
-							props.Elevator = (c == 'U' || c == 'D');
+					props.IsVertical = (c == '|');
+					props.Elevator = (c == 'U' || c == 'D');
 
-							meta[y, x] = props;
-						}
-					}
+					meta[y, x] = props;
 				}
 			}
 
@@ -108,27 +102,21 @@ namespace MetalTracker.Games.Metroid.Internal
 			{
 				string shuffleResName = $"MetalTracker.Games.Metroid.Res.zebesshuffle.txt";
 
-				using (var str = typeof(InternalResourceClient).Assembly.GetManifestResourceStream(shuffleResName))
+				string[] shuffleLines = GetResourceLines(shuffleResName);
+
+				for (int y = 0; y < 32; y++)
 				{
-					using (StreamReader sr = new StreamReader(str))
+					string line = shuffleLines[y];
+					for (int x = 0; x < 32; x++)
 					{
-						string metaString = sr.ReadToEnd();
-						string[] lines = metaString.Split("\r\n");
-						for (int y = 0; y < 32; y++)
+						char c = line[x];
+						if (shuffleMode == 2)
 						{
-							string line = lines[y];
-							for (int x = 0; x < 32; x++)
-							{
-								char c = line[x];
-								if (shuffleMode == 2)
-								{
-									meta[y, x].Shuffled = c == 'm' || c == 'M';
-								}
-								else if (shuffleMode == 1)
-								{
-									meta[y, x].Shuffled = c == 'm';
-								}
-							}
+							meta[y, x].Shuffled = c == 'm' || c == 'M';
+						}
+						else if (shuffleMode == 1)
+						{
+							meta[y, x].Shuffled = c == 'm';
 						}
 					}
 				}
@@ -155,5 +143,11 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			return meta;
 		}
+
+		private static string[] GetResourceLines(string resName)
+		{
+			return ResourceClient.GetResourceLines(typeof(InternalResourceClient).Assembly, resName);
+		}
+
 	}
 }
