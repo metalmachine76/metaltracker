@@ -1,4 +1,5 @@
-﻿using Eto.Forms;
+﻿using System;
+using Eto.Forms;
 
 namespace MetalTracker.Trackers.Z1M1.Wpf
 {
