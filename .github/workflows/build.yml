@@ -8,7 +8,7 @@ on:
 
 env:
   SOLUTION_FILE_PATH: .
-  BUILD_CONFIGURATION: ReleaseGtk
+  BUILD_CONFIGURATION: Release
 
 permissions:
   contents: read
@@ -27,10 +27,6 @@ jobs:
 
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=${{env.BUILD_CONFIGURATION}}
-
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
