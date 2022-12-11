@@ -16,7 +16,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 	{
 		const string Game = "zelda";
 
-		string _map = null;
+		string _mapKey = null;
 
 		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
@@ -105,8 +105,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			_mw = _width;
 			_mh = 8;
-
-			_map = $"d{level}";
+			_mapKey = $"d{level}";
 
 			var stairsCount = 0;
 
@@ -182,11 +181,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			_roomStates = DungeonResourceClient.GetDefaultDungeonState(_flag_q2, _flag_level, _flag_shuffle, _flag_mirrored);
 			_drawable.Invalidate();
-		}
-
-		public override string GetMapKey()
-		{
-			return _map;
 		}
 
 		public DungeonMapState PersistState()
@@ -336,12 +330,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -361,22 +355,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level}", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level}", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level}", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level}", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -766,9 +760,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleCoOpClientFound(object sender, FoundEventArgs e)
 		{
-			Debug.Assert(_map != null && _map.Length == 2);
+			Debug.Assert(_mapKey != null && _mapKey.Length == 2);
 
-			if (e.Game == Game && e.Map == _map)
+			if (e.Game == Game && e.Map == _mapKey)
 			{
 				var roomState = _roomStates[e.Y, e.X];
 

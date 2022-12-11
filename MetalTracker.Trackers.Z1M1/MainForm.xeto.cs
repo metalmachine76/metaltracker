@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Eto.Forms;
 using Eto.Serialization.Xaml;
+using MetalTracker.Common.Bases;
 using MetalTracker.Common.Types;
 using MetalTracker.CoOp;
 using MetalTracker.Games.Metroid;
@@ -23,6 +24,9 @@ namespace MetalTracker.Trackers.Z1M1
 		private readonly OverworldMap _overworldMap = null;
 		private readonly DungeonMap[] _dungeonMaps = new DungeonMap[9];
 		private readonly ZebesMap _zebesMap = null;
+
+		private readonly BaseMap[] _gameMaps = new BaseMap[11];
+
 		private readonly ItemTracker _itemTracker = null;
 
 		private SessionFlags _sessionFlags = new SessionFlags();
@@ -53,6 +57,8 @@ namespace MetalTracker.Trackers.Z1M1
 			_overworldMap.AddDestinations(zebesExitDests);
 			_overworldMap.SetGameItems(gameItems);
 
+			_gameMaps[0] = _overworldMap;
+
 			for (int i = 0; i < 9; i++)
 			{
 				var dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
@@ -60,40 +66,29 @@ namespace MetalTracker.Trackers.Z1M1
 				dungeonMap.AddDestinations(zebesExitDests);
 				dungeonMap.SetGameItems(gameItems);
 				_dungeonMaps[i] = dungeonMap;
+				_gameMaps[i + 1] = dungeonMap;
 			}
 
 			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
 			_zebesMap.AddDestinations(zeldaExitDests);
 			_zebesMap.AddDestinations(zebesExitDests);
 			_zebesMap.SetGameItems(gameItems);
+			_gameMaps[10] = _zebesMap;
 
 			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
 			_itemTracker = new ItemTracker(itemTrackerContainer);
 		}
 
-		public void LocateGoal(string map, int x, int y)
+		public void LocateGoal(BaseMap map, int x, int y)
 		{
-			DropDown dropDown = this.FindChild<DropDown>("dropDownSelectedMap");
-
-			if (map == _overworldMap.GetMapKey())
+			for (int i = 0; i < 11; i++)
 			{
-				dropDown.SelectedIndex = 0;
-				_overworldMap.LocateRoom(x, y);
-			}
-			else if (map == _zebesMap.GetMapKey())
-			{
-				dropDown.SelectedIndex = 10;
-				_zebesMap.LocateRoom(x, y);
-			}
-			else
-			{
-				for (int i = 0; i < 9; i++)
+				if (map == _gameMaps[i])
 				{
-					if (map == _dungeonMaps[i].GetMapKey())
-					{
-						dropDown.SelectedIndex = i + 1;
-						_dungeonMaps[i].LocateRoom(x, y);
-					}
+					DropDown dropDown = this.FindChild<DropDown>("dropDownSelectedMap");
+					dropDown.SelectedIndex = i;
+					map.LocateRoom(x, y);
+					break;
 				}
 			}
 		}

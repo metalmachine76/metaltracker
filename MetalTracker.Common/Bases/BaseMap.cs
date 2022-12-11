@@ -52,8 +52,6 @@ namespace MetalTracker.Common.Bases
 			HandleRoomClick(false);
 		}
 
-		public abstract string GetMapKey();
-
 		public abstract List<LocationOfDest> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();

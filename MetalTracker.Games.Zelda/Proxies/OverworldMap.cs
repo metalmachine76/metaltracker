@@ -132,11 +132,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
-		public override string GetMapKey()
-		{
-			return Map;
-		}
-
 		public OverworldMapState PersistState()
 		{
 			OverworldMapState mapState = new OverworldMapState();

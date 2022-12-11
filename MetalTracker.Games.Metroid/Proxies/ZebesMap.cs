@@ -123,11 +123,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_drawable.Invalidate();
 		}
 
-		public override string GetMapKey()
-		{
-			return Map;
-		}
-
 		public ZebesMapState PersistState()
 		{
 			ZebesMapState mapState = new ZebesMapState();
