@@ -35,6 +35,8 @@ namespace MetalTracker.Common.Bases
 			_drawable.MouseUp += HandleMouseUp;
 			_drawable.MouseLeave += HandleMouseLeave;
 			_drawable.MouseMove += HandleMouseMove;
+			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
+			_drawable.Paint += HandlePaint;
 		}
 
 		public abstract string GetMapKey();
@@ -89,7 +91,7 @@ namespace MetalTracker.Common.Bases
 			g.DrawText(font, brush, rect, text, alignment: FormattedTextAlignment.Center);
 		}
 
-		protected void HandleMouseDown(object sender, MouseEventArgs e)
+		private void HandleMouseDown(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
 
@@ -97,7 +99,7 @@ namespace MetalTracker.Common.Bases
 			_mouseDownLoc = e.Location;
 		}
 
-		protected void HandleMouseUp(object sender, MouseEventArgs e)
+		private void HandleMouseUp(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
 
@@ -116,7 +118,7 @@ namespace MetalTracker.Common.Bases
 			HandleRoomClick(e.Buttons == MouseButtons.Alternate);
 		}
 
-		protected void HandleMouseMove(object sender, MouseEventArgs e)
+		private void HandleMouseMove(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
 
@@ -141,7 +143,7 @@ namespace MetalTracker.Common.Bases
 			_drawable.Invalidate();
 		}
 
-		protected void HandleMouseLeave(object sender, MouseEventArgs e)
+		private void HandleMouseLeave(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
 
@@ -150,7 +152,36 @@ namespace MetalTracker.Common.Bases
 			_drawable.Invalidate();
 		}
 
+		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (!_active) return;
+
+			HandleRoomDoubleClick();
+
+			_drawable.Invalidate();
+		}
+
+		private void HandlePaint(object? sender, PaintEventArgs e)
+		{
+			if (!_active) return;
+
+			float offx = _offset.X;
+			float offy = _offset.Y;
+
+			if (_mouseDown)
+			{
+				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
+				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
+			}
+
+			PaintMap(e.Graphics, offx, offy);
+		}
+
 		protected abstract void HandleRoomClick(bool altButton);
+
+		protected abstract void HandleRoomDoubleClick();
+
+		protected abstract void PaintMap(Graphics g, float offx, float offy);
 
 		protected virtual char DetermineNode(int x, int y)
 		{

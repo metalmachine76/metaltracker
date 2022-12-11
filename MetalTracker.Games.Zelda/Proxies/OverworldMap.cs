@@ -20,7 +20,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 153));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
 
-		private readonly Drawable _drawable;
 		private readonly OverworldRoomDetail _overworldRoomDetail;
 
 		private bool _flag_q2;
@@ -46,10 +45,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public OverworldMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
 		{
-			_drawable = drawable;
-			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
-			_drawable.Paint += HandlePaint;
-
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
 			_destsMenu.Closed += HandleDestsMenuClosed;
@@ -310,108 +305,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
-			{
-				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
-				_drawable.Invalidate();
-			}
-		}
-
-		private void HandlePaint(object sender, PaintEventArgs e)
-		{
-			if (!_active) return;
-
-			var origin = CalcPaintOrigin();
-
-			var offx = origin.X;
-			var offy = origin.Y;
-
-			if (_mapImage != null)
-			{
-				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 352);
-			}
-
-			// draw room state
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < 16; x++)
-				{
-					var roomState = _roomStates[y, x];
-
-					float x0 = x * 64 + offx;
-					float y0 = y * 44 + offy;
-
-					var props = GetProps(x, y);
-
-					if (!props.DestHere && !props.ItemHere)
-					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
-						continue;
-					}
-
-					if (roomState.Item1 != null)
-					{
-						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 3, y0 + 23, 18, 18);
-					}
-
-					if (roomState.Item2 != null)
-					{
-						if (roomState.Destination == null)
-						{
-							e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 13, 18, 18);
-						}
-						else
-						{
-							e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 23, 18, 18);
-						}
-					}
-
-					if (roomState.Item3 != null)
-					{
-						e.Graphics.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
-					}
-
-					if (roomState.Destination != null && !roomState.Destination.IsExit)
-					{
-						var dest = roomState.Destination;
-
-						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
-					}
-
-					if ((props.DestHere || props.ItemHere) && roomState.Explored)
-					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
-					}
-
-					if (roomState.Destination != null && roomState.Destination.IsExit)
-					{
-						var dest = roomState.Destination;
-
-						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
-					}
-				}
-			}
-
-			// draw "current room" box
-
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
-			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
-			}
-
-			// draw hover indicators
-
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
-			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
-			}
-		}
-
 		private void HandleTimerElapsed(object sender, System.EventArgs e)
 		{
 			if (_invalidateMap)
@@ -442,6 +335,98 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					_destsMenu.Show();
 				}
+			}
+		}
+
+		protected override void HandleRoomDoubleClick()
+		{
+			if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
+			{
+				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
+			}
+		}
+
+		protected override void PaintMap(Graphics g, float offx, float offy)
+		{
+			if (_mapImage != null)
+			{
+				g.DrawImage(_mapImage, offx, offy, 1024, 352);
+			}
+
+			// draw room state
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					var roomState = _roomStates[y, x];
+
+					float x0 = x * 64 + offx;
+					float y0 = y * 44 + offy;
+
+					var props = GetProps(x, y);
+
+					if (!props.DestHere && !props.ItemHere)
+					{
+						g.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						continue;
+					}
+
+					if (roomState.Item1 != null)
+					{
+						g.DrawImage(roomState.Item1.Icon, x0 + 3, y0 + 23, 18, 18);
+					}
+
+					if (roomState.Item2 != null)
+					{
+						if (roomState.Destination == null)
+						{
+							g.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 13, 18, 18);
+						}
+						else
+						{
+							g.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 23, 18, 18);
+						}
+					}
+
+					if (roomState.Item3 != null)
+					{
+						g.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
+					}
+
+					if (roomState.Destination != null && !roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+
+						DrawDest(g, x0, y0, 64, 44, dest);
+					}
+
+					if ((props.DestHere || props.ItemHere) && roomState.Explored)
+					{
+						g.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+					}
+
+					if (roomState.Destination != null && roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+
+						DrawDest(g, x0, y0, 64, 44, dest);
+					}
+				}
+			}
+
+			// draw "current room" box
+
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
+			{
+				g.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+			}
+
+			// draw hover indicators
+
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
+			{
+				g.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
 			}
 		}
 

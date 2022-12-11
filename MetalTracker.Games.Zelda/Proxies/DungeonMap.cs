@@ -23,7 +23,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
 
-		private readonly Drawable _drawable;
 		private readonly DungeonRoomDetail _dungeonRoomDetail;
 
 		private bool _flag_q2;
@@ -59,10 +58,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public DungeonMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
 		{
-			_drawable = drawable;
-			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
-			_drawable.Paint += HandlePaint;
-
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleContextMenuOpening;
 			_destsMenu.Closed += HandleContextMenuClosed;
@@ -484,192 +479,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			if (_mx > -1 && _mx < _width && _my > -1 && _my < 8)
-			{
-				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
-				_drawable.Invalidate();
-			}
-		}
-
-		private void HandlePaint(object sender, PaintEventArgs e)
-		{
-			if (!_active) return;
-
-			var origin = CalcPaintOrigin();
-
-			var offx = origin.X;
-			var offy = origin.Y;
-
-			if (_mapImage != null)
-			{
-				e.Graphics.DrawImage(_mapImage, offx, offy, _width * 64, 352);
-			}
-
-			// draw room state
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < _width; x++)
-				{
-					var props = GetProps(x, y);
-
-					if (props == null)
-					{
-						continue;
-					}
-
-					DungeonRoomState roomState = _roomStates[y, x];
-
-					float x0 = x * 64 + offx;
-					float y0 = y * 44 + offy;
-
-					if (props.Shuffled)
-					{
-						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
-					}
-					else
-					{
-						if (props.Slot1Class != '\0' && roomState.Item1 == null)
-						{
-							DrawText(e.Graphics, x0 - 11, y0 + 13, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
-						}
-						if (props.Slot2Class != '\0' && roomState.Item2 == null)
-						{
-							DrawText(e.Graphics, x0 + 11, y0 + 13, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
-						}
-					}
-
-					// walls
-
-					if (roomState.WallNorth != null)
-					{
-						// paint north wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallNorth.Ordinal, 0, 12, 12);
-						e.Graphics.DrawImage(_walls_n, sr, new PointF(x0 + 32 - 6, y0));
-					}
-					if (roomState.WallSouth != null)
-					{
-						// paint south wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallSouth.Ordinal, 0, 12, 12);
-						e.Graphics.DrawImage(_walls_s, sr, new PointF(x0 + 32 - 6, y0 + 44 - 12));
-					}
-					if (roomState.WallWest != null)
-					{
-						// paint west wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallWest.Ordinal, 12, 12);
-						e.Graphics.DrawImage(_walls_w, sr, new PointF(x0, y0 + 22 - 6));
-					}
-					if (roomState.WallEast != null)
-					{
-						// paint east wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
-						e.Graphics.DrawImage(_walls_e, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
-					}
-
-					// items
-
-					if (roomState.Item1 != null)
-					{
-						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
-					}
-					if (roomState.Item2 != null)
-					{
-						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
-					}
-
-					// explored 
-
-					if (roomState.Explored)
-					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
-					}
-
-					// transport
-
-					if (roomState.Transport != null)
-					{
-						Brush textBrush = Brushes.CornflowerBlue;
-						Font textFont = Fonts.Sans(12);
-						DrawText(e.Graphics, x0, y0 + 13, 64, 33, $"{roomState.Transport}", textFont, textBrush);
-					}
-
-					// exits
-
-					if (roomState.DestNorth != null)
-					{
-						DrawDest(e.Graphics, x0, y0 - 11, 64, 44, roomState.DestNorth);
-					}
-					if (roomState.DestSouth != null)
-					{
-						DrawDest(e.Graphics, x0, y0 + 33, 64, 44, roomState.DestSouth);
-					}
-					if (roomState.DestWest != null)
-					{
-						DrawDest(e.Graphics, x0 - 32, y0 + 11, 64, 44, roomState.DestWest);
-					}
-					if (roomState.DestEast != null)
-					{
-						DrawDest(e.Graphics, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
-					}
-				}
-			}
-
-			// draw "current room" box
-
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
-			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
-			}
-
-			// draw hover indicators
-
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < _width && _my > -1 && _my < 8)
-			{
-				float x0 = _mx * 64 + offx;
-				float y0 = _my * 44 + offy;
-
-				e.Graphics.FillRectangle(CursorBrush, x0, y0, 64, 44);
-
-				if (_node == 'N')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 16, y0, 32, 11);
-				}
-				else if (_node == 'S')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 16, y0 + 33, 32, 11);
-				}
-				else if (_node == 'W')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0, y0 + 11, 16, 22);
-				}
-				else if (_node == 'E')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 48, y0 + 11, 16, 22);
-				}
-
-				var roomState = _roomStates[_my, _mx];
-
-				if (roomState.Transport != null)
-				{
-					var rooms = FindTransportRooms(roomState.Transport);
-					if (rooms.Count == 2)
-					{
-						e.Graphics.AntiAlias = true;
-						float tx0 = rooms[0].X * 64 + offx + 32;
-						float ty0 = rooms[0].Y * 44 + offy + 22;
-						float tx1 = rooms[1].X * 64 + offx + 32;
-						float ty1 = rooms[1].Y * 44 + offy + 22;
-						e.Graphics.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
-						e.Graphics.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
-					}
-				}
-			}
-		}
-
 		private void HandleTimerElapsed(object sender, System.EventArgs e)
 		{
 			if (_invalidateMap)
@@ -773,6 +582,182 @@ namespace MetalTracker.Games.Zelda.Proxies
 							_destsMenu.Show();
 						else
 							_wallsMenu.Show();
+					}
+				}
+			}
+		}
+
+		protected override void HandleRoomDoubleClick()
+		{
+			if (_mx > -1 && _mx < _width && _my > -1 && _my < 8)
+			{
+				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
+			}
+		}
+
+		protected override void PaintMap(Graphics g, float offx, float offy)
+		{
+			if (_mapImage != null)
+			{
+				g.DrawImage(_mapImage, offx, offy, _width * 64, 352);
+			}
+
+			// draw room state
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _width; x++)
+				{
+					var props = GetProps(x, y);
+
+					if (props == null)
+					{
+						continue;
+					}
+
+					DungeonRoomState roomState = _roomStates[y, x];
+
+					float x0 = x * 64 + offx;
+					float y0 = y * 44 + offy;
+
+					if (props.Shuffled)
+					{
+						g.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
+					}
+					else
+					{
+						if (props.Slot1Class != '\0' && roomState.Item1 == null)
+						{
+							DrawText(g, x0 - 11, y0 + 13, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+						}
+						if (props.Slot2Class != '\0' && roomState.Item2 == null)
+						{
+							DrawText(g, x0 + 11, y0 + 13, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+						}
+					}
+
+					// walls
+
+					if (roomState.WallNorth != null)
+					{
+						// paint north wall type
+						RectangleF sr = new RectangleF(12 * roomState.WallNorth.Ordinal, 0, 12, 12);
+						g.DrawImage(_walls_n, sr, new PointF(x0 + 32 - 6, y0));
+					}
+					if (roomState.WallSouth != null)
+					{
+						// paint south wall type
+						RectangleF sr = new RectangleF(12 * roomState.WallSouth.Ordinal, 0, 12, 12);
+						g.DrawImage(_walls_s, sr, new PointF(x0 + 32 - 6, y0 + 44 - 12));
+					}
+					if (roomState.WallWest != null)
+					{
+						// paint west wall type
+						RectangleF sr = new RectangleF(0, 12 * roomState.WallWest.Ordinal, 12, 12);
+						g.DrawImage(_walls_w, sr, new PointF(x0, y0 + 22 - 6));
+					}
+					if (roomState.WallEast != null)
+					{
+						// paint east wall type
+						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
+						g.DrawImage(_walls_e, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
+					}
+
+					// items
+
+					if (roomState.Item1 != null)
+					{
+						g.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
+					}
+					if (roomState.Item2 != null)
+					{
+						g.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
+					}
+
+					// explored 
+
+					if (roomState.Explored)
+					{
+						g.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+					}
+
+					// transport
+
+					if (roomState.Transport != null)
+					{
+						Brush textBrush = Brushes.CornflowerBlue;
+						Font textFont = Fonts.Sans(12);
+						DrawText(g, x0, y0 + 13, 64, 33, $"{roomState.Transport}", textFont, textBrush);
+					}
+
+					// exits
+
+					if (roomState.DestNorth != null)
+					{
+						DrawDest(g, x0, y0 - 11, 64, 44, roomState.DestNorth);
+					}
+					if (roomState.DestSouth != null)
+					{
+						DrawDest(g, x0, y0 + 33, 64, 44, roomState.DestSouth);
+					}
+					if (roomState.DestWest != null)
+					{
+						DrawDest(g, x0 - 32, y0 + 11, 64, 44, roomState.DestWest);
+					}
+					if (roomState.DestEast != null)
+					{
+						DrawDest(g, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
+					}
+				}
+			}
+
+			// draw "current room" box
+
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			{
+				g.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+			}
+
+			// draw hover indicators
+
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < _width && _my > -1 && _my < 8)
+			{
+				float x0 = _mx * 64 + offx;
+				float y0 = _my * 44 + offy;
+
+				g.FillRectangle(CursorBrush, x0, y0, 64, 44);
+
+				if (_node == 'N')
+				{
+					g.FillRectangle(CursorBrush, x0 + 16, y0, 32, 11);
+				}
+				else if (_node == 'S')
+				{
+					g.FillRectangle(CursorBrush, x0 + 16, y0 + 33, 32, 11);
+				}
+				else if (_node == 'W')
+				{
+					g.FillRectangle(CursorBrush, x0, y0 + 11, 16, 22);
+				}
+				else if (_node == 'E')
+				{
+					g.FillRectangle(CursorBrush, x0 + 48, y0 + 11, 16, 22);
+				}
+
+				var roomState = _roomStates[_my, _mx];
+
+				if (roomState.Transport != null)
+				{
+					var rooms = FindTransportRooms(roomState.Transport);
+					if (rooms.Count == 2)
+					{
+						g.AntiAlias = true;
+						float tx0 = rooms[0].X * 64 + offx + 32;
+						float ty0 = rooms[0].Y * 44 + offy + 22;
+						float tx1 = rooms[1].X * 64 + offx + 32;
+						float ty1 = rooms[1].Y * 44 + offy + 22;
+						g.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
+						g.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
 					}
 				}
 			}
