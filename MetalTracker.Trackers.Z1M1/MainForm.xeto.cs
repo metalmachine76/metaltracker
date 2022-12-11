@@ -29,6 +29,8 @@ namespace MetalTracker.Trackers.Z1M1
 
 		private readonly ItemTracker _itemTracker = null;
 
+		private BaseMap _activeMap = null;
+
 		private SessionFlags _sessionFlags = new SessionFlags();
 		private string _sessionFilename = null;
 
@@ -321,6 +323,12 @@ namespace MetalTracker.Trackers.Z1M1
 
 		#endregion
 
+		protected void HandleMouseWheel(object sender, MouseEventArgs e)
+		{
+			Slider s = this.FindChild<Slider>("sliderZoom");
+			s.Value = s.Value + (int)e.Delta.Height;
+		}
+
 		protected void HandleMapChanged(object sender, EventArgs e)
 		{
 			DropDown dropDown = sender as DropDown;
@@ -330,7 +338,18 @@ namespace MetalTracker.Trackers.Z1M1
 				map.Activate(false);
 			}
 
-			_gameMaps[dropDown.SelectedIndex].Activate(true);
+			_activeMap = _gameMaps[dropDown.SelectedIndex];
+
+			Slider s = this.FindChild<Slider>("sliderZoom");
+			s.Value = _activeMap.GetZoom();
+
+			_activeMap.Activate(true);
+		}
+
+		protected void HandleZoomValueChanged(object sender, EventArgs e)
+		{
+			Slider s = (sender as Slider);
+			_activeMap?.SetZoom(s.Value);
 		}
 
 		#endregion

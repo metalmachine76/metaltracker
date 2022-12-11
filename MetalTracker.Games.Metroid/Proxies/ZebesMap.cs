@@ -40,7 +40,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel) : base(32, 30, drawable)
+		public ZebesMap(Drawable drawable, Panel detailPanel) : base(16, 15, 2, drawable)
 		{
 			_mw = 32;
 			_mh = 32;
@@ -275,7 +275,15 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			if (_mapImage != null)
 			{
-				g.DrawImage(_mapImage, offx, offy, 1024, 960);
+				if (_zoom >= 2)
+					g.ImageInterpolation = ImageInterpolation.None;
+				else
+					g.ImageInterpolation = ImageInterpolation.High;
+
+				float w = _mw * _rw;
+				float h = _mh * _rh;
+
+				g.DrawImage(_mapImage, offx, offy, w, h);
 			}
 
 			// draw room states
@@ -286,20 +294,20 @@ namespace MetalTracker.Games.Metroid.Proxies
 				{
 					var roomState = _roomStates[y, x];
 
-					float x0 = x * 32 + offx;
-					float y0 = y * 30 + offy;
+					float x0 = x * _rw + offx;
+					float y0 = y * _rh + offy;
 
 					var props = GetProps(x, y);
 
 					if (props.Shuffled)
 					{
-						g.FillRectangle(ShuffleBrush, x0, y0, 32, 30);
+						g.FillRectangle(ShuffleBrush, x0, y0, _rw, _rh);
 					}
 					else
 					{
 						if (props.SlotClass != '\0' && roomState.Item == null)
 						{
-							DrawText(g, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0, y0, _rw, _rh, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 					}
 
@@ -310,12 +318,12 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					if (roomState.Explored)
 					{
-						g.FillRectangle(ShadowBrush, x0, y0, 32, 30);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
 					if (roomState.DestElev != null)
 					{
-						DrawDest(g, x0 - 16, y0, 64, 30, roomState.DestElev);
+						DrawExit(g, x0 - _rw / 2, y0, _rw, _rh, roomState.DestElev);
 					}
 				}
 			}
@@ -324,14 +332,14 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
-				g.DrawRectangle(CurrentPen, _mxClick * 32 + offx, _myClick * 30 + offy, 31, 29);
+				g.DrawRectangle(CurrentPen, _mxClick * _rw + offx, _myClick * _rh + offy, _rw - 1, _rh - 1);
 			}
 
 			// draw hover indicators
 
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
 			{
-				g.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
+				g.FillRectangle(CursorBrush, _mx * _rw + offx, _my * _rh + offy, _rw, _rh);
 			}
 		}
 

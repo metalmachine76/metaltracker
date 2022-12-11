@@ -11,7 +11,7 @@ using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda.Proxies
 {
-    public class OverworldMap : BaseMap
+	public class OverworldMap : BaseMap
 	{
 		const string Game = "zelda";
 		const string Map = "ow";
@@ -41,7 +41,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		#region Public Methods
 
-		public OverworldMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
+		public OverworldMap(Drawable drawable, Panel detailPanel) : base(16, 11, 4, drawable)
 		{
 			_mw = 16;
 			_mh = 8;
@@ -317,7 +317,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			if (_mapImage != null)
 			{
-				g.DrawImage(_mapImage, offx, offy, 1024, 352);
+				if (_zoom >= 4)
+					g.ImageInterpolation = ImageInterpolation.None;
+				else
+					g.ImageInterpolation = ImageInterpolation.High;
+
+				float w = _mw * _rw;
+				float h = _mh * _rh;
+
+				g.DrawImage(_mapImage, offx, offy, w, h);
 			}
 
 			// draw room state
@@ -328,16 +336,18 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					var roomState = _roomStates[y, x];
 
-					float x0 = x * 64 + offx;
-					float y0 = y * 44 + offy;
+					float x0 = x * _rw + offx;
+					float y0 = y * _rh + offy;
 
 					var props = GetProps(x, y);
 
 					if (!props.DestHere && !props.ItemHere)
 					{
-						g.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 						continue;
 					}
+
+					#region Items
 
 					if (roomState.Item1 != null)
 					{
@@ -361,23 +371,23 @@ namespace MetalTracker.Games.Zelda.Proxies
 						g.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
 					}
 
+					#endregion
+
 					if (roomState.Destination != null && !roomState.Destination.IsExit)
 					{
 						var dest = roomState.Destination;
-
-						DrawDest(g, x0, y0, 64, 44, dest);
+						DrawCave(g, x0, y0, _rw, _rh, dest);
 					}
 
 					if ((props.DestHere || props.ItemHere) && roomState.Explored)
 					{
-						g.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
 					if (roomState.Destination != null && roomState.Destination.IsExit)
 					{
 						var dest = roomState.Destination;
-
-						DrawDest(g, x0, y0, 64, 44, dest);
+						DrawExit(g, x0, y0, _rw, _rh, dest);
 					}
 				}
 			}
@@ -386,15 +396,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
-				g.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+				g.DrawRectangle(CurrentPen, _mxClick * _rw + offx, _myClick * _rh + offy, _rw - 1, _rh - 1);
 			}
 
 			// draw hover indicators
 
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
 			{
-				g.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
+				g.FillRectangle(CursorBrush, _mx * _rw + offx, _my * _rh + offy, _rw, _rh);
 			}
+		}
+
+		private void DrawCave(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
+		{
+			Brush textBrush = Brushes.White;
+			Font textFont = Fonts.Sans(12);
+			DrawText(g, x0, y0, rw, rh, dest.ShortName, textFont, textBrush);
 		}
 
 		#endregion

@@ -1,4 +1,5 @@
-﻿using Eto.Drawing;
+﻿using System.Diagnostics;
+using Eto.Drawing;
 using Eto.Forms;
 using MetalTracker.Common.Types;
 
@@ -6,9 +7,14 @@ namespace MetalTracker.Common.Bases
 {
 	public abstract class BaseMap
 	{
-		protected readonly int _rw;
-		protected readonly int _rh;
+		protected readonly float[] _roomWidths;
+		protected readonly float[] _roomHeights;
 		protected readonly Drawable _drawable;
+
+		protected int _zoom;
+
+		protected float _rw;
+		protected float _rh;
 
 		protected int _mw;
 		protected int _mh;
@@ -32,10 +38,33 @@ namespace MetalTracker.Common.Bases
 		protected bool _invalidateMap;
 		protected bool _invalidateRoom;
 
-		protected BaseMap(int roomWidth, int roomHeight, Drawable drawable)
+		protected BaseMap(float rw0, float rh0, int zoom, Drawable drawable)
 		{
-			_rw = roomWidth;
-			_rh = roomHeight;
+			_roomWidths = new float[7];
+
+			_roomWidths[0] = 1.0f * rw0;
+			_roomWidths[1] = 1.5f * rw0;
+			_roomWidths[2] = 2.0f * rw0;
+			_roomWidths[3] = 3.0f * rw0;
+			_roomWidths[4] = 4.0f * rw0;
+			_roomWidths[5] = 6.0f * rw0;
+			_roomWidths[6] = 8.0f * rw0;
+
+			_roomHeights = new float[7];
+
+			_roomHeights[0] = 1.0f * rh0;
+			_roomHeights[1] = 1.5f * rh0;
+			_roomHeights[2] = 2.0f * rh0;
+			_roomHeights[3] = 3.0f * rh0;
+			_roomHeights[4] = 4.0f * rh0;
+			_roomHeights[5] = 6.0f * rh0;
+			_roomHeights[6] = 8.0f * rh0;
+
+			_zoom = zoom;
+
+			_rw = _roomWidths[zoom];
+			_rh = _roomHeights[zoom];
+
 			_drawable = drawable;
 
 			_drawable.MouseDown += HandleMouseDown;
@@ -61,16 +90,29 @@ namespace MetalTracker.Common.Bases
 			HandleRoomClick(false);
 		}
 
+		public void SetZoom(int zoom)
+		{
+			_zoom = zoom;
+			_rw = _roomWidths[zoom];
+			_rh = _roomHeights[zoom];
+			_drawable.Invalidate();
+		}
+
+		public int GetZoom()
+		{
+			return _zoom;
+		}
+
 		public abstract void Activate(bool active);
 
 		public abstract List<LocationOfDest> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();
 
-		protected void DrawDest(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
+		protected void DrawExit(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
-			Brush textBrush = dest.IsExit ? Brushes.Lime : Brushes.White;
-			Font textFont = dest.IsExit ? Fonts.Sans(14) : Fonts.Sans(12);
+			Brush textBrush = Brushes.Lime;
+			Font textFont = Fonts.Sans(14);
 			DrawText(g, x0, y0, rw, rh, dest.ShortName, textFont, textBrush);
 		}
 
@@ -117,14 +159,14 @@ namespace MetalTracker.Common.Bases
 			_offset.Y = _offset.Y + _mouseLoc.Y - _mouseDownLoc.Y;
 			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
 
-			int maxx = 256 - _rw / 2;
-			int maxy = 240 - _rh / 2;
+			var maxx = 256 - _rw / 2;
+			var maxy = 240 - _rh / 2;
 
 			if (_offset.X > maxx) _offset.X = maxx;
 			if (_offset.Y > maxy) _offset.Y = maxy;
 
-			int minx = 256 - _rw * (_mw - 1) - _rw / 2;
-			int miny = 240 - _rh * (_mh - 1) - _rh / 2;
+			var minx = 256 - _rw * (_mw - 1) - _rw / 2;
+			var miny = 240 - _rh * (_mh - 1) - _rh / 2;
 
 			if (_offset.X < minx) _offset.X = minx;
 			if (_offset.Y < miny) _offset.Y = miny;
@@ -147,16 +189,13 @@ namespace MetalTracker.Common.Bases
 
 			if (!_mouseDown)
 			{
-				int dx = (int)(_mouseLoc.X - _offset.X);
-				int dy = (int)(_mouseLoc.Y - _offset.Y);
+				float dx = (_mouseLoc.X - _offset.X);
+				float dy = (_mouseLoc.Y - _offset.Y);
 
-				var qrx = Math.DivRem(dx, _rw);
-				var qry = Math.DivRem(dy, _rh);
+				_mx = dx < 0f ? -1 : (int)(dx / _rw);
+				_my = dy < 0f ? -1 : (int)(dy / _rh);
 
-				_mx = dx < 0f ? -1 : qrx.Quotient;
-				_my = dy < 0f ? -1 : qry.Quotient;
-
-				_node = DetermineNode(qrx.Remainder, qry.Remainder);
+				_node = DetermineNode(dx % _rw, dy % _rh);
 			}
 
 			_drawable.Invalidate();
@@ -218,7 +257,7 @@ namespace MetalTracker.Common.Bases
 
 		protected abstract void PaintMap(Graphics g, float offx, float offy);
 
-		protected virtual char DetermineNode(int x, int y)
+		protected virtual char DetermineNode(float x, float y)
 		{
 			return '\0';
 		}
