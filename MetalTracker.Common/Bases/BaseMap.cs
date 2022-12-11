@@ -39,25 +39,21 @@ namespace MetalTracker.Common.Bases
 			_drawable.Paint += HandlePaint;
 		}
 
+		public void LocateRoom(int x, int y)
+		{
+			_mxClick = x;
+			_myClick = y;
+			_offset.X = 256 - _rw * x - _rw / 2;
+			_offset.Y = 240 - _rh * y - _rh / 2;
+			_drawable.Invalidate();
+			HandleRoomClick(false);
+		}
+
 		public abstract string GetMapKey();
 
 		public abstract List<LocationOfDest> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();
-
-		protected PointF CalcPaintOrigin()
-		{
-			float offx = _offset.X;
-			float offy = _offset.Y;
-
-			if (_mouseDown)
-			{
-				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
-				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
-			}
-
-			return new PointF(offx, offy);
-		}
 
 		protected void DrawDest(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
@@ -90,6 +86,8 @@ namespace MetalTracker.Common.Bases
 			rect.Y = y0;
 			g.DrawText(font, brush, rect, text, alignment: FormattedTextAlignment.Center);
 		}
+
+		#region Drawable Event Handlers
 
 		private void HandleMouseDown(object sender, MouseEventArgs e)
 		{
@@ -176,6 +174,8 @@ namespace MetalTracker.Common.Bases
 
 			PaintMap(e.Graphics, offx, offy);
 		}
+
+		#endregion
 
 		protected abstract void HandleRoomClick(bool altButton);
 

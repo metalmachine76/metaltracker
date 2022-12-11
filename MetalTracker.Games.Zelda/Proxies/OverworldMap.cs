@@ -129,17 +129,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
-		public void LocateRoom(int x, int y)
-		{
-			_offset.X = 256 - 64 * x - 32;
-			_mxClick = x;
-			_myClick = y;
-			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-		}
-
 		public override string GetMapKey()
 		{
 			return Map;
