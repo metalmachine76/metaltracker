@@ -32,6 +32,7 @@ namespace MetalTracker.Common.Bases
 			_drawable = drawable;
 
 			_drawable.MouseDown += HandleMouseDown;
+			_drawable.MouseUp += HandleMouseUp;
 			_drawable.MouseLeave += HandleMouseLeave;
 			_drawable.MouseMove += HandleMouseMove;
 		}

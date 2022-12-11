@@ -46,7 +46,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 		public ZebesMap(Drawable drawable, Panel detailPanel) : base(32, 30, drawable)
 		{
 			_drawable = drawable;
-			_drawable.MouseUp += HandleMouseUp;
 			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
 			_drawable.Paint += HandlePaint;
 
