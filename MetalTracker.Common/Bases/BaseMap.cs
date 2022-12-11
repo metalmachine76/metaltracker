@@ -92,9 +92,25 @@ namespace MetalTracker.Common.Bases
 
 		public void SetZoom(int zoom)
 		{
+			var dcx = _offset.X - 256;
+			var dcy = _offset.Y - 240;
+
+			var rw0 = _rw;
+			var rh0 = _rh;
+
 			_zoom = zoom;
 			_rw = _roomWidths[zoom];
 			_rh = _roomHeights[zoom];
+
+			var ratiox = _rw / rw0;
+			var ratioy = _rh / rh0;
+
+			dcx = dcx * ratiox;
+			dcy = dcy * ratioy;
+
+			_offset.X = 256 + dcx;
+			_offset.Y = 240 + dcy;
+
 			_drawable.Invalidate();
 		}
 
