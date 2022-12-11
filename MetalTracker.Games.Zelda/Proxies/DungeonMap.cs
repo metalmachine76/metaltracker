@@ -35,12 +35,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private int _width;
 		private int _numTransports;
 
-		private List<GameDest> _dests = new List<GameDest>();
-		private List<GameItem> _items = new List<GameItem>();
 		private List<DungeonWall> _walls = new List<DungeonWall>();
 
-		private UITimer _timer;
 		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
+
+		private List<GameDest> _dests = new List<GameDest>();
+		private List<GameItem> _items = new List<GameItem>();
 
 		private ContextMenu _destsMenu;
 		private ContextMenu _wallsMenu;
@@ -51,8 +51,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _walls_e;
 
 		private bool _menuShowing;
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private DungeonRoomState[,] _roomStates = new DungeonRoomState[8, 8];
 
@@ -161,13 +159,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
 		}
 
-		public void Activate(bool active)
+		public override void Activate(bool active)
 		{
 			_active = active;
 			if (active)
@@ -468,20 +462,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private void HandleContextMenuClosed(object sender, System.EventArgs e)
 		{
 			_menuShowing = false;
-		}
-
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_dungeonRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
 		}
 
 		private DungeonRoomProps GetProps(int x, int y)

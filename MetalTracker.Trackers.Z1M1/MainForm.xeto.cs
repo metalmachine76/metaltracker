@@ -325,28 +325,12 @@ namespace MetalTracker.Trackers.Z1M1
 		{
 			DropDown dropDown = sender as DropDown;
 
-			_overworldMap.Activate(false);
-
-			for (int i = 0; i < 9; i++)
+			foreach (var map in _gameMaps)
 			{
-				_dungeonMaps[i].Activate(false);
+				map.Activate(false);
 			}
 
-			_zebesMap.Activate(false);
-
-			if (dropDown.SelectedIndex == 0)
-			{
-				_overworldMap.Activate(true);
-			}
-			else if (dropDown.SelectedIndex == 10)
-			{
-				_zebesMap.Activate(true);
-			}
-			else
-			{
-				int level = dropDown.SelectedIndex;
-				_dungeonMaps[level - 1].Activate(true);
-			}
+			_gameMaps[dropDown.SelectedIndex].Activate(true);
 		}
 
 		#endregion

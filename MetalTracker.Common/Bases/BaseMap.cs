@@ -28,6 +28,10 @@ namespace MetalTracker.Common.Bases
 		protected int _mxClick = -1;
 		protected char _nodeClick = '\0';
 
+		protected UITimer _timer;
+		protected bool _invalidateMap;
+		protected bool _invalidateRoom;
+
 		protected BaseMap(int roomWidth, int roomHeight, Drawable drawable)
 		{
 			_rw = roomWidth;
@@ -40,6 +44,11 @@ namespace MetalTracker.Common.Bases
 			_drawable.MouseMove += HandleMouseMove;
 			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
 			_drawable.Paint += HandlePaint;
+
+			_timer = new UITimer();
+			_timer.Interval = 0.5;
+			_timer.Elapsed += HandleTimerElapsed;
+			_timer.Start();
 		}
 
 		public void LocateRoom(int x, int y)
@@ -51,6 +60,8 @@ namespace MetalTracker.Common.Bases
 			_drawable.Invalidate();
 			HandleRoomClick(false);
 		}
+
+		public abstract void Activate(bool active);
 
 		public abstract List<LocationOfDest> LogExitLocations();
 
@@ -88,7 +99,7 @@ namespace MetalTracker.Common.Bases
 			g.DrawText(font, brush, rect, text, alignment: FormattedTextAlignment.Center);
 		}
 
-		#region Drawable Event Handlers
+		#region Event Handlers
 
 		private void HandleMouseDown(object sender, MouseEventArgs e)
 		{
@@ -183,6 +194,20 @@ namespace MetalTracker.Common.Bases
 			}
 
 			PaintMap(e.Graphics, offx, offy);
+		}
+
+		private void HandleTimerElapsed(object sender, System.EventArgs e)
+		{
+			if (_invalidateMap)
+			{
+				_drawable.Invalidate();
+				_invalidateMap = false;
+			}
+			if (_invalidateRoom)
+			{
+				HandleRoomClick(false);
+				_invalidateRoom = false;
+			}
 		}
 
 		#endregion

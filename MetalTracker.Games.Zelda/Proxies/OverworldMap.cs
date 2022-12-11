@@ -30,14 +30,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private OverworldRoomProps[,] _meta;
 
 		private List<GameDest> _dests = new List<GameDest>();
-		private ContextMenu _destsMenu;
 		private List<GameItem> _items = new List<GameItem>();
-		private UITimer _timer;
+
+		private ContextMenu _destsMenu;
 		private OverworldRoomStateMutator _mutator = new OverworldRoomStateMutator();
 
 		private bool _menuShowing;
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private OverworldRoomState[,] _roomStates = new OverworldRoomState[8, 16];
 
@@ -97,20 +95,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
-		}
-
-		public void Activate(bool active)
-		{
-			_active = active;
-			_drawable.Invalidate();
-			if (active)
-			{
-				_overworldRoomDetail.Build(_dests, _items);
-			}
 		}
 
 		public void ResetState()
@@ -204,6 +188,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
+		public override void Activate(bool active)
+		{
+			_active = active;
+			if (active)
+			{
+				_drawable.Invalidate();
+				_overworldRoomDetail.Build(_dests, _items);
+			}
+		}
+
 		public override List<LocationOfItem> LogItemLocations()
 		{
 			List<LocationOfItem> list = new List<LocationOfItem>();
@@ -290,20 +284,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private void HandleDestsMenuClosed(object sender, System.EventArgs e)
 		{
 			_menuShowing = false;
-		}
-
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_overworldRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
 		}
 
 		private OverworldRoomProps GetProps(int x, int y)

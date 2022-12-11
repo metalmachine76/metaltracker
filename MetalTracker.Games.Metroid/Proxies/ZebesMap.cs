@@ -29,14 +29,12 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private ZebesRoomProps[,] _meta;
 
 		private List<GameDest> _dests = new List<GameDest>();
-		private ContextMenu _destsMenu;
 		private List<GameItem> _items = new List<GameItem>();
-		private UITimer _timer;
+
+		private ContextMenu _destsMenu;
 		private ZebesRoomStateMutator _mutator = new ZebesRoomStateMutator();
 
 		private bool _menuShowing;
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private ZebesRoomState[,] _roomStates = new ZebesRoomState[32, 32];
 
@@ -94,18 +92,14 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
 		}
 
-		public void Activate(bool active)
+		public override void Activate(bool active)
 		{
 			_active = active;
-			_drawable.Invalidate();
 			if (active)
 			{
+				_drawable.Invalidate();
 				_zebesRoomDetail.Build(_dests, _items);
 			}
 		}
@@ -248,20 +242,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private void HandleDestsMenuClosed(object sender, System.EventArgs e)
 		{
 			_menuShowing = false;
-		}
-
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_zebesRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
 		}
 
 		private ZebesRoomProps GetProps(int x, int y)
