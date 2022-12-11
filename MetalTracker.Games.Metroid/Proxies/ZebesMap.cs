@@ -313,7 +313,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					if (roomState.Item != null)
 					{
-						g.DrawImage(roomState.Item.Icon, x0 + 7, y0 + 6, 18, 18);
+						DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item.Icon);
 					}
 
 					if (roomState.Explored)

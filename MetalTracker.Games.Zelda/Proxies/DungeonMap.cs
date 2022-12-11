@@ -640,13 +640,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					// items
 
+					var sw = _rw / 4f;
+
 					if (roomState.Item1 != null)
 					{
-						g.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
+						DrawCenteredImage(g, x0 + 1 * sw, y0, sw, _rh, roomState.Item1.Icon);
 					}
 					if (roomState.Item2 != null)
 					{
-						g.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
+						DrawCenteredImage(g, x0 + 2 * sw, y0, sw, _rh, roomState.Item2.Icon);
 					}
 
 					// explored 
