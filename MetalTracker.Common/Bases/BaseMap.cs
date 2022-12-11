@@ -1,15 +1,55 @@
 ﻿using Eto.Drawing;
+using Eto.Forms;
 using MetalTracker.Common.Types;
 
 namespace MetalTracker.Common.Bases
 {
 	public abstract class BaseMap
 	{
+		protected readonly int _rw;
+		protected readonly int _rh;
+		protected readonly Drawable _drawable;
+
+		protected bool _active;
+		protected bool _mousePresent;
+		protected bool _mouseDown;
+		protected PointF _mouseDownLoc;
+		protected PointF _mouseLoc;
+		protected PointF _offset = new PointF(64, 64);
+		protected int _my = -1;
+		protected int _mx = -1;
+		protected char _node = '\0';
+
+		protected BaseMap(int roomWidth, int roomHeight, Drawable drawable)
+		{
+			_rw = roomWidth;
+			_rh = roomHeight;
+			_drawable = drawable;
+
+			_drawable.MouseDown += HandleMouseDown;
+			_drawable.MouseLeave += HandleMouseLeave;
+			_drawable.MouseMove += HandleMouseMove;
+		}
+
 		public abstract string GetMapKey();
 
 		public abstract List<LocationOfDest> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();
+
+		protected PointF CalcPaintOrigin()
+		{
+			float offx = _offset.X;
+			float offy = _offset.Y;
+
+			if (_mouseDown)
+			{
+				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
+				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
+			}
+
+			return new PointF(offx, offy);
+		}
 
 		protected void DrawDest(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
@@ -41,6 +81,53 @@ namespace MetalTracker.Common.Bases
 			rect.X = x0;
 			rect.Y = y0;
 			g.DrawText(font, brush, rect, text, alignment: FormattedTextAlignment.Center);
+		}
+
+		protected void HandleMouseDown(object sender, MouseEventArgs e)
+		{
+			if (!_active) return;
+
+			_mouseDown = true;
+			_mouseDownLoc = e.Location;
+		}
+
+		protected void HandleMouseMove(object sender, MouseEventArgs e)
+		{
+			if (!_active) return;
+
+			_mousePresent = true;
+
+			_mouseLoc = e.Location;
+
+			if (!_mouseDown)
+			{
+				int dx = (int)(_mouseLoc.X - _offset.X);
+				int dy = (int)(_mouseLoc.Y - _offset.Y);
+
+				var qrx = Math.DivRem(dx, _rw);
+				var qry = Math.DivRem(dy, _rh);
+
+				_mx = dx < 0f ? -1 : qrx.Quotient;
+				_my = dy < 0f ? -1 : qry.Quotient;
+
+				_node = DetermineNode(qrx.Remainder, qry.Remainder);
+			}
+
+			_drawable.Invalidate();
+		}
+
+		protected void HandleMouseLeave(object sender, MouseEventArgs e)
+		{
+			if (!_active) return;
+
+			_mousePresent = false;
+
+			_drawable.Invalidate();
+		}
+
+		protected virtual char DetermineNode(int x, int y)
+		{
+			return '\0';
 		}
 	}
 }

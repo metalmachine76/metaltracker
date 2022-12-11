@@ -11,7 +11,7 @@ using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Proxies
 {
-    public class ZebesMap : BaseMap
+	public class ZebesMap : BaseMap
 	{
 		const string Game = "metroid";
 		const string Map = "zebes";
@@ -35,15 +35,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private UITimer _timer;
 		private ZebesRoomStateMutator _mutator = new ZebesRoomStateMutator();
 
-		private bool _active;
-		private bool _mousePresent;
-		private bool _mouseDown;
-		private PointF _mouseDownLoc;
-		private PointF _mouseLoc;
-		private PointF _offset = new PointF(64, 64);
 		private bool _menuShowing;
-		private int _my = -1;
-		private int _mx = -1;
 		private int _myClick = -1;
 		private int _mxClick = -1;
 		private bool _invalidateMap;
@@ -53,12 +45,9 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel)
+		public ZebesMap(Drawable drawable, Panel detailPanel) : base(32, 30, drawable)
 		{
 			_drawable = drawable;
-			_drawable.MouseLeave += HandleMouseLeave;
-			_drawable.MouseMove += HandleMouseMove;
-			_drawable.MouseDown += HandleMouseDown;
 			_drawable.MouseUp += HandleMouseUp;
 			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
 			_drawable.Paint += HandlePaint;
@@ -283,14 +272,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDown(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mouseDown = true;
-			_mouseDownLoc = e.Location;
-		}
-
 		private void HandleMouseUp(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -318,34 +299,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 			}
 		}
 
-		private void HandleMouseMove(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = true;
-
-			_mouseLoc = e.Location;
-
-			if (!_mouseDown)
-			{
-				float dx = _mouseLoc.X - _offset.X;
-				float dy = _mouseLoc.Y - _offset.Y;
-				_mx = dx < 0f ? -1 : (int)dx / 32;
-				_my = dy < 0f ? -1 : (int)dy / 30;
-			}
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = false;
-
-			_drawable.Invalidate();
-		}
-
 		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -361,14 +314,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			if (!_active) return;
 
-			var offx = _offset.X;
-			var offy = _offset.Y;
+			var origin = CalcPaintOrigin();
 
-			if (_mouseDown)
-			{
-				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
-				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
-			}
+			var offx = origin.X;
+			var offy = origin.Y;
 
 			if (_mapImage != null)
 			{

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Eto.Drawing;
@@ -52,16 +51,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _walls_w;
 		private Image _walls_e;
 
-		private bool _active;
-		private bool _mousePresent;
-		private bool _mouseDown;
-		private PointF _mouseDownLoc;
-		private PointF _mouseLoc;
-		//private PointF _offset = new PointF(64, 64);
 		private bool _menuShowing;
-		private int _my = -1;
-		private int _mx = -1;
-		private char _node = '\0';
 		private int _myClick = -1;
 		private int _mxClick = -1;
 		private char _nodeClick = '\0';
@@ -70,12 +60,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private DungeonRoomState[,] _roomStates = new DungeonRoomState[8, 8];
 
-		public DungeonMap(Drawable drawable, Panel detailPanel)
+		public DungeonMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
 		{
 			_drawable = drawable;
-			_drawable.MouseLeave += HandleMouseLeave;
-			_drawable.MouseMove += HandleMouseMove;
-			_drawable.MouseDown += HandleMouseDown;
 			_drawable.MouseUp += HandleMouseUp;
 			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
 			_drawable.Paint += HandlePaint;
@@ -104,30 +91,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_walls_s = DungeonResourceClient.GetDungeonWallIcons("s");
 			_walls_w = DungeonResourceClient.GetDungeonWallIcons("w");
 			_walls_e = DungeonResourceClient.GetDungeonWallIcons("e");
-		}
-
-		public void SetGameItems(IEnumerable<GameItem> gameItems)
-		{
-			_items = gameItems.ToList();
-			_dungeonRoomDetail.PopulateItems(_items);
-		}
-
-		public void AddDestinations(IEnumerable<GameDest> destinations)
-		{
-			if (_destsMenu.Items.Count > 0)
-			{
-				_destsMenu.Items.AddSeparator();
-			}
-
-			foreach (var dest in destinations)
-			{
-				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
-				cmd.CommandParameter = dest;
-				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
-				_dests.Add(dest);
-				_dungeonRoomDetail.AddDest(dest);
-			}
 		}
 
 		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
@@ -171,6 +134,30 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_numTransports = stairsCount / 2;
 
 			_dungeonRoomDetail.SetTransports(_numTransports);
+		}
+
+		public void SetGameItems(IEnumerable<GameItem> gameItems)
+		{
+			_items = gameItems.ToList();
+			_dungeonRoomDetail.PopulateItems(_items);
+		}
+
+		public void AddDestinations(IEnumerable<GameDest> destinations)
+		{
+			if (_destsMenu.Items.Count > 0)
+			{
+				_destsMenu.Items.AddSeparator();
+			}
+
+			foreach (var dest in destinations)
+			{
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = dest;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
+				_dests.Add(dest);
+				_dungeonRoomDetail.AddDest(dest);
+			}
 		}
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
@@ -501,14 +488,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDown(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mouseDown = true;
-			_mouseDownLoc = e.Location;
-		}
-
 		private void HandleMouseUp(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -561,59 +540,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		private void HandleMouseMove(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = true;
-
-			_mouseLoc = e.Location;
-
-			if (!_mouseDown)
-			{
-				var offx = (512 - _width * 64) / 2;
-				var offy = 64;
-
-				float dx = _mouseLoc.X - offx;
-				float dy = _mouseLoc.Y - offy;
-				_mx = dx < 0f ? -1 : (int)dx / 64;
-				_my = dy < 0f ? -1 : (int)dy / 44;
-
-				int qx = ((int)dx / 16) % 4;
-				int qy = ((int)dy / 11) % 4;
-
-				_node = '\0';
-
-				if (qx == 0 && (qy == 1 || qy == 2))
-				{
-					_node = 'W';
-				}
-				else if (qx == 3 && (qy == 1 || qy == 2))
-				{
-					_node = 'E';
-				}
-				else if (qy == 0 && (qx == 1 || qx == 2))
-				{
-					_node = 'N';
-				}
-				else if (qy == 3 && (qx == 1 || qx == 2))
-				{
-					_node = 'S';
-				}
-			}
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = false;
-
-			_drawable.Invalidate();
-		}
-
 		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -629,8 +555,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			if (!_active) return;
 
-			var offx = (512 - _width * 64) / 2;
-			var offy = 64;
+			var origin = CalcPaintOrigin();
+
+			var offx = origin.X;
+			var offy = origin.Y;
 
 			if (_mapImage != null)
 			{
@@ -833,6 +761,33 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			return points;
+		}
+
+		protected override char DetermineNode(int x, int y)
+		{
+			int qx = x / 16;
+			int qy = y / 11;
+
+			char node = '\0';
+
+			if (qx == 0 && (qy == 1 || qy == 2))
+			{
+				node = 'W';
+			}
+			else if (qx == 3 && (qy == 1 || qy == 2))
+			{
+				node = 'E';
+			}
+			else if (qy == 0 && (qx == 1 || qx == 2))
+			{
+				node = 'N';
+			}
+			else if (qy == 3 && (qx == 1 || qx == 2))
+			{
+				node = 'S';
+			}
+
+			return node;
 		}
 
 		#endregion
