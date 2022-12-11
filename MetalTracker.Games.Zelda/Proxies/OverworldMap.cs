@@ -45,6 +45,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public OverworldMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
 		{
+			_mw = 16;
+			_mh = 8;
+
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
 			_destsMenu.Closed += HandleDestsMenuClosed;

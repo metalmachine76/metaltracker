@@ -58,6 +58,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public DungeonMap(Drawable drawable, Panel detailPanel) : base(64, 44, drawable)
 		{
+			_mw = 8;
+			_mh = 8;
+
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleContextMenuOpening;
 			_destsMenu.Closed += HandleContextMenuClosed;
@@ -99,6 +102,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_mapImage = DungeonResourceClient.GetDungeonImage(q2, level, mirrored);
 			_meta = DungeonResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
 			_width = _meta.GetLength(1);
+
+			_mw = _width;
+			_mh = 8;
+
 			_map = $"d{level}";
 
 			var stairsCount = 0;

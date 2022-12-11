@@ -44,6 +44,9 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public ZebesMap(Drawable drawable, Panel detailPanel) : base(32, 30, drawable)
 		{
+			_mw = 32;
+			_mh = 32;
+
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
 			_destsMenu.Closed += HandleDestsMenuClosed;

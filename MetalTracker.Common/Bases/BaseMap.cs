@@ -10,6 +10,9 @@ namespace MetalTracker.Common.Bases
 		protected readonly int _rh;
 		protected readonly Drawable _drawable;
 
+		protected int _mw;
+		protected int _mh;
+
 		protected bool _active;
 		protected bool _mousePresent;
 		protected bool _mouseDown;
@@ -104,10 +107,19 @@ namespace MetalTracker.Common.Bases
 			_mouseDown = false;
 			_offset.Y = _offset.Y + _mouseLoc.Y - _mouseDownLoc.Y;
 			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
-			//if (_offset.X > 64) _offset.X = 64;
-			//if (_offset.X < -576) _offset.X = -576;
-			//if (_offset.Y > 64) _offset.Y = 64;
-			//if (_offset.Y < -544) _offset.Y = -544;
+
+			int maxx = 256 - _rw / 2;
+			int maxy = 240 - _rh / 2;
+
+			if (_offset.X > maxx) _offset.X = maxx;
+			if (_offset.Y > maxy) _offset.Y = maxy;
+
+			int minx = 256 - _rw * (_mw - 1) - _rw / 2;
+			int miny = 240 - _rh * (_mh - 1) - _rh / 2;
+
+			if (_offset.X < minx) _offset.X = minx;
+			if (_offset.Y < miny) _offset.Y = miny;
+
 			HandleMouseMove(sender, e);
 			_mxClick = _mx;
 			_myClick = _my;
