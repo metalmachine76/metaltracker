@@ -349,26 +349,29 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					#region Items
 
+					var sw = _rw / 3f;
+					var sh = _rh / 2f;
+
 					if (roomState.Item1 != null)
 					{
-						g.DrawImage(roomState.Item1.Icon, x0 + 3, y0 + 23, 18, 18);
+						DrawCenteredImage(g, x0, y0 + sh, sw, sh, roomState.Item1.Icon);
 					}
 
 					if (roomState.Item2 != null)
 					{
 						if (roomState.Destination == null)
 						{
-							g.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 13, 18, 18);
+							DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item2.Icon);
 						}
 						else
 						{
-							g.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 23, 18, 18);
+							DrawCenteredImage(g, x0 + 1 * sw, y0 + sh, sw, sh, roomState.Item2.Icon);
 						}
 					}
 
 					if (roomState.Item3 != null)
 					{
-						g.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
+						DrawCenteredImage(g, x0 + 2 * sw, y0 + sh, sw, sh, roomState.Item3.Icon);
 					}
 
 					#endregion

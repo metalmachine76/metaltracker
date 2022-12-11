@@ -108,8 +108,8 @@ namespace MetalTracker.Common.Bases
 			dcx = dcx * ratiox;
 			dcy = dcy * ratioy;
 
-			_offset.X = 256 + dcx;
-			_offset.Y = 240 + dcy;
+			_offset.X = (int)(256 + dcx);
+			_offset.Y = (int)(240 + dcy);
 
 			_drawable.Invalidate();
 		}
@@ -155,6 +155,13 @@ namespace MetalTracker.Common.Bases
 			rect.X = x0;
 			rect.Y = y0;
 			g.DrawText(font, brush, rect, text, alignment: FormattedTextAlignment.Center);
+		}
+
+		protected void DrawCenteredImage(Graphics g, float x0, float y0, float w, float h, Image image)
+		{
+			var x = x0 + w / 2f - image.Width / 2f;
+			var y = y0 + h / 2f - image.Height / 2f;
+			g.DrawImage(image, x, y);
 		}
 
 		#region Event Handlers
@@ -248,7 +255,7 @@ namespace MetalTracker.Common.Bases
 				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
 			}
 
-			PaintMap(e.Graphics, offx, offy);
+			PaintMap(e.Graphics, (int)offx, (int)offy);
 		}
 
 		private void HandleTimerElapsed(object sender, System.EventArgs e)
