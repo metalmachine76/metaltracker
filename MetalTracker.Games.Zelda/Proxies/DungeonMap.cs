@@ -52,9 +52,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _walls_e;
 
 		private bool _menuShowing;
-		private int _myClick = -1;
-		private int _mxClick = -1;
-		private char _nodeClick = '\0';
 		private bool _invalidateMap;
 		private bool _invalidateRoom;
 
@@ -488,58 +485,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseUp(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mouseDown = false;
-			HandleMouseMove(sender, e);
-			_mxClick = _mx;
-			_myClick = _my;
-			_nodeClick = _node;
-			_drawable.Invalidate();
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
-			{
-				var roomProps = GetProps(_mxClick, _myClick);
-				var roomState = _roomStates[_myClick, _mxClick];
-				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
-
-				if (roomProps == null) return;
-
-				if (e.Buttons == MouseButtons.Alternate)
-				{
-					if (_nodeClick == 'N')
-					{
-						if (roomProps.DestNorth)
-							_destsMenu.Show();
-						else
-							_wallsMenu.Show();
-					}
-					else if (_nodeClick == 'S')
-					{
-						if (roomProps.DestSouth)
-							_destsMenu.Show();
-						else
-							_wallsMenu.Show();
-					}
-					else if (_nodeClick == 'W')
-					{
-						if (roomProps.DestWest)
-							_destsMenu.Show();
-						else
-							_wallsMenu.Show();
-					}
-					else if (_nodeClick == 'E')
-					{
-						if (roomProps.DestEast)
-							_destsMenu.Show();
-						else
-							_wallsMenu.Show();
-					}
-				}
-			}
-		}
-
 		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -788,6 +733,50 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			return node;
+		}
+
+		protected override void HandleRoomClick(bool altButton)
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
+
+				if (roomProps == null) return;
+
+				if (altButton)
+				{
+					if (_nodeClick == 'N')
+					{
+						if (roomProps.DestNorth)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
+					}
+					else if (_nodeClick == 'S')
+					{
+						if (roomProps.DestSouth)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
+					}
+					else if (_nodeClick == 'W')
+					{
+						if (roomProps.DestWest)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
+					}
+					else if (_nodeClick == 'E')
+					{
+						if (roomProps.DestEast)
+							_destsMenu.Show();
+						else
+							_wallsMenu.Show();
+					}
+				}
+			}
 		}
 
 		#endregion

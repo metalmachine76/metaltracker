@@ -36,8 +36,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private ZebesRoomStateMutator _mutator = new ZebesRoomStateMutator();
 
 		private bool _menuShowing;
-		private int _myClick = -1;
-		private int _mxClick = -1;
 		private bool _invalidateMap;
 		private bool _invalidateRoom;
 
@@ -272,33 +270,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseUp(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mouseDown = false;
-			_offset.Y = _offset.Y + _mouseLoc.Y - _mouseDownLoc.Y;
-			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
-			if (_offset.X > 64) _offset.X = 64;
-			if (_offset.X < -576) _offset.X = -576;
-			if (_offset.Y > 64) _offset.Y = 64;
-			if (_offset.Y < -544) _offset.Y = -544;
-			HandleMouseMove(sender, e);
-			_mxClick = _mx;
-			_myClick = _my;
-			_drawable.Invalidate();
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
-			{
-				var roomProps = GetProps(_mxClick, _myClick);
-				var roomState = _roomStates[_myClick, _mxClick];
-				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
-				{
-					_destsMenu.Show();
-				}
-			}
-		}
-
 		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -398,6 +369,20 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private ZebesRoomProps GetProps(int x, int y)
 		{
 			return _meta[y, x];
+		}
+
+		protected override void HandleRoomClick(bool altButton)
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
+			{
+				var roomProps = GetProps(_mxClick, _myClick);
+				var roomState = _roomStates[_myClick, _mxClick];
+				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
+				if (roomProps.CanHaveDest() && altButton)
+				{
+					_destsMenu.Show();
+				}
+			}
 		}
 
 		#endregion

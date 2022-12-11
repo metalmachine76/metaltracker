@@ -16,9 +16,14 @@ namespace MetalTracker.Common.Bases
 		protected PointF _mouseDownLoc;
 		protected PointF _mouseLoc;
 		protected PointF _offset = new PointF(64, 64);
+
 		protected int _my = -1;
 		protected int _mx = -1;
 		protected char _node = '\0';
+
+		protected int _myClick = -1;
+		protected int _mxClick = -1;
+		protected char _nodeClick = '\0';
 
 		protected BaseMap(int roomWidth, int roomHeight, Drawable drawable)
 		{
@@ -91,6 +96,25 @@ namespace MetalTracker.Common.Bases
 			_mouseDownLoc = e.Location;
 		}
 
+		protected void HandleMouseUp(object sender, MouseEventArgs e)
+		{
+			if (!_active) return;
+
+			_mouseDown = false;
+			_offset.Y = _offset.Y + _mouseLoc.Y - _mouseDownLoc.Y;
+			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
+			//if (_offset.X > 64) _offset.X = 64;
+			//if (_offset.X < -576) _offset.X = -576;
+			//if (_offset.Y > 64) _offset.Y = 64;
+			//if (_offset.Y < -544) _offset.Y = -544;
+			HandleMouseMove(sender, e);
+			_mxClick = _mx;
+			_myClick = _my;
+			_nodeClick = _node;
+			_drawable.Invalidate();
+			HandleRoomClick(e.Buttons == MouseButtons.Alternate);
+		}
+
 		protected void HandleMouseMove(object sender, MouseEventArgs e)
 		{
 			if (!_active) return;
@@ -124,6 +148,8 @@ namespace MetalTracker.Common.Bases
 
 			_drawable.Invalidate();
 		}
+
+		protected abstract void HandleRoomClick(bool altButton);
 
 		protected virtual char DetermineNode(int x, int y)
 		{
