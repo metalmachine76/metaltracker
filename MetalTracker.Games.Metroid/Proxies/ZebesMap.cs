@@ -267,13 +267,13 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var dest = cmd.CommandParameter as GameDest;
 				var roomState = _roomStates[_myClick, _mxClick];
 
-				if (_node == 'U')
+				if (_nodeClick == 'U')
 					_mutator.ChangeDestUp(_mxClick, _myClick, roomState, dest);
-				else if (_node == 'D')
+				else if (_nodeClick == 'D')
 					_mutator.ChangeDestDown(_mxClick, _myClick, roomState, dest);
-				else if (_node == 'L')
+				else if (_nodeClick == 'L')
 					_mutator.ChangeDestLeft(_mxClick, _myClick, roomState, dest);
-				else if (_node == 'R')
+				else if (_nodeClick == 'R')
 					_mutator.ChangeDestRight(_mxClick, _myClick, roomState, dest);
 
 				_drawable.Invalidate();

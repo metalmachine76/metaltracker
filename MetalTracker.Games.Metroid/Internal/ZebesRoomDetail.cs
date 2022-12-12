@@ -76,7 +76,13 @@ namespace MetalTracker.Games.Metroid.Internal
 			_dropDownDestExitLeft.SelectedIndexChanged += HandleSelectedDestLeftChanged;
 			_dropDownDestExitRight.SelectedIndexChanged += HandleSelectedDestRightChanged;
 
-			// _mainLayout.Items.Add(_dropDownDestElev);
+			var _exitsLayout = new TableLayout(
+				new TableRow(new TableCell(), new TableCell(_dropDownDestElevUp), new TableCell()),
+				new TableRow(new TableCell(_dropDownDestExitLeft), new TableCell(), new TableCell(_dropDownDestExitRight)),
+				new TableRow(new TableCell(), new TableCell(_dropDownDestElevDown), new TableCell())
+			);
+
+			_mainLayout.Items.Add(_exitsLayout);
 
 			#endregion
 
