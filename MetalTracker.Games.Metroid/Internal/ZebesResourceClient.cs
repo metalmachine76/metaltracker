@@ -80,21 +80,27 @@ namespace MetalTracker.Games.Metroid.Internal
 			ZebesRoomProps[,] meta = new ZebesRoomProps[32, 32];
 
 			string metaResName = $"MetalTracker.Games.Metroid.Res.zebesmeta.txt";
-
 			string[] metaLines = GetResourceLines(metaResName);
+
+			string areaResName = $"MetalTracker.Games.Metroid.Res.zebesnames.txt";
+			string[] areaLines = GetResourceLines(areaResName);
 
 			for (int y = 0; y < 32; y++)
 			{
-				string line = metaLines[y];
+				string mline = metaLines[y];
+				string aline = areaLines[y];
 				for (int x = 0; x < 32; x++)
 				{
-					char c = line[x];
+					char mc = mline[x];
+					char ac = aline[x];
+
 					var props = new ZebesRoomProps();
 
-					props.CanExitLeft = (c == '|' || c == 'L');
-					props.CanExitRight = (c == '|' || c == 'R');
-					props.ElevatorUp = (c == 'U');
-					props.ElevatorDown = (c == 'D');
+					props.CanExitLeft = (mc == '|' || mc == 'L');
+					props.CanExitRight = (mc == '|' || mc == 'R');
+					props.ElevatorUp = (mc == 'U');
+					props.ElevatorDown = (mc == 'D');
+					props.AreaCode = ac;
 
 					meta[y, x] = props;
 				}

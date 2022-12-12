@@ -7,6 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Res\zebesnames.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="Res\Icons\boots0.png" />
 	  <EmbeddedResource Include="Res\Icons\boots1.png" />
 	  <EmbeddedResource Include="Res\Icons\energy.png" />
@@ -33,6 +37,7 @@
 	  <EmbeddedResource Include="Res\Icons\wavebeam1.png" />
 	  <EmbeddedResource Include="Res\zebesmap.m.png" />
 	  <EmbeddedResource Include="Res\zebesmap.png" />
+	  <EmbeddedResource Include="Res\zebesnames.txt" />
 	  <EmbeddedResource Include="Res\zebesshuffle.txt" />
 	  <EmbeddedResource Include="Res\zebesmeta.txt" />
 	</ItemGroup>

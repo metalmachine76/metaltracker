@@ -206,7 +206,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item != null && state.Item.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2} ({areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -226,28 +227,53 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestUp != null && state.DestUp.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestUp, $"Zebes at Y={y:X2} X={x:X2} (elevator)", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestDown != null && state.DestDown.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestDown, $"Zebes at Y={y:X2} X={x:X2} (elevator)", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestLeft != null && state.DestLeft.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestLeft, $"Zebes at Y={y:X2} X={x:X2} (door)", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.DestRight != null && state.DestRight.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestRight, $"Zebes at Y={y:X2} X={x:X2} (door)", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}
 			}
 
 			return list;
+		}
+
+		private string GetAreaName(int x, int y)
+		{
+			var props = _meta[y, x];
+
+			if (props == null) return "???";
+
+			switch (props.AreaCode)
+			{
+				case 'B':
+					return "Brinstar";
+				case 'N':
+					return "Norfair";
+				case 'K':
+					return "Kraid";
+				case 'R':
+					return "Ridley";
+			}
+
+			return "???";
 		}
 
 		#endregion

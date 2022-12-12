@@ -350,7 +350,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (roomState.Destination != null && !roomState.Destination.IsExit)
 					{
 						var dest = roomState.Destination;
-						DrawCave(g, x0, y0, _rw, _rh, dest);
+						DrawText(g, x0 - _rw, y0, 3 * _rw, dest.ShortName, Brushes.White);
 					}
 
 					#region Items
@@ -390,7 +390,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					if (roomState.Destination != null && roomState.Destination.IsExit)
 					{
 						var dest = roomState.Destination;
-						DrawExit(g, x0, y0, _rw, dest);
+						DrawExit(g, x0 - _rw, y0, 3 * _rw, dest);
 					}
 				}
 			}
@@ -408,12 +408,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			{
 				g.FillRectangle(CursorBrush, _mx * _rw + offx, _my * _rh + offy, _rw, _rh);
 			}
-		}
-
-		private void DrawCave(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
-		{
-			Brush textBrush = Brushes.White;
-			DrawText(g, x0 - _rw, y0, 3 * rw, dest.ShortName, textBrush);
 		}
 
 		#endregion
