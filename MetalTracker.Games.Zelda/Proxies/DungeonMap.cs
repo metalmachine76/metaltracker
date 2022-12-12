@@ -613,29 +613,29 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					// walls
 
-					if (roomState.WallNorth != null)
+					if (_rh > 32)
 					{
-						// paint north wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallNorth.Ordinal, 0, 12, 12);
-						g.DrawImage(_walls_n, sr, new PointF(x0 + 32 - 6, y0));
-					}
-					if (roomState.WallSouth != null)
-					{
-						// paint south wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallSouth.Ordinal, 0, 12, 12);
-						g.DrawImage(_walls_s, sr, new PointF(x0 + 32 - 6, y0 + 44 - 12));
-					}
-					if (roomState.WallWest != null)
-					{
-						// paint west wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallWest.Ordinal, 12, 12);
-						g.DrawImage(_walls_w, sr, new PointF(x0, y0 + 22 - 6));
-					}
-					if (roomState.WallEast != null)
-					{
-						// paint east wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
-						g.DrawImage(_walls_e, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
+						if (roomState.WallNorth != null)
+						{
+							RectangleF sr = new RectangleF(16 * roomState.WallNorth.Ordinal, 0, 16, 16);
+							g.DrawImage(_walls_n, sr, new PointF(x0 + _rw / 2 - 8, y0));
+						}
+						if (roomState.WallSouth != null)
+						{
+							RectangleF sr = new RectangleF(16 * roomState.WallSouth.Ordinal, 0, 16, 16);
+							g.DrawImage(_walls_s, sr, new PointF(x0 + _rw / 2 - 8, y0 + _rh - 16));
+						}
+						if (roomState.WallWest != null)
+						{
+							RectangleF sr = new RectangleF(0, 16 * roomState.WallWest.Ordinal, 16, 16);
+							g.DrawImage(_walls_w, sr, new PointF(x0, y0 + _rh / 2 - 8));
+						}
+						if (roomState.WallEast != null)
+						{
+							// paint east wall type
+							RectangleF sr = new RectangleF(0, 16 * roomState.WallEast.Ordinal, 16, 16);
+							g.DrawImage(_walls_e, sr, new PointF(x0 + _rw - 16, y0 + _rh / 2 - 8));
+						}
 					}
 
 					// items
