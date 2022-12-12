@@ -16,14 +16,32 @@ namespace MetalTracker.Games.Metroid.Internal
 			_coOpClient = coOpClient;
 		}
 
-		public void ChangeDestination(int x, int y, ZebesRoomState state, GameDest newDest)
+		public void ChangeDestUp(int x, int y, ZebesRoomState state, GameDest newDest)
 		{
-			if (state.DestElev != newDest)
-			{
-				var oldState = state.Clone();
-				state.DestElev = newDest;
-				SendCoOpUpdates(x, y, oldState, state);
-			}
+			var oldState = state.Clone();
+			state.DestUp = newDest;
+			SendCoOpUpdates(x, y, oldState, state);
+		}
+
+		public void ChangeDestDown(int x, int y, ZebesRoomState state, GameDest newDest)
+		{
+			var oldState = state.Clone();
+			state.DestDown = newDest;
+			SendCoOpUpdates(x, y, oldState, state);
+		}
+
+		public void ChangeDestLeft(int x, int y, ZebesRoomState state, GameDest newDest)
+		{
+			var oldState = state.Clone();
+			state.DestLeft = newDest;
+			SendCoOpUpdates(x, y, oldState, state);
+		}
+
+		public void ChangeDestRight(int x, int y, ZebesRoomState state, GameDest newDest)
+		{
+			var oldState = state.Clone();
+			state.DestRight = newDest;
+			SendCoOpUpdates(x, y, oldState, state);
 		}
 
 		public void ChangeItem(int x, int y, ZebesRoomState state, GameItem newItem)
@@ -39,9 +57,21 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			if (!_coOpClient.IsConnected()) return;
 
-			if (newState.DestElev != oldState.DestElev)
+			if (newState.DestUp != oldState.DestUp)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.DestElev?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.DestUp?.GetCode());
+			}
+			if (newState.DestDown != oldState.DestDown)
+			{
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 1, newState.DestDown?.GetCode());
+			}
+			if (newState.DestLeft != oldState.DestLeft)
+			{
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 2, newState.DestLeft?.GetCode());
+			}
+			if (newState.DestRight != oldState.DestRight)
+			{
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 3, newState.DestRight?.GetCode());
 			}
 			if (newState.Item != oldState.Item)
 			{

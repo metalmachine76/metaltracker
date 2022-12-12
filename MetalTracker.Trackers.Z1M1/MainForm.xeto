@@ -44,7 +44,7 @@
 	</Form.Menu>
 
 	<StackLayout Orientation="Horizontal">
-		<GroupBox Height="550" Text="Maps" Padding="5,5,5,5">
+		<GroupBox Height="600" Text="Maps" Padding="5,5,5,5" MouseWheel="HandleMouseWheel">
 			<StackLayout>
 				<StackLayout Orientation="Horizontal" Height="30">
 					<DropDown ID="dropDownSelectedMap" SelectedIndexChanged="HandleMapChanged">
@@ -62,12 +62,14 @@
 					</DropDown>
 				</StackLayout>
 				<Drawable ID="drawableCurrentMap" Width="512" Height="480" BackgroundColor="#333366"></Drawable>
+				<Panel Height="10"></Panel>
+				<Slider ID="sliderZoom" MinValue="0" MaxValue="6" Value="3" Width="150" SnapToTick="True" ValueChanged="HandleZoomValueChanged"></Slider>
 			</StackLayout>
 		</GroupBox>
 		<StackLayout>
-			<GroupBox ID="groupBoxItemTracker" Width="400" Height="275" Text="Inventory / Goals" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxItemTracker" Width="400" Height="300" Text="Inventory" Padding="5,5,5,5">
 			</GroupBox>
-			<GroupBox ID="groupBoxRoomDetail" Width="400" Height="275" Text="Room Detail" Padding="5,5,5,5">
+			<GroupBox ID="groupBoxRoomDetail" Width="400" Height="300" Text="Room Detail" Padding="5,5,5,5">
 			</GroupBox>
 		</StackLayout>
 	</StackLayout>

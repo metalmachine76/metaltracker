@@ -5,7 +5,7 @@ using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	internal static class InternalResourceClient
+	internal static class ZebesResourceClient
 	{
 		static List<(int, int, char)> ItemSlots = new List<(int, int, char)>
 		{
@@ -91,8 +91,10 @@ namespace MetalTracker.Games.Metroid.Internal
 					char c = line[x];
 					var props = new ZebesRoomProps();
 
-					props.IsVertical = (c == '|');
-					props.Elevator = (c == 'U' || c == 'D');
+					props.CanExitLeft = (c == '|' || c == 'L');
+					props.CanExitRight = (c == '|' || c == 'R');
+					props.ElevatorUp = (c == 'U');
+					props.ElevatorDown = (c == 'D');
 
 					meta[y, x] = props;
 				}
@@ -146,7 +148,7 @@ namespace MetalTracker.Games.Metroid.Internal
 
 		private static string[] GetResourceLines(string resName)
 		{
-			return ResourceClient.GetResourceLines(typeof(InternalResourceClient).Assembly, resName);
+			return ResourceClient.GetResourceLines(typeof(ZebesResourceClient).Assembly, resName);
 		}
 
 	}
