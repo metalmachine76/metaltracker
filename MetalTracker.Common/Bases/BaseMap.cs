@@ -128,18 +128,18 @@ namespace MetalTracker.Common.Bases
 
 		public abstract List<LocationOfItem> LogItemLocations();
 
-		protected void DrawExit(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
+		protected void DrawExit(Graphics g, float x0, float y0, float rw, GameDest dest)
 		{
-			Brush textBrush = Brushes.Lime;
-			Font textFont = Fonts.Sans(14);
-			DrawText(g, x0, y0, rw, rh, dest?.ShortName ?? "?", textFont, textBrush);
+			DrawText(g, x0, y0, rw, dest?.ShortName ?? "?", Brushes.Lime);
 		}
 
-		protected void DrawText(Graphics g, float x0, float y0, float rw, float rh, string text, Font font, Brush brush)
+		protected void DrawText(Graphics g, float x0, float y0, float rw, string text, Brush brush)
 		{
 			// g.DrawRectangle(Colors.White, x0, y0, rw, rh);
 
-			RectangleF rect = new RectangleF(0, 0, rw, rh);
+			Font font = Fonts.Sans(14);
+
+			RectangleF rect = new RectangleF(0, 0, rw, 30);
 
 			rect.X = x0 - 1;
 			rect.Y = y0;

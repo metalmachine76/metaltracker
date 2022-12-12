@@ -603,11 +603,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						if (props.Slot1Class != '\0' && roomState.Item1 == null)
 						{
-							DrawText(g, x0 - 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 - 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, props.Slot1Class.ToString(), Brushes.White);
 						}
 						if (props.Slot2Class != '\0' && roomState.Item2 == null)
 						{
-							DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, props.Slot2Class.ToString(), Brushes.White);
 						}
 					}
 
@@ -662,26 +662,26 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					if (roomState.Transport != null)
 					{
-						DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, 44, $"{roomState.Transport}", Fonts.Sans(12), Brushes.CornflowerBlue);
+						DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, $"{roomState.Transport}", Brushes.CornflowerBlue);
 					}
 
 					// exits
 
 					if (roomState.DestNorth != null)
 					{
-						DrawExit(g, x0 - _rw, y0 - 11, 3 * _rw, 44, roomState.DestNorth);
+						DrawExit(g, x0 - _rw, y0 - 11, 3 * _rw, roomState.DestNorth);
 					}
 					if (roomState.DestSouth != null)
 					{
-						DrawExit(g, x0 - _rw, y0 + _rh - 10, 3 * _rw, 44, roomState.DestSouth);
+						DrawExit(g, x0 - _rw, y0 + _rh - 10, 3 * _rw, roomState.DestSouth);
 					}
 					if (roomState.DestWest != null)
 					{
-						DrawExit(g, x0 - 32, y0 + 11, 64, 44, roomState.DestWest);
+						DrawExit(g, x0 - 32, y0 + 11, 64, roomState.DestWest);
 					}
 					if (roomState.DestEast != null)
 					{
-						DrawExit(g, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
+						DrawExit(g, x0 + 32, y0 + 11, 64, roomState.DestEast);
 					}
 				}
 			}
