@@ -319,8 +319,11 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleHelpClick(object sender, EventArgs e)
 		{
+			string cmdLine = Environment.CommandLine;
+			
 			ProcessStartInfo info = new ProcessStartInfo
 			{
+				WorkingDirectory = Path.GetDirectoryName(cmdLine),
 				UseShellExecute = true,
 				FileName = "readme.txt"
 			};
