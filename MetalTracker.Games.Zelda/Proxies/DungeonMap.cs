@@ -731,10 +731,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 						if (rooms.Count == 2)
 						{
 							g.AntiAlias = true;
-							float tx0 = rooms[0].X * 64 + offx + 32;
-							float ty0 = rooms[0].Y * 44 + offy + 22;
-							float tx1 = rooms[1].X * 64 + offx + 32;
-							float ty1 = rooms[1].Y * 44 + offy + 22;
+							float tx0 = rooms[0].X * _rw + offx + _rw / 2;
+							float ty0 = rooms[0].Y * _rh + offy + _rh / 2;
+							float tx1 = rooms[1].X * _rw + offx + _rw / 2;
+							float ty1 = rooms[1].Y * _rh + offy + _rh / 2;
 							g.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
 							g.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
 						}
