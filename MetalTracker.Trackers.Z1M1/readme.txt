@@ -89,5 +89,16 @@ When you are connected to the co-op server and have joined a room, the following
 Note: The co-op server does not keep any state. It only replicates events to other players within a given room. This means that if you are disconnected 
 from the room, and later reconnect, any events that occurred while you were not connected won't show on your tracker. 
 
-A room is closed once all players leave the room.
+A room is automatically closed once all players leave the room.
+
+
+KNOWN ISSUES
+------------
+
+The GTK build has some minor issues:
+
+1. Some visual issues, such as the map dropdown overlapping the map area.
+2. On grids, the last row can't be selected with the mouse. You must use the down arrow key to select it.
+3. Dropdowns may open with a bunch of blank space above or below the actual items in the list. 
+4. Using the mouse wheel to zoom in/out of the map doesn't work. Use the slider below the map instead.
 
