@@ -178,11 +178,11 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var dest = _dests.Find(i => i.GetCode() == entry.Code);
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].DestUp = dest;
-				else if (entry.Slot == 0)
+				else if (entry.Slot == 1)
 					_roomStates[entry.Y, entry.X].DestDown = dest;
-				else if (entry.Slot == 0)
+				else if (entry.Slot == 2)
 					_roomStates[entry.Y, entry.X].DestLeft = dest;
-				else if (entry.Slot == 0)
+				else if (entry.Slot == 3)
 					_roomStates[entry.Y, entry.X].DestRight = dest;
 			}
 			foreach (var entry in mapState.Items)
