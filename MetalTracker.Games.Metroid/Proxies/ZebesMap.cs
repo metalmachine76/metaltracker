@@ -388,7 +388,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					{
 						if (props.SlotClass != '\0' && roomState.Item == null)
 						{
-							DrawText(g, x0, y0, _rw, _rh, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0, y0, _rw, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 					}
 
@@ -402,10 +402,22 @@ namespace MetalTracker.Games.Metroid.Proxies
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					//if (roomState.DestElev != null)
-					//{
-					//	DrawExit(g, x0 - _rw / 2, y0, _rw, _rh, roomState.DestElev);
-					//}
+					if (roomState.DestUp != null)
+					{
+						DrawExit(g, x0 - _rw, y0, 3 * _rw, 30, roomState.DestUp);
+					}
+					if (roomState.DestDown != null)
+					{
+						DrawExit(g, x0 - _rw, y0 + _rh / 2, 3 * _rw, 30, roomState.DestDown);
+					}
+					if (roomState.DestLeft != null)
+					{
+						DrawExit(g, x0 - _rw - _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, 30, roomState.DestLeft);
+					}
+					if (roomState.DestRight != null)
+					{
+						DrawExit(g, x0 - _rw + _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, 30, roomState.DestRight);
+					}
 				}
 			}
 

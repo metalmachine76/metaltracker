@@ -92,8 +92,11 @@ namespace MetalTracker.Common.Bases
 
 		public void SetZoom(int zoom)
 		{
-			var dcx = _offset.X - 256;
-			var dcy = _offset.Y - 240;
+			var cx = _mousePresent ? _mouseLoc.X : 256;
+			var cy = _mousePresent ? _mouseLoc.Y : 240;
+
+			var dcx = _offset.X - cx;
+			var dcy = _offset.Y - cy;
 
 			var rw0 = _rw;
 			var rh0 = _rh;
@@ -108,8 +111,8 @@ namespace MetalTracker.Common.Bases
 			dcx = dcx * ratiox;
 			dcy = dcy * ratioy;
 
-			_offset.X = (int)(256 + dcx);
-			_offset.Y = (int)(240 + dcy);
+			_offset.X = (int)(cx + dcx);
+			_offset.Y = (int)(cy + dcy);
 
 			_drawable.Invalidate();
 		}
@@ -127,9 +130,10 @@ namespace MetalTracker.Common.Bases
 
 		protected void DrawExit(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
+			//g.DrawRectangle(Colors.White, x0, y0, rw, rh);
 			Brush textBrush = Brushes.Lime;
 			Font textFont = Fonts.Sans(14);
-			DrawText(g, x0, y0, rw, rh, dest.ShortName, textFont, textBrush);
+			DrawText(g, x0, y0, rw, rh, dest?.ShortName ?? "?", textFont, textBrush);
 		}
 
 		protected void DrawText(Graphics g, float x0, float y0, float rw, float rh, string text, Font font, Brush brush)
