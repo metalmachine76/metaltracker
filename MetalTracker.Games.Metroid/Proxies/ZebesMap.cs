@@ -420,7 +420,32 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
 			{
-				g.FillRectangle(CursorBrush, _mx * _rw + offx, _my * _rh + offy, _rw, _rh);
+				float x0 = _mx * _rw + offx;
+				float y0 = _my * _rh + offy;
+
+				g.FillRectangle(CursorBrush, x0, y0, _rw, _rh);
+
+				var props = GetProps(_mx, _my);
+
+				if (props != null)
+				{
+					if (props.ElevatorUp && _node == 'U')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0, _rw / 2f, _rh / 4f);
+					}
+					else if (props.ElevatorDown && _node == 'D')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0 + 3 * _rh / 4, _rw / 2f, _rh / 4f);
+					}
+					else if (props.CanExitLeft && _node == 'L')
+					{
+						g.FillRectangle(CursorBrush, x0, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+					else if (props.CanExitRight && _node == 'R')
+					{
+						g.FillRectangle(CursorBrush, x0 + 3 * _rw / 4, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+				}
 			}
 		}
 

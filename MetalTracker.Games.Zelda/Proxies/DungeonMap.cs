@@ -348,22 +348,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.DestNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level}", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level}", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level}", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level}", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -704,37 +704,42 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				g.FillRectangle(CursorBrush, x0, y0, _rw, _rh);
 
-				if (_node == 'N')
-				{
-					g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0, _rw / 2f, _rh / 4f);
-				}
-				else if (_node == 'S')
-				{
-					g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0 + 3 * _rh / 4, _rw / 2f, _rh / 4f);
-				}
-				else if (_node == 'W')
-				{
-					g.FillRectangle(CursorBrush, x0, y0 + _rh / 4, _rw / 4f, _rh / 2f);
-				}
-				else if (_node == 'E')
-				{
-					g.FillRectangle(CursorBrush, x0 + 3 * _rw / 4, y0 + _rh / 4, _rw / 4f, _rh / 2f);
-				}
+				var props = GetProps(_mx, _my);
 
-				var roomState = _roomStates[_my, _mx];
-
-				if (roomState.Transport != null)
+				if (props != null)
 				{
-					var rooms = FindTransportRooms(roomState.Transport);
-					if (rooms.Count == 2)
+					if (_node == 'N')
 					{
-						g.AntiAlias = true;
-						float tx0 = rooms[0].X * 64 + offx + 32;
-						float ty0 = rooms[0].Y * 44 + offy + 22;
-						float tx1 = rooms[1].X * 64 + offx + 32;
-						float ty1 = rooms[1].Y * 44 + offy + 22;
-						g.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
-						g.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0, _rw / 2f, _rh / 4f);
+					}
+					else if (_node == 'S')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0 + 3 * _rh / 4, _rw / 2f, _rh / 4f);
+					}
+					else if (_node == 'W')
+					{
+						g.FillRectangle(CursorBrush, x0, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+					else if (_node == 'E')
+					{
+						g.FillRectangle(CursorBrush, x0 + 3 * _rw / 4, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+
+					var roomState = _roomStates[_my, _mx];
+
+					if (roomState.Transport != null)
+					{
+						var rooms = FindTransportRooms(roomState.Transport);
+						if (rooms.Count == 2)
+						{
+							g.AntiAlias = true;
+							float tx0 = rooms[0].X * 64 + offx + 32;
+							float ty0 = rooms[0].Y * 44 + offy + 22;
+							float tx1 = rooms[1].X * 64 + offx + 32;
+							float ty1 = rooms[1].Y * 44 + offy + 22;
+							g.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
+							g.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
+						}
 					}
 				}
 			}
