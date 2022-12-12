@@ -347,6 +347,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 						continue;
 					}
 
+					if (roomState.Destination != null && !roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+						DrawCave(g, x0, y0, _rw, _rh, dest);
+					}
+
 					#region Items
 
 					var sw = _rw / 3f;
@@ -375,12 +381,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 					}
 
 					#endregion
-
-					if (roomState.Destination != null && !roomState.Destination.IsExit)
-					{
-						var dest = roomState.Destination;
-						DrawCave(g, x0, y0, _rw, _rh, dest);
-					}
 
 					if ((props.DestHere || props.ItemHere) && roomState.Explored)
 					{
