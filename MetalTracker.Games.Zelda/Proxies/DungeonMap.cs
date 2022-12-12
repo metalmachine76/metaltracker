@@ -603,11 +603,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						if (props.Slot1Class != '\0' && roomState.Item1 == null)
 						{
-							DrawText(g, x0 - 11, y0 + 13, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 - 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 						if (props.Slot2Class != '\0' && roomState.Item2 == null)
 						{
-							DrawText(g, x0 + 11, y0 + 13, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
 						}
 					}
 

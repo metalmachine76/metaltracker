@@ -130,7 +130,6 @@ namespace MetalTracker.Common.Bases
 
 		protected void DrawExit(Graphics g, float x0, float y0, float rw, float rh, GameDest dest)
 		{
-			//g.DrawRectangle(Colors.White, x0, y0, rw, rh);
 			Brush textBrush = Brushes.Lime;
 			Font textFont = Fonts.Sans(14);
 			DrawText(g, x0, y0, rw, rh, dest?.ShortName ?? "?", textFont, textBrush);
@@ -138,6 +137,8 @@ namespace MetalTracker.Common.Bases
 
 		protected void DrawText(Graphics g, float x0, float y0, float rw, float rh, string text, Font font, Brush brush)
 		{
+			// g.DrawRectangle(Colors.White, x0, y0, rw, rh);
+
 			RectangleF rect = new RectangleF(0, 0, rw, rh);
 
 			rect.X = x0 - 1;
