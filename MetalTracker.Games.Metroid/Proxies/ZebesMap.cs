@@ -62,8 +62,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_flag_shuffled = shuffleMode;
 			_flag_mirrored = mirrored;
-			_mapImage = InternalResourceClient.GetZebesImage(mirrored);
-			_meta = InternalResourceClient.GetZebesMeta(shuffleMode, mirrored);
+			_mapImage = ZebesResourceClient.GetZebesImage(mirrored);
+			_meta = ZebesResourceClient.GetZebesMeta(shuffleMode, mirrored);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -129,9 +129,24 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					// exits
 
-					if (roomState.DestElev != null)
+					if (roomState.DestUp != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestElev.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestUp.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.DestDown != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestDown.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.DestLeft != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestLeft.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.DestRight != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestRight.GetCode() };
 						mapState.Dests.Add(entry);
 					}
 
@@ -160,7 +175,15 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			foreach (var entry in mapState.Dests)
 			{
-				_roomStates[entry.Y, entry.X].DestElev = _dests.Find(i => i.GetCode() == entry.Code);
+				var dest = _dests.Find(i => i.GetCode() == entry.Code);
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestUp = dest;
+				else if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestDown = dest;
+				else if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestLeft = dest;
+				else if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestRight = dest;
 			}
 			foreach (var entry in mapState.Items)
 			{
@@ -201,9 +224,24 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.DestElev != null && state.DestElev.IsExit)
+					if (state.DestUp != null && state.DestUp.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestUp, $"Zebes at Y={y:X2} X={x:X2} (elevator)", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestDown != null && state.DestDown.IsExit)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestDown, $"Zebes at Y={y:X2} X={x:X2} (elevator)", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestLeft != null && state.DestLeft.IsExit)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestLeft, $"Zebes at Y={y:X2} X={x:X2} (door)", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestRight != null && state.DestRight.IsExit)
+					{
+						LocationOfDest loc = new LocationOfDest(state.DestRight, $"Zebes at Y={y:X2} X={x:X2} (door)", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -228,7 +266,16 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
 				var roomState = _roomStates[_myClick, _mxClick];
-				_mutator.ChangeDestination(_mxClick, _myClick, roomState, dest);
+
+				if (_node == 'U')
+					_mutator.ChangeDestUp(_mxClick, _myClick, roomState, dest);
+				else if (_node == 'D')
+					_mutator.ChangeDestDown(_mxClick, _myClick, roomState, dest);
+				else if (_node == 'L')
+					_mutator.ChangeDestLeft(_mxClick, _myClick, roomState, dest);
+				else if (_node == 'R')
+					_mutator.ChangeDestRight(_mxClick, _myClick, roomState, dest);
+
 				_drawable.Invalidate();
 				_zebesRoomDetail.Refresh();
 			}
@@ -249,6 +296,33 @@ namespace MetalTracker.Games.Metroid.Proxies
 			return _meta[y, x];
 		}
 
+		protected override char DetermineNode(float x, float y)
+		{
+			int qx = (int)(4 * x / _rw);
+			int qy = (int)(4 * y / _rh);
+
+			char node = '\0';
+
+			if (qy == 0 && (qx == 1 || qx == 2))
+			{
+				node = 'U';
+			}
+			else if (qy == 3 && (qx == 1 || qx == 2))
+			{
+				node = 'D';
+			}
+			else if (qx == 0 && (qy == 1 || qy == 2))
+			{
+				node = 'L';
+			}
+			else if (qx == 3 && (qy == 1 || qy == 2))
+			{
+				node = 'R';
+			}
+
+			return node;
+		}
+
 		protected override void HandleRoomClick(bool altButton)
 		{
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
@@ -256,9 +330,16 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-				if (roomProps.CanHaveDest() && altButton)
+				if (altButton && _nodeClick != '\0')
 				{
-					_destsMenu.Show();
+					if (_nodeClick == 'U' && roomProps.ElevatorUp)
+						_destsMenu.Show();
+					else if (_nodeClick == 'D' && roomProps.ElevatorDown)
+						_destsMenu.Show();
+					else if (_nodeClick == 'L' && roomProps.CanExitLeft)
+						_destsMenu.Show();
+					else if (_nodeClick == 'R' && roomProps.CanExitRight)
+						_destsMenu.Show();
 				}
 			}
 		}
@@ -321,10 +402,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					if (roomState.DestElev != null)
-					{
-						DrawExit(g, x0 - _rw / 2, y0, _rw, _rh, roomState.DestElev);
-					}
+					//if (roomState.DestElev != null)
+					//{
+					//	DrawExit(g, x0 - _rw / 2, y0, _rw, _rh, roomState.DestElev);
+					//}
 				}
 			}
 
@@ -356,7 +437,15 @@ namespace MetalTracker.Games.Metroid.Proxies
 				if (e.Type == "dest")
 				{
 					var dest = _dests.Find(d => d.GetCode() == e.Code);
-					roomState.DestElev = dest;
+
+					if (e.Slot == 0)
+						roomState.DestUp = dest;
+					else if (e.Slot == 1)
+						roomState.DestDown = dest;
+					else if (e.Slot == 2)
+						roomState.DestLeft = dest;
+					else if (e.Slot == 3)
+						roomState.DestRight = dest;
 				}
 				else if (e.Type == "item")
 				{
@@ -390,6 +479,5 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_drawable.Invalidate();
 		}
-
 	}
 }

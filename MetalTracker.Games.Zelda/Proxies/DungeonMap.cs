@@ -493,21 +493,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			char node = '\0';
 
-			if (qx == 0 && (qy == 1 || qy == 2))
-			{
-				node = 'W';
-			}
-			else if (qx == 3 && (qy == 1 || qy == 2))
-			{
-				node = 'E';
-			}
-			else if (qy == 0 && (qx == 1 || qx == 2))
+			if (qy == 0 && (qx == 1 || qx == 2))
 			{
 				node = 'N';
 			}
 			else if (qy == 3 && (qx == 1 || qx == 2))
 			{
 				node = 'S';
+			}
+			else if (qx == 0 && (qy == 1 || qy == 2))
+			{
+				node = 'W';
+			}
+			else if (qx == 3 && (qy == 1 || qy == 2))
+			{
+				node = 'E';
 			}
 
 			return node;

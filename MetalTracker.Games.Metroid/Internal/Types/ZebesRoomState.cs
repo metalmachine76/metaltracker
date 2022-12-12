@@ -2,29 +2,31 @@
 
 namespace MetalTracker.Games.Metroid.Internal.Types
 {
-    internal class ZebesRoomState
-    {
-        // shared state
+	internal class ZebesRoomState
+	{
+		// shared state
 
-        public GameDest DestElev { get; set; }
-        //public GameDest DestLeft { get; set; }
-        //public GameDest DestRight { get; set; }
-        public GameItem Item { get; set; }
+		public GameDest DestUp { get; set; }
+		public GameDest DestDown { get; set; }
+		public GameDest DestLeft { get; set; }
+		public GameDest DestRight { get; set; }
+		public GameItem Item { get; set; }
 
-        // local state
+		// local state
 
-        public bool Explored { get; set; }
+		public bool Explored { get; set; }
 
-        public ZebesRoomState Clone()
-        {
-            var clone = new ZebesRoomState();
+		public ZebesRoomState Clone()
+		{
+			var clone = new ZebesRoomState();
 
-            clone.DestElev = DestElev;
-            //clone.DestLeft = this.DestLeft;
-            //clone.DestRight = this.DestRight;
-            clone.Item = Item;
+			clone.DestUp = this.DestUp;
+			clone.DestDown = this.DestDown;
+			clone.DestLeft = this.DestLeft;
+			clone.DestRight = this.DestRight;
+			clone.Item = Item;
 
-            return clone;
-        }
-    }
+			return clone;
+		}
+	}
 }
