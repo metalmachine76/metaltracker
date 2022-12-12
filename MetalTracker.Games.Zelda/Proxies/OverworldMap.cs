@@ -11,7 +11,7 @@ using MetalTracker.Games.Zelda.Types;
 
 namespace MetalTracker.Games.Zelda.Proxies
 {
-    public class OverworldMap : BaseMap
+	public class OverworldMap : BaseMap
 	{
 		const string Game = "zelda";
 		const string Map = "ow";
@@ -20,7 +20,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 153));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
 
-		private readonly Drawable _drawable;
 		private readonly OverworldRoomDetail _overworldRoomDetail;
 
 		private bool _flag_q2;
@@ -31,38 +30,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private OverworldRoomProps[,] _meta;
 
 		private List<GameDest> _dests = new List<GameDest>();
-		private ContextMenu _destsMenu;
 		private List<GameItem> _items = new List<GameItem>();
-		private UITimer _timer;
+
+		private ContextMenu _destsMenu;
 		private OverworldRoomStateMutator _mutator = new OverworldRoomStateMutator();
 
-		private bool _active;
-		private bool _mousePresent;
-		private bool _mouseDown;
-		private PointF _mouseDownLoc;
-		private PointF _mouseLoc;
-		private PointF _offset = new PointF(64, 64);
 		private bool _menuShowing;
-		private int _my = -1;
-		private int _mx = -1;
-		private int _myClick = -1;
-		private int _mxClick = -1;
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private OverworldRoomState[,] _roomStates = new OverworldRoomState[8, 16];
 
 		#region Public Methods
 
-		public OverworldMap(Drawable drawable, Panel detailPanel)
+		public OverworldMap(Drawable drawable, Panel detailPanel) : base(16, 11, 4, drawable)
 		{
-			_drawable = drawable;
-			_drawable.MouseLeave += HandleMouseLeave;
-			_drawable.MouseMove += HandleMouseMove;
-			_drawable.MouseDown += HandleMouseDown;
-			_drawable.MouseUp += HandleMouseUp;
-			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
-			_drawable.Paint += HandlePaint;
+			_mw = 16;
+			_mh = 8;
 
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
@@ -113,20 +95,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
-		}
-
-		public void Activate(bool active)
-		{
-			_active = active;
-			_drawable.Invalidate();
-			if (active)
-			{
-				_overworldRoomDetail.Build(_dests, _items);
-			}
 		}
 
 		public void ResetState()
@@ -145,23 +113,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 			}
 
-			_drawable.Invalidate();
-		}
-
-		public void LocateRoom(int x, int y)
-		{
-			_offset.X = 256 - 64 * x - 32;
-			_mxClick = x;
-			_myClick = y;
-			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-		}
-
-		public override string GetMapKey()
-		{
-			return Map;
+			this.CenterMap();
 		}
 
 		public OverworldMapState PersistState()
@@ -173,11 +125,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < 16; x++)
 				{
 					var roomState = _roomStates[y, x];
+
+					// destination
+
 					if (roomState.Destination != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Destination.GetCode() };
 						mapState.Dests.Add(entry);
 					}
+
+					// items
+
 					if (roomState.Item1 != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
@@ -192,6 +150,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.Item3.GetCode() };
 						mapState.Items.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -214,6 +180,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
 					_roomStates[entry.Y, entry.X].Item3 = _items.Find(i => i.GetCode() == entry.Code);
+			}
+
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
+			}
+		}
+
+		public override void Activate(bool active)
+		{
+			_active = active;
+			if (active)
+			{
+				_drawable.Invalidate();
+				_overworldRoomDetail.Build(_dests, _items);
 			}
 		}
 
@@ -305,93 +286,46 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDown(object sender, MouseEventArgs e)
+		private OverworldRoomProps GetProps(int x, int y)
 		{
-			if (!_active) return;
-
-			_mouseDown = true;
-			_mouseDownLoc = e.Location;
+			return _meta[y, x];
 		}
 
-		private void HandleMouseUp(object sender, MouseEventArgs e)
+		protected override void HandleRoomClick(bool altButton)
 		{
-			if (!_active) return;
-
-			_mouseDown = false;
-			_offset.Y = 64;
-			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
-			if (_offset.X > 64) _offset.X = 64;
-			if (_offset.X < -576) _offset.X = -576;
-			HandleMouseMove(sender, e);
-			_mxClick = _mx;
-			_myClick = _my;
-			_drawable.Invalidate();
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_overworldRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-				if (roomProps.DestHere && e.Buttons == MouseButtons.Alternate)
+				if (roomProps.DestHere && altButton)
 				{
 					_destsMenu.Show();
 				}
 			}
 		}
 
-		private void HandleMouseMove(object sender, MouseEventArgs e)
+		protected override void HandleRoomDoubleClick()
 		{
-			if (!_active) return;
-
-			_mousePresent = true;
-
-			_mouseLoc = e.Location;
-
-			if (!_mouseDown)
-			{
-				float dx = _mouseLoc.X - _offset.X;
-				float dy = _mouseLoc.Y - _offset.Y;
-				_mx = dx < 0f ? -1 : 16 * (int)dx / 1024;
-				_my = dy < 0f ? -1 : 8 * (int)dy / 352;
-			}
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = false;
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
 			if (_mx > -1 && _mx < 16 && _my > -1 && _my < 8)
 			{
 				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
-				_drawable.Invalidate();
 			}
 		}
 
-		private void HandlePaint(object sender, PaintEventArgs e)
+		protected override void PaintMap(Graphics g, float offx, float offy)
 		{
-			if (!_active) return;
-
-			var offx = _offset.X;
-			var offy = _offset.Y;
-
-			if (_mouseDown)
-			{
-				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
-			}
-
 			if (_mapImage != null)
 			{
-				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 352);
+				if (_zoom >= 4)
+					g.ImageInterpolation = ImageInterpolation.None;
+				else
+					g.ImageInterpolation = ImageInterpolation.High;
+
+				float w = _mw * _rw;
+				float h = _mh * _rh;
+
+				g.DrawImage(_mapImage, offx, offy, w, h);
 			}
 
 			// draw room state
@@ -402,56 +336,61 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					var roomState = _roomStates[y, x];
 
-					float x0 = x * 64 + offx;
-					float y0 = y * 44 + offy;
+					float x0 = x * _rw + offx;
+					float y0 = y * _rh + offy;
 
 					var props = GetProps(x, y);
 
 					if (!props.DestHere && !props.ItemHere)
 					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 						continue;
 					}
 
+					if (roomState.Destination != null && !roomState.Destination.IsExit)
+					{
+						var dest = roomState.Destination;
+						DrawText(g, x0 - _rw, y0, 3 * _rw, dest.ShortName, Brushes.White);
+					}
+
+					#region Items
+
+					var sw = _rw / 3f;
+					var sh = _rh / 2f;
+
 					if (roomState.Item1 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 3, y0 + 23, 18, 18);
+						DrawCenteredImage(g, x0, y0 + sh, sw, sh, roomState.Item1.Icon);
 					}
 
 					if (roomState.Item2 != null)
 					{
 						if (roomState.Destination == null)
 						{
-							e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 13, 18, 18);
+							DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item2.Icon);
 						}
 						else
 						{
-							e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 23, y0 + 23, 18, 18);
+							DrawCenteredImage(g, x0 + 1 * sw, y0 + sh, sw, sh, roomState.Item2.Icon);
 						}
 					}
 
 					if (roomState.Item3 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item3.Icon, x0 + 43, y0 + 23, 18, 18);
+						DrawCenteredImage(g, x0 + 2 * sw, y0 + sh, sw, sh, roomState.Item3.Icon);
 					}
 
-					if (roomState.Destination != null && !roomState.Destination.IsExit)
-					{
-						var dest = roomState.Destination;
-
-						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
-					}
+					#endregion
 
 					if ((props.DestHere || props.ItemHere) && roomState.Explored)
 					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
 					if (roomState.Destination != null && roomState.Destination.IsExit)
 					{
 						var dest = roomState.Destination;
-
-						DrawDest(e.Graphics, x0, y0, 64, 44, dest);
+						DrawExit(g, x0 - _rw, y0, 3 * _rw, dest);
 					}
 				}
 			}
@@ -460,34 +399,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 16 && _myClick < 8)
 			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+				g.DrawRectangle(CurrentPen, _mxClick * _rw + offx, _myClick * _rh + offy, _rw - 1, _rh - 1);
 			}
 
 			// draw hover indicators
 
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 16 && _my > -1 && _my < 8)
 			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 64 + offx, _my * 44 + offy, 64, 44);
+				g.FillRectangle(CursorBrush, _mx * _rw + offx, _my * _rh + offy, _rw, _rh);
 			}
-		}
-
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_overworldRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
-		}
-
-		private OverworldRoomProps GetProps(int x, int y)
-		{
-			return _meta[y, x];
 		}
 
 		#endregion

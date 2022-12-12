@@ -54,9 +54,10 @@ Map specific features:
 - On the overworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
 - In dungeons, transport stairs will be shown in blue.
 
-Map interaction is currently mouse-based only:
+Map interaction is currently primarily mouse-based:
 
 - You can click and drag the maps which are larger than the visible area.
+- You can zoom in and out using your mouse wheel (or using the slider below the map).
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
 - Right-clicking applicable rooms will show a context menu:
   - On the overworld, you can choose a cave destination or exit to connect the room to.
@@ -71,7 +72,7 @@ Room Detail:
 Allows you to view and edit details for the room you clicked on the main map. Some rooms have nothing to track and won't show here. 
 
 
-Inventory/Goals:
+Inventory:
 
 You can use this section to keep track of your current inventory, as far as major equipment and quest items. 
 
@@ -88,5 +89,16 @@ When you are connected to the co-op server and have joined a room, the following
 Note: The co-op server does not keep any state. It only replicates events to other players within a given room. This means that if you are disconnected 
 from the room, and later reconnect, any events that occurred while you were not connected won't show on your tracker. 
 
-A room is closed once all players leave the room.
+A room is automatically closed once all players leave the room.
+
+
+KNOWN ISSUES
+------------
+
+The GTK build has some minor issues:
+
+1. Some visual issues, such as the map dropdown overlapping the map area.
+2. On grids, the last row can't be selected with the mouse. You must use the down arrow key to select it.
+3. Dropdowns may open with a bunch of blank space above or below the actual items in the list. 
+4. Using the mouse wheel to zoom in/out of the map doesn't work. Use the slider below the map instead.
 

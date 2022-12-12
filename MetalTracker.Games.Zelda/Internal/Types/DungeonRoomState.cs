@@ -43,10 +43,15 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 
 		public void Mirror()
 		{
-			var e = DestEast;
-			var w = DestWest;
-			DestEast = w;
-			DestWest = e;
+			var de = this.DestEast;
+			var dw = this.DestWest;
+			var we = this.WallEast;
+			var ww = this.WallWest;
+
+			this.DestEast = dw;
+			this.DestWest = de;
+			this.WallEast = ww;
+			this.WallWest = we;
 		}
 	}
 }

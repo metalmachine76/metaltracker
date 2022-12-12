@@ -13,7 +13,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 		{
 			public string Name { get; set; }
 			public string Location { get; set; }
-			public string Map { get; set; }
+			public BaseMap Map { get; set; }
 			public int X { get; set; }
 			public int Y { get; set; }
 		}
@@ -43,14 +43,14 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			{
 				DataCell = new TextBoxCell { Binding = Binding.Property<SessionLogEntry, string>(r => r.Name) },
 				HeaderText = "Name",
-				Width = 150
+				Width = 125
 			});
 
 			gridView.Columns.Add(new GridColumn
 			{
 				DataCell = new TextBoxCell { Binding = Binding.Property<SessionLogEntry, string>(r => r.Location) },
 				HeaderText = "Location",
-				Width = 200
+				Width = 225
 			});
 
 			gridView.CellDoubleClick += HandleCellDoubleClick;
@@ -58,7 +58,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 			Show("items");
 
 			_uITimer = new UITimer();
-			_uITimer.Interval = 5;
+			_uITimer.Interval = 11;
 			_uITimer.Elapsed += HandleTimerElapsed;
 			_uITimer.Start();
 		}
@@ -105,7 +105,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				{
 					foreach (var loc in map.LogItemLocations())
 					{
-						entries.Add(new SessionLogEntry { Name = loc.Item.Name, Location = loc.Location, Map = loc.Map, X = loc.X, Y = loc.Y });
+						entries.Add(new SessionLogEntry { Name = loc.Item.Name, Location = loc.Location, Map = map, X = loc.X, Y = loc.Y });
 					}
 				}
 			}
@@ -116,7 +116,7 @@ namespace MetalTracker.Trackers.Z1M1.Forms
 				{
 					foreach (var loc in map.LogExitLocations())
 					{
-						entries.Add(new SessionLogEntry { Name = loc.Dest.LongName, Location = loc.Location, Map = loc.Map, X = loc.X, Y = loc.Y });
+						entries.Add(new SessionLogEntry { Name = loc.Dest.LongName, Location = loc.Location, Map = map, X = loc.X, Y = loc.Y });
 					}
 				}
 			}

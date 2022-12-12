@@ -12,7 +12,10 @@ namespace MetalTracker.Games.Metroid.Internal
 		private readonly ZebesRoomStateMutator _mutator;
 
 		StackLayout _mainLayout;
-		DropDown _dropDownDestElev;
+		DropDown _dropDownDestElevUp;
+		DropDown _dropDownDestElevDown;
+		DropDown _dropDownDestExitLeft;
+		DropDown _dropDownDestExitRight;
 		DropDown _dropDownItem;
 
 		List<GameDest> _gameDests;
@@ -44,9 +47,15 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			_mainLayout.Items.Add(new Label { Text = "Exit" });
 
-			_dropDownDestElev = new DropDown();
+			_dropDownDestElevUp = new DropDown();
+			_dropDownDestElevDown = new DropDown();
+			_dropDownDestExitLeft = new DropDown();
+			_dropDownDestExitRight = new DropDown();
 
-			_dropDownDestElev.Items.Add(null);
+			_dropDownDestElevUp.Items.Add(null);
+			_dropDownDestElevDown.Items.Add(null);
+			_dropDownDestExitLeft.Items.Add(null);
+			_dropDownDestExitRight.Items.Add(null);
 
 			foreach (var gameDest in gameDests)
 			{
@@ -56,12 +65,24 @@ namespace MetalTracker.Games.Metroid.Internal
 					Text = gameDest.LongName,
 				};
 
-				_dropDownDestElev.Items.Add(listItem);
+				_dropDownDestElevUp.Items.Add(listItem);
+				_dropDownDestElevDown.Items.Add(listItem);
+				_dropDownDestExitLeft.Items.Add(listItem);
+				_dropDownDestExitRight.Items.Add(listItem);
 			}
 
-			_dropDownDestElev.SelectedIndexChanged += HandleSelectedDestElevChanged;
+			_dropDownDestElevUp.SelectedIndexChanged += HandleSelectedDestUpChanged;
+			_dropDownDestElevDown.SelectedIndexChanged += HandleSelectedDestDownChanged;
+			_dropDownDestExitLeft.SelectedIndexChanged += HandleSelectedDestLeftChanged;
+			_dropDownDestExitRight.SelectedIndexChanged += HandleSelectedDestRightChanged;
 
-			_mainLayout.Items.Add(_dropDownDestElev);
+			var _exitsLayout = new TableLayout(
+				new TableRow(new TableCell(), new TableCell(_dropDownDestElevUp), new TableCell()),
+				new TableRow(new TableCell(_dropDownDestExitLeft), new TableCell(), new TableCell(_dropDownDestExitRight)),
+				new TableRow(new TableCell(), new TableCell(_dropDownDestElevDown), new TableCell())
+			);
+
+			_mainLayout.Items.Add(_exitsLayout);
 
 			#endregion
 
@@ -94,16 +115,41 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			#endregion
 
-			//_mainLayout.Visible = false;
-
 			_detailPanel.Content = _mainLayout;
 		}
 
-		private void HandleSelectedDestElevChanged(object sender, EventArgs e)
+		private void HandleSelectedDestUpChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestination(_x, _y, _state, gameDest);
+			_mutator.ChangeDestUp(_x, _y, _state, gameDest);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedDestDownChanged(object sender, EventArgs e)
+		{
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			_mutator.ChangeDestDown(_x, _y, _state, gameDest);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedDestLeftChanged(object sender, EventArgs e)
+		{
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			_mutator.ChangeDestLeft(_x, _y, _state, gameDest);
+			Refresh();
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleSelectedDestRightChanged(object sender, EventArgs e)
+		{
+			var listItem = (sender as DropDown).SelectedValue as ListItem;
+			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			_mutator.ChangeDestRight(_x, _y, _state, gameDest);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -136,10 +182,18 @@ namespace MetalTracker.Games.Metroid.Internal
 			{
 				_mainLayout.Visible = true;
 
-				_dropDownDestElev.SelectedKey = _state.DestElev?.GetCode();
+				_dropDownDestElevUp.SelectedKey = _state.DestUp?.GetCode();
+				_dropDownDestElevDown.SelectedKey = _state.DestDown?.GetCode();
+				_dropDownDestExitLeft.SelectedKey = _state.DestLeft?.GetCode();
+				_dropDownDestExitRight.SelectedKey = _state.DestRight?.GetCode();
+
 				_dropDownItem.SelectedKey = _state.Item?.GetCode();
 
-				_dropDownDestElev.Enabled = _props.CanHaveDest();
+				_dropDownDestElevUp.Enabled = _props.ElevatorUp;
+				_dropDownDestElevDown.Enabled = _props.ElevatorDown;
+				_dropDownDestExitLeft.Enabled = _props.CanExitLeft;
+				_dropDownDestExitRight.Enabled = _props.CanExitRight;
+
 				_dropDownItem.Enabled = _props.CanHaveItem() || _props.Shuffled;
 			}
 			else

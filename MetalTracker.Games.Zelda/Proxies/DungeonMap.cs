@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Eto.Drawing;
@@ -17,14 +16,13 @@ namespace MetalTracker.Games.Zelda.Proxies
 	{
 		const string Game = "zelda";
 
-		string _map = null;
+		string _mapKey = null;
 
 		static SolidBrush ShuffleBrush = new SolidBrush(Color.FromArgb(100, 100, 100, 200));
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
 
-		private readonly Drawable _drawable;
 		private readonly DungeonRoomDetail _dungeonRoomDetail;
 
 		private bool _flag_q2;
@@ -34,15 +32,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private Image _mapImage;
 		private DungeonRoomProps[,] _meta;
-		private int _width;
 		private int _numTransports;
+
+		private List<DungeonWall> _walls = new List<DungeonWall>();
+
+		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
 
 		private List<GameDest> _dests = new List<GameDest>();
 		private List<GameItem> _items = new List<GameItem>();
-		private List<DungeonWall> _walls = new List<DungeonWall>();
-
-		private UITimer _timer;
-		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
 
 		private ContextMenu _destsMenu;
 		private ContextMenu _wallsMenu;
@@ -52,33 +49,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _walls_w;
 		private Image _walls_e;
 
-		private bool _active;
-		private bool _mousePresent;
-		private bool _mouseDown;
-		private PointF _mouseDownLoc;
-		private PointF _mouseLoc;
-		//private PointF _offset = new PointF(64, 64);
 		private bool _menuShowing;
-		private int _my = -1;
-		private int _mx = -1;
-		private char _node = '\0';
-		private int _myClick = -1;
-		private int _mxClick = -1;
-		private char _nodeClick = '\0';
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private DungeonRoomState[,] _roomStates = new DungeonRoomState[8, 8];
 
-		public DungeonMap(Drawable drawable, Panel detailPanel)
+		public DungeonMap(Drawable drawable, Panel detailPanel) : base(16, 11, 4, drawable)
 		{
-			_drawable = drawable;
-			_drawable.MouseLeave += HandleMouseLeave;
-			_drawable.MouseMove += HandleMouseMove;
-			_drawable.MouseDown += HandleMouseDown;
-			_drawable.MouseUp += HandleMouseUp;
-			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
-			_drawable.Paint += HandlePaint;
+			_mw = 8;
+			_mh = 8;
 
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleContextMenuOpening;
@@ -106,6 +84,52 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_walls_e = DungeonResourceClient.GetDungeonWallIcons("e");
 		}
 
+		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
+		{
+			if (mirrored != _flag_mirrored)
+			{
+				MirrorState();
+			}
+
+			_flag_q2 = q2;
+			_flag_level = level;
+			_flag_shuffle = shuffleMode;
+			_flag_mirrored = mirrored;
+
+			_mapImage = DungeonResourceClient.GetDungeonImage(q2, level, mirrored);
+			_meta = DungeonResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
+
+			_mw = _meta.GetLength(1);
+			_mh = 8;
+
+			_mapKey = $"d{level}";
+
+			var stairsCount = 0;
+
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _mw; x++)
+				{
+					var props = _meta[y, x];
+					if (props != null)
+					{
+						if (props.HasStairs)
+						{
+							stairsCount = stairsCount + 1;
+						}
+					}
+					if (_roomStates[y, x] == null)
+					{
+						_roomStates[y, x] = new DungeonRoomState();
+					}
+				}
+			}
+
+			_numTransports = stairsCount / 2;
+
+			_dungeonRoomDetail.SetTransports(_numTransports);
+		}
+
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
 		{
 			_items = gameItems.ToList();
@@ -130,60 +154,13 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		public void SetMapFlags(bool q2, int level, int shuffleMode, bool mirrored)
-		{
-			if (mirrored != _flag_mirrored)
-			{
-				MirrorState();
-			}
-
-			_flag_q2 = q2;
-			_flag_level = level;
-			_flag_shuffle = shuffleMode;
-			_flag_mirrored = mirrored;
-
-			_mapImage = DungeonResourceClient.GetDungeonImage(q2, level, mirrored);
-			_meta = DungeonResourceClient.GetDungeonMeta(q2, level, shuffleMode, mirrored);
-			_width = _meta.GetLength(1);
-			_map = $"d{level}";
-
-			var stairsCount = 0;
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < _width; x++)
-				{
-					var props = _meta[y, x];
-					if (props != null)
-					{
-						if (props.HasStairs)
-						{
-							stairsCount = stairsCount + 1;
-						}
-					}
-					if (_roomStates[y, x] == null)
-					{
-						_roomStates[y, x] = new DungeonRoomState();
-					}
-				}
-			}
-
-			_numTransports = stairsCount / 2;
-
-			_dungeonRoomDetail.SetTransports(_numTransports);
-		}
-
 		public void SetCoOpClient(ICoOpClient coOpClient)
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
 		}
 
-		public void Activate(bool active)
+		public override void Activate(bool active)
 		{
 			_active = active;
 			if (active)
@@ -196,22 +173,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public void ResetState()
 		{
 			_roomStates = DungeonResourceClient.GetDefaultDungeonState(_flag_q2, _flag_level, _flag_shuffle, _flag_mirrored);
-			_drawable.Invalidate();
-		}
 
-		public void LocateRoom(int x, int y)
-		{
-			_mxClick = x;
-			_myClick = y;
-			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_dungeonRoomDetail.UpdateDetails(_flag_level, _mxClick, _myClick, roomProps, roomState);
-		}
-
-		public override string GetMapKey()
-		{
-			return _map;
+			this.CenterMap();
 		}
 
 		public DungeonMapState PersistState()
@@ -220,75 +183,83 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			for (int y = 0; y < 8; y++)
 			{
-				for (int x = 0; x < _width; x++)
+				for (int x = 0; x < _mw; x++)
 				{
-					var state = _roomStates[y, x];
+					var roomState = _roomStates[y, x];
 
 					// dests
 
-					if (state.DestNorth != null)
+					if (roomState.DestNorth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.DestNorth.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestNorth.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestSouth != null)
+					if (roomState.DestSouth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.DestSouth.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestSouth.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestWest != null)
+					if (roomState.DestWest != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.DestWest.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestWest.GetCode() };
 						mapState.Dests.Add(entry);
 					}
-					if (state.DestEast != null)
+					if (roomState.DestEast != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.DestEast.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestEast.GetCode() };
 						mapState.Dests.Add(entry);
 					}
 
 					// walls
 
-					if (state.WallNorth != null)
+					if (roomState.WallNorth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.WallNorth.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.WallNorth.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallSouth != null)
+					if (roomState.WallSouth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.WallSouth.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.WallSouth.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallWest != null)
+					if (roomState.WallWest != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = state.WallWest.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.WallWest.Code };
 						mapState.Walls.Add(entry);
 					}
-					if (state.WallEast != null)
+					if (roomState.WallEast != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = state.WallEast.Code };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.WallEast.Code };
 						mapState.Walls.Add(entry);
 					}
 
 					// items
 
-					if (state.Item1 != null)
+					if (roomState.Item1 != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Item1.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item1.GetCode() };
 						mapState.Items.Add(entry);
 					}
-					if (state.Item2 != null)
+					if (roomState.Item2 != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = state.Item2.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.Item2.GetCode() };
 						mapState.Items.Add(entry);
 					}
 
 					// stairs
 
-					if (state.Transport != null)
+					if (roomState.Transport != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = state.Transport };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Transport };
 						mapState.Stairs.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -335,6 +306,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].Transport = entry.Code;
 			}
+
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
+			}
 		}
 
 		public override List<LocationOfItem> LogItemLocations()
@@ -343,17 +319,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			for (int y = 0; y < 8; y++)
 			{
-				for (int x = 0; x < _width; x++)
+				for (int x = 0; x < _mw; x++)
 				{
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -368,27 +344,27 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			for (int y = 0; y < 8; y++)
 			{
-				for (int x = 0; x < _width; x++)
+				for (int x = 0; x < _mw; x++)
 				{
 					var state = _roomStates[y, x];
 					if (state.DestNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.DestEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level}", _map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -406,7 +382,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleDestCommand(object sender, System.EventArgs e)
 		{
-			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
+			if (_mxClick > -1 && _mxClick < _mw && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 
@@ -443,7 +419,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleWallCommand(object sender, System.EventArgs e)
 		{
-			if (_mxClick > -1 && _mxClick < _width && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
+			if (_mxClick > -1 && _mxClick < _mw && _myClick > -1 && _myClick < 8 && _nodeClick != '\0')
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 
@@ -488,25 +464,59 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDown(object sender, MouseEventArgs e)
+		private DungeonRoomProps GetProps(int x, int y)
 		{
-			if (!_active) return;
-
-			_mouseDown = true;
-			_mouseDownLoc = e.Location;
+			return _meta[y, x];
 		}
 
-		private void HandleMouseUp(object sender, MouseEventArgs e)
+		private List<Point> FindTransportRooms(string transport)
 		{
-			if (!_active) return;
+			List<Point> points = new List<Point>();
 
-			_mouseDown = false;
-			HandleMouseMove(sender, e);
-			_mxClick = _mx;
-			_myClick = _my;
-			_nodeClick = _node;
-			_drawable.Invalidate();
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			for (int y = 0; y < 8; y++)
+			{
+				for (int x = 0; x < _mw; x++)
+				{
+					if (_roomStates[y, x].Transport == transport)
+					{
+						points.Add(new Point(x, y));
+					}
+				}
+			}
+
+			return points;
+		}
+
+		protected override char DetermineNode(float x, float y)
+		{
+			int qx = (int)(4 * x / _rw);
+			int qy = (int)(4 * y / _rh);
+
+			char node = '\0';
+
+			if (qy == 0 && (qx == 1 || qx == 2))
+			{
+				node = 'N';
+			}
+			else if (qy == 3 && (qx == 1 || qx == 2))
+			{
+				node = 'S';
+			}
+			else if (qx == 0 && (qy == 1 || qy == 2))
+			{
+				node = 'W';
+			}
+			else if (qx == 3 && (qy == 1 || qy == 2))
+			{
+				node = 'E';
+			}
+
+			return node;
+		}
+
+		protected override void HandleRoomClick(bool altButton)
+		{
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _mw && _myClick < 8)
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
@@ -514,7 +524,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (roomProps == null) return;
 
-				if (e.Buttons == MouseButtons.Alternate)
+				if (altButton)
 				{
 					if (_nodeClick == 'N')
 					{
@@ -548,87 +558,31 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 		}
 
-		private void HandleMouseMove(object sender, MouseEventArgs e)
+		protected override void HandleRoomDoubleClick()
 		{
-			if (!_active) return;
-
-			_mousePresent = true;
-
-			_mouseLoc = e.Location;
-
-			if (!_mouseDown)
-			{
-				var offx = (512 - _width * 64) / 2;
-				var offy = 64;
-
-				float dx = _mouseLoc.X - offx;
-				float dy = _mouseLoc.Y - offy;
-				_mx = dx < 0f ? -1 : (int)dx / 64;
-				_my = dy < 0f ? -1 : (int)dy / 44;
-
-				int qx = ((int)dx / 16) % 4;
-				int qy = ((int)dy / 11) % 4;
-
-				_node = '\0';
-
-				if (qx == 0 && (qy == 1 || qy == 2))
-				{
-					_node = 'W';
-				}
-				else if (qx == 3 && (qy == 1 || qy == 2))
-				{
-					_node = 'E';
-				}
-				else if (qy == 0 && (qx == 1 || qx == 2))
-				{
-					_node = 'N';
-				}
-				else if (qy == 3 && (qx == 1 || qx == 2))
-				{
-					_node = 'S';
-				}
-			}
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = false;
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			if (_mx > -1 && _mx < _width && _my > -1 && _my < 8)
+			if (_mx > -1 && _mx < _mw && _my > -1 && _my < 8)
 			{
 				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
-				_drawable.Invalidate();
 			}
 		}
 
-		private void HandlePaint(object sender, PaintEventArgs e)
+		protected override void PaintMap(Graphics g, float offx, float offy)
 		{
-			if (!_active) return;
-
-			var offx = (512 - _width * 64) / 2;
-			var offy = 64;
-
 			if (_mapImage != null)
 			{
-				e.Graphics.DrawImage(_mapImage, offx, offy, _width * 64, 352);
+				g.ImageInterpolation = ImageInterpolation.High;
+
+				float w = _mw * _rw;
+				float h = _mh * _rh;
+
+				g.DrawImage(_mapImage, offx, offy, w, h);
 			}
 
 			// draw room state
 
 			for (int y = 0; y < 8; y++)
 			{
-				for (int x = 0; x < _width; x++)
+				for (int x = 0; x < _mw; x++)
 				{
 					var props = GetProps(x, y);
 
@@ -639,187 +593,155 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					DungeonRoomState roomState = _roomStates[y, x];
 
-					float x0 = x * 64 + offx;
-					float y0 = y * 44 + offy;
+					float x0 = x * _rw + offx;
+					float y0 = y * _rh + offy;
 
 					if (props.Shuffled)
 					{
-						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShuffleBrush, x0, y0, _rw, _rh);
 					}
 					else
 					{
 						if (props.Slot1Class != '\0' && roomState.Item1 == null)
 						{
-							DrawText(e.Graphics, x0 - 11, y0 + 13, 64, 44, props.Slot1Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 - 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, props.Slot1Class.ToString(), Brushes.White);
 						}
 						if (props.Slot2Class != '\0' && roomState.Item2 == null)
 						{
-							DrawText(e.Graphics, x0 + 11, y0 + 13, 64, 44, props.Slot2Class.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, props.Slot2Class.ToString(), Brushes.White);
 						}
 					}
 
 					// walls
 
-					if (roomState.WallNorth != null)
+					if (_rh > 32)
 					{
-						// paint north wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallNorth.Ordinal, 0, 12, 12);
-						e.Graphics.DrawImage(_walls_n, sr, new PointF(x0 + 32 - 6, y0));
-					}
-					if (roomState.WallSouth != null)
-					{
-						// paint south wall type
-						RectangleF sr = new RectangleF(12 * roomState.WallSouth.Ordinal, 0, 12, 12);
-						e.Graphics.DrawImage(_walls_s, sr, new PointF(x0 + 32 - 6, y0 + 44 - 12));
-					}
-					if (roomState.WallWest != null)
-					{
-						// paint west wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallWest.Ordinal, 12, 12);
-						e.Graphics.DrawImage(_walls_w, sr, new PointF(x0, y0 + 22 - 6));
-					}
-					if (roomState.WallEast != null)
-					{
-						// paint east wall type
-						RectangleF sr = new RectangleF(0, 12 * roomState.WallEast.Ordinal, 12, 12);
-						e.Graphics.DrawImage(_walls_e, sr, new PointF(x0 + 64 - 12, y0 + 22 - 6));
+						if (roomState.WallNorth != null)
+						{
+							RectangleF sr = new RectangleF(16 * roomState.WallNorth.Ordinal, 0, 16, 16);
+							g.DrawImage(_walls_n, sr, new PointF(x0 + _rw / 2 - 8, y0));
+						}
+						if (roomState.WallSouth != null)
+						{
+							RectangleF sr = new RectangleF(16 * roomState.WallSouth.Ordinal, 0, 16, 16);
+							g.DrawImage(_walls_s, sr, new PointF(x0 + _rw / 2 - 8, y0 + _rh - 16));
+						}
+						if (roomState.WallWest != null)
+						{
+							RectangleF sr = new RectangleF(0, 16 * roomState.WallWest.Ordinal, 16, 16);
+							g.DrawImage(_walls_w, sr, new PointF(x0, y0 + _rh / 2 - 8));
+						}
+						if (roomState.WallEast != null)
+						{
+							// paint east wall type
+							RectangleF sr = new RectangleF(0, 16 * roomState.WallEast.Ordinal, 16, 16);
+							g.DrawImage(_walls_e, sr, new PointF(x0 + _rw - 16, y0 + _rh / 2 - 8));
+						}
 					}
 
 					// items
 
+					var sw = _rw / 4f;
+
 					if (roomState.Item1 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item1.Icon, x0 + 14, y0 + 13, 18, 18);
+						DrawCenteredImage(g, x0 + 1 * sw, y0, sw, _rh, roomState.Item1.Icon);
 					}
 					if (roomState.Item2 != null)
 					{
-						e.Graphics.DrawImage(roomState.Item2.Icon, x0 + 32, y0 + 13, 18, 18);
+						DrawCenteredImage(g, x0 + 2 * sw, y0, sw, _rh, roomState.Item2.Icon);
 					}
 
 					// explored 
 
 					if (roomState.Explored)
 					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 64, 44);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
 					// transport
 
 					if (roomState.Transport != null)
 					{
-						Brush textBrush = Brushes.CornflowerBlue;
-						Font textFont = Fonts.Sans(12);
-						DrawText(e.Graphics, x0, y0 + 13, 64, 33, $"{roomState.Transport}", textFont, textBrush);
+						DrawText(g, x0 + 1 * _rw / 4, y0 + _rh / 2 - 10, _rw, $"{roomState.Transport}", Brushes.CornflowerBlue);
 					}
 
 					// exits
 
 					if (roomState.DestNorth != null)
 					{
-						DrawDest(e.Graphics, x0, y0 - 11, 64, 44, roomState.DestNorth);
+						DrawExit(g, x0 - _rw, y0 - 11, 3 * _rw, roomState.DestNorth);
 					}
 					if (roomState.DestSouth != null)
 					{
-						DrawDest(e.Graphics, x0, y0 + 33, 64, 44, roomState.DestSouth);
+						DrawExit(g, x0 - _rw, y0 + _rh - 10, 3 * _rw, roomState.DestSouth);
 					}
 					if (roomState.DestWest != null)
 					{
-						DrawDest(e.Graphics, x0 - 32, y0 + 11, 64, 44, roomState.DestWest);
+						DrawExit(g, x0 - _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestWest);
 					}
 					if (roomState.DestEast != null)
 					{
-						DrawDest(e.Graphics, x0 + 32, y0 + 11, 64, 44, roomState.DestEast);
+						DrawExit(g, x0 + _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestEast);
 					}
 				}
 			}
 
 			// draw "current room" box
 
-			if (_mxClick > -1 && _myClick > -1 && _mxClick < _width && _myClick < 8)
+			if (_mxClick > -1 && _myClick > -1 && _mxClick < _mw && _myClick < 8)
 			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 64 + offx, _myClick * 44 + offy, 63, 43);
+				g.DrawRectangle(CurrentPen, _mxClick * _rw + offx, _myClick * _rh + offy, _rw - 1, _rh - 1);
 			}
 
 			// draw hover indicators
 
-			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < _width && _my > -1 && _my < 8)
+			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < _mw && _my > -1 && _my < 8)
 			{
-				float x0 = _mx * 64 + offx;
-				float y0 = _my * 44 + offy;
+				float x0 = _mx * _rw + offx;
+				float y0 = _my * _rh + offy;
 
-				e.Graphics.FillRectangle(CursorBrush, x0, y0, 64, 44);
+				g.FillRectangle(CursorBrush, x0, y0, _rw, _rh);
 
-				if (_node == 'N')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 16, y0, 32, 11);
-				}
-				else if (_node == 'S')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 16, y0 + 33, 32, 11);
-				}
-				else if (_node == 'W')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0, y0 + 11, 16, 22);
-				}
-				else if (_node == 'E')
-				{
-					e.Graphics.FillRectangle(CursorBrush, x0 + 48, y0 + 11, 16, 22);
-				}
+				var props = GetProps(_mx, _my);
 
-				var roomState = _roomStates[_my, _mx];
-
-				if (roomState.Transport != null)
+				if (props != null)
 				{
-					var rooms = FindTransportRooms(roomState.Transport);
-					if (rooms.Count == 2)
+					if (_node == 'N')
 					{
-						e.Graphics.AntiAlias = true;
-						float tx0 = rooms[0].X * 64 + offx + 32;
-						float ty0 = rooms[0].Y * 44 + offy + 22;
-						float tx1 = rooms[1].X * 64 + offx + 32;
-						float ty1 = rooms[1].Y * 44 + offy + 22;
-						e.Graphics.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
-						e.Graphics.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0, _rw / 2f, _rh / 4f);
+					}
+					else if (_node == 'S')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0 + 3 * _rh / 4, _rw / 2f, _rh / 4f);
+					}
+					else if (_node == 'W')
+					{
+						g.FillRectangle(CursorBrush, x0, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+					else if (_node == 'E')
+					{
+						g.FillRectangle(CursorBrush, x0 + 3 * _rw / 4, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+
+					var roomState = _roomStates[_my, _mx];
+
+					if (roomState.Transport != null)
+					{
+						var rooms = FindTransportRooms(roomState.Transport);
+						if (rooms.Count == 2)
+						{
+							g.AntiAlias = true;
+							float tx0 = rooms[0].X * _rw + offx + _rw / 2;
+							float ty0 = rooms[0].Y * _rh + offy + _rh / 2;
+							float tx1 = rooms[1].X * _rw + offx + _rw / 2;
+							float ty1 = rooms[1].Y * _rh + offy + _rh / 2;
+							g.DrawLine(new Pen(Colors.Black, 3), tx0, ty0, tx1, ty1);
+							g.DrawLine(new Pen(Colors.CornflowerBlue, 2), tx0, ty0, tx1, ty1);
+						}
 					}
 				}
 			}
-		}
-
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_dungeonRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
-		}
-
-		private DungeonRoomProps GetProps(int x, int y)
-		{
-			return _meta[y, x];
-		}
-
-		private List<Point> FindTransportRooms(string transport)
-		{
-			List<Point> points = new List<Point>();
-
-			for (int y = 0; y < 8; y++)
-			{
-				for (int x = 0; x < _width; x++)
-				{
-					if (_roomStates[y, x].Transport == transport)
-					{
-						points.Add(new Point(x, y));
-					}
-				}
-			}
-
-			return points;
 		}
 
 		#endregion
@@ -828,9 +750,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void HandleCoOpClientFound(object sender, FoundEventArgs e)
 		{
-			Debug.Assert(_map != null && _map.Length == 2);
+			Debug.Assert(_mapKey != null && _mapKey.Length == 2);
 
-			if (e.Game == Game && e.Map == _map)
+			if (e.Game == Game && e.Map == _mapKey)
 			{
 				var roomState = _roomStates[e.Y, e.X];
 
@@ -887,20 +809,20 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private void MirrorState()
 		{
-			int m = _width / 2;
+			int m = _mw / 2;
 
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < m; x++)
 				{
 					var s0 = _roomStates[y, x];
-					var s1 = _roomStates[y, (_width - 1) - x];
+					var s1 = _roomStates[y, (_mw - 1) - x];
 
-					s0.Mirror();
-					s1.Mirror();
+					s0?.Mirror();
+					s1?.Mirror();
 
 					_roomStates[y, x] = s1;
-					_roomStates[y, (_width - 1) - x] = s0;
+					_roomStates[y, (_mw - 1) - x] = s0;
 				}
 			}
 

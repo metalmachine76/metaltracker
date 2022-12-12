@@ -11,7 +11,7 @@ using MetalTracker.Games.Metroid.Types;
 
 namespace MetalTracker.Games.Metroid.Proxies
 {
-    public class ZebesMap : BaseMap
+	public class ZebesMap : BaseMap
 	{
 		const string Game = "metroid";
 		const string Map = "zebes";
@@ -21,7 +21,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
 
-		private readonly Drawable _drawable;
 		private readonly ZebesRoomDetail _zebesRoomDetail;
 
 		private int _flag_shuffled;
@@ -30,38 +29,21 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private ZebesRoomProps[,] _meta;
 
 		private List<GameDest> _dests = new List<GameDest>();
-		private ContextMenu _destsMenu;
 		private List<GameItem> _items = new List<GameItem>();
-		private UITimer _timer;
+
+		private ContextMenu _destsMenu;
 		private ZebesRoomStateMutator _mutator = new ZebesRoomStateMutator();
 
-		private bool _active;
-		private bool _mousePresent;
-		private bool _mouseDown;
-		private PointF _mouseDownLoc;
-		private PointF _mouseLoc;
-		private PointF _offset = new PointF(64, 64);
 		private bool _menuShowing;
-		private int _my = -1;
-		private int _mx = -1;
-		private int _myClick = -1;
-		private int _mxClick = -1;
-		private bool _invalidateMap;
-		private bool _invalidateRoom;
 
 		private ZebesRoomState[,] _roomStates = new ZebesRoomState[32, 32];
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel)
+		public ZebesMap(Drawable drawable, Panel detailPanel) : base(16, 15, 2, drawable)
 		{
-			_drawable = drawable;
-			_drawable.MouseLeave += HandleMouseLeave;
-			_drawable.MouseMove += HandleMouseMove;
-			_drawable.MouseDown += HandleMouseDown;
-			_drawable.MouseUp += HandleMouseUp;
-			_drawable.MouseDoubleClick += HandleMouseDoubleClick;
-			_drawable.Paint += HandlePaint;
+			_mw = 32;
+			_mh = 32;
 
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
@@ -80,8 +62,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_flag_shuffled = shuffleMode;
 			_flag_mirrored = mirrored;
-			_mapImage = InternalResourceClient.GetZebesImage(mirrored);
-			_meta = InternalResourceClient.GetZebesMeta(shuffleMode, mirrored);
+			_mapImage = ZebesResourceClient.GetZebesImage(mirrored);
+			_meta = ZebesResourceClient.GetZebesMeta(shuffleMode, mirrored);
 		}
 
 		public void SetGameItems(IEnumerable<GameItem> gameItems)
@@ -110,18 +92,14 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			coOpClient.Found += HandleCoOpClientFound;
 			_mutator.SetCoOpClient(coOpClient);
-			_timer = new UITimer();
-			_timer.Interval = 0.5;
-			_timer.Elapsed += HandleTimerElapsed;
-			_timer.Start();
 		}
 
-		public void Activate(bool active)
+		public override void Activate(bool active)
 		{
 			_active = active;
-			_drawable.Invalidate();
 			if (active)
 			{
+				_drawable.Invalidate();
 				_zebesRoomDetail.Build(_dests, _items);
 			}
 		}
@@ -136,24 +114,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 			}
 
-			_drawable.Invalidate();
-		}
-
-		public void LocateRoom(int x, int y)
-		{
-			_offset.X = 256 - 32 * x - 16;
-			_offset.Y = 240 - 30 * y - 15;
-			_mxClick = x;
-			_myClick = y;
-			_drawable.Invalidate();
-			var roomProps = GetProps(_mxClick, _myClick);
-			var roomState = _roomStates[_myClick, _mxClick];
-			_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-		}
-
-		public override string GetMapKey()
-		{
-			return Map;
+			this.CenterMap();
 		}
 
 		public ZebesMapState PersistState()
@@ -165,15 +126,44 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var roomState = _roomStates[y, x];
-					if (roomState.DestElev != null)
+
+					// exits
+
+					if (roomState.DestUp != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestElev.GetCode() };
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestUp.GetCode() };
 						mapState.Dests.Add(entry);
 					}
+					if (roomState.DestDown != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestDown.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.DestLeft != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestLeft.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+					if (roomState.DestRight != null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestRight.GetCode() };
+						mapState.Dests.Add(entry);
+					}
+
+					// items
+
 					if (roomState.Item != null)
 					{
 						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Item.GetCode() };
 						mapState.Items.Add(entry);
+					}
+
+					// explored
+
+					if (roomState.Explored)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
+						mapState.Explored.Add(entry);
 					}
 				}
 			}
@@ -185,11 +175,23 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			foreach (var entry in mapState.Dests)
 			{
-				_roomStates[entry.Y, entry.X].DestElev = _dests.Find(i => i.GetCode() == entry.Code);
+				var dest = _dests.Find(i => i.GetCode() == entry.Code);
+				if (entry.Slot == 0)
+					_roomStates[entry.Y, entry.X].DestUp = dest;
+				else if (entry.Slot == 1)
+					_roomStates[entry.Y, entry.X].DestDown = dest;
+				else if (entry.Slot == 2)
+					_roomStates[entry.Y, entry.X].DestLeft = dest;
+				else if (entry.Slot == 3)
+					_roomStates[entry.Y, entry.X].DestRight = dest;
 			}
 			foreach (var entry in mapState.Items)
 			{
 				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
+			}
+			foreach (var entry in mapState.Explored)
+			{
+				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
 			}
 		}
 
@@ -204,7 +206,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item != null && state.Item.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2} ({areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -222,15 +225,55 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.DestElev != null && state.DestElev.IsExit)
+					if (state.DestUp != null && state.DestUp.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestElev, $"Zebes at Y={y:X2} X={x:X2}", Map, x, y);
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestDown != null && state.DestDown.IsExit)
+					{
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestLeft != null && state.DestLeft.IsExit)
+					{
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						list.Add(loc);
+					}
+					if (state.DestRight != null && state.DestRight.IsExit)
+					{
+						string areaName = GetAreaName(x, y);
+						LocationOfDest loc = new LocationOfDest(state.DestRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}
 			}
 
 			return list;
+		}
+
+		private string GetAreaName(int x, int y)
+		{
+			var props = _meta[y, x];
+
+			if (props == null) return "???";
+
+			switch (props.AreaCode)
+			{
+				case 'B':
+					return "Brinstar";
+				case 'N':
+					return "Norfair";
+				case 'K':
+					return "Kraid";
+				case 'R':
+					return "Ridley";
+			}
+
+			return "???";
 		}
 
 		#endregion
@@ -249,7 +292,16 @@ namespace MetalTracker.Games.Metroid.Proxies
 				var cmd = sender as Command;
 				var dest = cmd.CommandParameter as GameDest;
 				var roomState = _roomStates[_myClick, _mxClick];
-				_mutator.ChangeDestination(_mxClick, _myClick, roomState, dest);
+
+				if (_nodeClick == 'U')
+					_mutator.ChangeDestUp(_mxClick, _myClick, roomState, dest);
+				else if (_nodeClick == 'D')
+					_mutator.ChangeDestDown(_mxClick, _myClick, roomState, dest);
+				else if (_nodeClick == 'L')
+					_mutator.ChangeDestLeft(_mxClick, _myClick, roomState, dest);
+				else if (_nodeClick == 'R')
+					_mutator.ChangeDestRight(_mxClick, _myClick, roomState, dest);
+
 				_drawable.Invalidate();
 				_zebesRoomDetail.Refresh();
 			}
@@ -265,96 +317,80 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_menuShowing = false;
 		}
 
-		private void HandleMouseDown(object sender, MouseEventArgs e)
+		private ZebesRoomProps GetProps(int x, int y)
 		{
-			if (!_active) return;
-
-			_mouseDown = true;
-			_mouseDownLoc = e.Location;
+			return _meta[y, x];
 		}
 
-		private void HandleMouseUp(object sender, MouseEventArgs e)
+		protected override char DetermineNode(float x, float y)
 		{
-			if (!_active) return;
+			int qx = (int)(4 * x / _rw);
+			int qy = (int)(4 * y / _rh);
 
-			_mouseDown = false;
-			_offset.Y = _offset.Y + _mouseLoc.Y - _mouseDownLoc.Y;
-			_offset.X = _offset.X + _mouseLoc.X - _mouseDownLoc.X;
-			if (_offset.X > 64) _offset.X = 64;
-			if (_offset.X < -576) _offset.X = -576;
-			if (_offset.Y > 64) _offset.Y = 64;
-			if (_offset.Y < -544) _offset.Y = -544;
-			HandleMouseMove(sender, e);
-			_mxClick = _mx;
-			_myClick = _my;
-			_drawable.Invalidate();
+			char node = '\0';
+
+			if (qy == 0 && (qx == 1 || qx == 2))
+			{
+				node = 'U';
+			}
+			else if (qy == 3 && (qx == 1 || qx == 2))
+			{
+				node = 'D';
+			}
+			else if (qx == 0 && (qy == 1 || qy == 2))
+			{
+				node = 'L';
+			}
+			else if (qx == 3 && (qy == 1 || qy == 2))
+			{
+				node = 'R';
+			}
+
+			return node;
+		}
+
+		protected override void HandleRoomClick(bool altButton)
+		{
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
 				var roomProps = GetProps(_mxClick, _myClick);
 				var roomState = _roomStates[_myClick, _mxClick];
 				_zebesRoomDetail.UpdateDetails(_mxClick, _myClick, roomProps, roomState);
-				if (roomProps.CanHaveDest() && e.Buttons == MouseButtons.Alternate)
+				if (altButton && _nodeClick != '\0')
 				{
-					_destsMenu.Show();
+					if (_nodeClick == 'U' && roomProps.ElevatorUp)
+						_destsMenu.Show();
+					else if (_nodeClick == 'D' && roomProps.ElevatorDown)
+						_destsMenu.Show();
+					else if (_nodeClick == 'L' && roomProps.CanExitLeft)
+						_destsMenu.Show();
+					else if (_nodeClick == 'R' && roomProps.CanExitRight)
+						_destsMenu.Show();
 				}
 			}
 		}
 
-		private void HandleMouseMove(object sender, MouseEventArgs e)
+		protected override void HandleRoomDoubleClick()
 		{
-			if (!_active) return;
-
-			_mousePresent = true;
-
-			_mouseLoc = e.Location;
-
-			if (!_mouseDown)
-			{
-				float dx = _mouseLoc.X - _offset.X;
-				float dy = _mouseLoc.Y - _offset.Y;
-				_mx = dx < 0f ? -1 : (int)dx / 32;
-				_my = dy < 0f ? -1 : (int)dy / 30;
-			}
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
-			_mousePresent = false;
-
-			_drawable.Invalidate();
-		}
-
-		private void HandleMouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			if (!_active) return;
-
 			if (_mx > -1 && _mx < 32 && _my > -1 && _my < 32)
 			{
 				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
-				_drawable.Invalidate();
 			}
 		}
 
-		private void HandlePaint(object sender, PaintEventArgs e)
+		protected override void PaintMap(Graphics g, float offx, float offy)
 		{
-			if (!_active) return;
-
-			var offx = _offset.X;
-			var offy = _offset.Y;
-
-			if (_mouseDown)
-			{
-				offx = offx + _mouseLoc.X - _mouseDownLoc.X;
-				offy = offy + _mouseLoc.Y - _mouseDownLoc.Y;
-			}
-
 			if (_mapImage != null)
 			{
-				e.Graphics.DrawImage(_mapImage, offx, offy, 1024, 960);
+				if (_zoom >= 2)
+					g.ImageInterpolation = ImageInterpolation.None;
+				else
+					g.ImageInterpolation = ImageInterpolation.High;
+
+				float w = _mw * _rw;
+				float h = _mh * _rh;
+
+				g.DrawImage(_mapImage, offx, offy, w, h);
 			}
 
 			// draw room states
@@ -365,36 +401,48 @@ namespace MetalTracker.Games.Metroid.Proxies
 				{
 					var roomState = _roomStates[y, x];
 
-					float x0 = x * 32 + offx;
-					float y0 = y * 30 + offy;
+					float x0 = x * _rw + offx;
+					float y0 = y * _rh + offy;
 
 					var props = GetProps(x, y);
 
 					if (props.Shuffled)
 					{
-						e.Graphics.FillRectangle(ShuffleBrush, x0, y0, 32, 30);
+						g.FillRectangle(ShuffleBrush, x0, y0, _rw, _rh);
 					}
 					else
 					{
 						if (props.SlotClass != '\0' && roomState.Item == null)
 						{
-							DrawText(e.Graphics, x0, y0, 32, 30, props.SlotClass.ToString(), Fonts.Sans(12), Brushes.White);
+							DrawText(g, x0, y0 + _rh / 2 - 10, _rw, props.SlotClass.ToString(), Brushes.White);
 						}
 					}
 
 					if (roomState.Item != null)
 					{
-						e.Graphics.DrawImage(roomState.Item.Icon, x0 + 7, y0 + 6, 18, 18);
+						DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item.Icon);
 					}
 
 					if (roomState.Explored)
 					{
-						e.Graphics.FillRectangle(ShadowBrush, x0, y0, 32, 30);
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					if (roomState.DestElev != null)
+					if (roomState.DestUp != null)
 					{
-						DrawDest(e.Graphics, x0 - 16, y0, 64, 30, roomState.DestElev);
+						DrawExit(g, x0 - _rw, y0, 3 * _rw, roomState.DestUp);
+					}
+					if (roomState.DestDown != null)
+					{
+						DrawExit(g, x0 - _rw, y0 + _rh / 2, 3 * _rw, roomState.DestDown);
+					}
+					if (roomState.DestLeft != null)
+					{
+						DrawExit(g, x0 - _rw - _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.DestLeft);
+					}
+					if (roomState.DestRight != null)
+					{
+						DrawExit(g, x0 - _rw + _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.DestRight);
 					}
 				}
 			}
@@ -403,34 +451,40 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			if (_mxClick > -1 && _myClick > -1 && _mxClick < 32 && _myClick < 32)
 			{
-				e.Graphics.DrawRectangle(CurrentPen, _mxClick * 32 + offx, _myClick * 30 + offy, 31, 29);
+				g.DrawRectangle(CurrentPen, _mxClick * _rw + offx, _myClick * _rh + offy, _rw - 1, _rh - 1);
 			}
 
 			// draw hover indicators
 
 			if ((_mousePresent || _menuShowing) && _mx > -1 && _mx < 32 && _my > -1 && _my < 32)
 			{
-				e.Graphics.FillRectangle(CursorBrush, _mx * 32 + offx, _my * 30 + offy, 32, 30);
-			}
-		}
+				float x0 = _mx * _rw + offx;
+				float y0 = _my * _rh + offy;
 
-		private void HandleTimerElapsed(object sender, System.EventArgs e)
-		{
-			if (_invalidateMap)
-			{
-				_drawable.Invalidate();
-				_invalidateMap = false;
-			}
-			if (_invalidateRoom)
-			{
-				_zebesRoomDetail.Refresh();
-				_invalidateRoom = false;
-			}
-		}
+				g.FillRectangle(CursorBrush, x0, y0, _rw, _rh);
 
-		private ZebesRoomProps GetProps(int x, int y)
-		{
-			return _meta[y, x];
+				var props = GetProps(_mx, _my);
+
+				if (props != null)
+				{
+					if (props.ElevatorUp && _node == 'U')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0, _rw / 2f, _rh / 4f);
+					}
+					else if (props.ElevatorDown && _node == 'D')
+					{
+						g.FillRectangle(CursorBrush, x0 + _rw / 4f, y0 + 3 * _rh / 4, _rw / 2f, _rh / 4f);
+					}
+					else if (props.CanExitLeft && _node == 'L')
+					{
+						g.FillRectangle(CursorBrush, x0, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+					else if (props.CanExitRight && _node == 'R')
+					{
+						g.FillRectangle(CursorBrush, x0 + 3 * _rw / 4, y0 + _rh / 4, _rw / 4f, _rh / 2f);
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -446,7 +500,15 @@ namespace MetalTracker.Games.Metroid.Proxies
 				if (e.Type == "dest")
 				{
 					var dest = _dests.Find(d => d.GetCode() == e.Code);
-					roomState.DestElev = dest;
+
+					if (e.Slot == 0)
+						roomState.DestUp = dest;
+					else if (e.Slot == 1)
+						roomState.DestDown = dest;
+					else if (e.Slot == 2)
+						roomState.DestLeft = dest;
+					else if (e.Slot == 3)
+						roomState.DestRight = dest;
 				}
 				else if (e.Type == "item")
 				{
@@ -473,6 +535,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 				{
 					var s0 = _roomStates[y, x];
 					var s1 = _roomStates[y, 31 - x];
+
+					s0?.Mirror();
+					s1?.Mirror();
+
 					_roomStates[y, x] = s1;
 					_roomStates[y, 31 - x] = s0;
 				}
@@ -480,6 +546,5 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 			_drawable.Invalidate();
 		}
-
 	}
 }

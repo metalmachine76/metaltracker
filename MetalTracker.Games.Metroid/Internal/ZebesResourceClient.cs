@@ -5,7 +5,7 @@ using MetalTracker.Games.Metroid.Internal.Types;
 
 namespace MetalTracker.Games.Metroid.Internal
 {
-	internal static class InternalResourceClient
+	internal static class ZebesResourceClient
 	{
 		static List<(int, int, char)> ItemSlots = new List<(int, int, char)>
 		{
@@ -80,19 +80,27 @@ namespace MetalTracker.Games.Metroid.Internal
 			ZebesRoomProps[,] meta = new ZebesRoomProps[32, 32];
 
 			string metaResName = $"MetalTracker.Games.Metroid.Res.zebesmeta.txt";
-
 			string[] metaLines = GetResourceLines(metaResName);
+
+			string areaResName = $"MetalTracker.Games.Metroid.Res.zebesnames.txt";
+			string[] areaLines = GetResourceLines(areaResName);
 
 			for (int y = 0; y < 32; y++)
 			{
-				string line = metaLines[y];
+				string mline = metaLines[y];
+				string aline = areaLines[y];
 				for (int x = 0; x < 32; x++)
 				{
-					char c = line[x];
+					char mc = mline[x];
+					char ac = aline[x];
+
 					var props = new ZebesRoomProps();
 
-					props.IsVertical = (c == '|');
-					props.Elevator = (c == 'U' || c == 'D');
+					props.CanExitLeft = (mc == '|' || mc == 'L');
+					props.CanExitRight = (mc == '|' || mc == 'R');
+					props.ElevatorUp = (mc == 'U');
+					props.ElevatorDown = (mc == 'D');
+					props.AreaCode = ac;
 
 					meta[y, x] = props;
 				}
@@ -135,6 +143,10 @@ namespace MetalTracker.Games.Metroid.Internal
 					{
 						var m0 = meta[y, x];
 						var m1 = meta[y, 31 - x];
+
+						m0.Mirror();
+						m1.Mirror();
+
 						meta[y, x] = m1;
 						meta[y, 31 - x] = m0;
 					}
@@ -146,7 +158,7 @@ namespace MetalTracker.Games.Metroid.Internal
 
 		private static string[] GetResourceLines(string resName)
 		{
-			return ResourceClient.GetResourceLines(typeof(InternalResourceClient).Assembly, resName);
+			return ResourceClient.GetResourceLines(typeof(ZebesResourceClient).Assembly, resName);
 		}
 
 	}

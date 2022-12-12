@@ -8,5 +8,7 @@ namespace MetalTracker.Games.Zelda.Types
 		public List<StateEntry> Dests { get; set; } = new List<StateEntry>();
 
 		public List<StateEntry> Items { get; set; } = new List<StateEntry>();
+
+		public List<StateEntry> Explored { get; set; } = new List<StateEntry>();
 	}
 }
