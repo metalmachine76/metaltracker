@@ -81,7 +81,10 @@ namespace MetalTracker.Trackers.Z1M1
 			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
 			_itemTracker = new ItemTracker(itemTrackerContainer);
 
-			Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string localAppDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+			string workPath = Path.Combine(localAppDataDir, "MetalTrackerZ1M1");
+			Directory.CreateDirectory(workPath);
+			Environment.CurrentDirectory = workPath;
 		}
 
 		public void LocateGoal(BaseMap map, int x, int y)
