@@ -114,7 +114,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 			}
 
-			_drawable.Invalidate();
+			this.CenterMap();
 		}
 
 		public ZebesMapState PersistState()

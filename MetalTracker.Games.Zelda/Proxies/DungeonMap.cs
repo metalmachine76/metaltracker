@@ -173,7 +173,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public void ResetState()
 		{
 			_roomStates = DungeonResourceClient.GetDefaultDungeonState(_flag_q2, _flag_level, _flag_shuffle, _flag_mirrored);
-			_drawable.Invalidate();
+
+			this.CenterMap();
 		}
 
 		public DungeonMapState PersistState()

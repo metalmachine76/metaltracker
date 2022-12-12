@@ -84,8 +84,8 @@ namespace MetalTracker.Common.Bases
 		{
 			_mxClick = x;
 			_myClick = y;
-			_offset.X = 256 - _rw * x - _rw / 2;
-			_offset.Y = 240 - _rh * y - _rh / 2;
+			_offset.X = 256f - _rw * x - _rw / 2;
+			_offset.Y = 240f - _rh * y - _rh / 2;
 			_drawable.Invalidate();
 			HandleRoomClick(false);
 		}
@@ -120,6 +120,13 @@ namespace MetalTracker.Common.Bases
 		public int GetZoom()
 		{
 			return _zoom;
+		}
+
+		public void CenterMap()
+		{
+			_offset.X = 256f - _rw * (_mw / 2f);
+			_offset.Y = 240f - _rh * (_mh / 2f);
+			_drawable.Invalidate();
 		}
 
 		public abstract void Activate(bool active);

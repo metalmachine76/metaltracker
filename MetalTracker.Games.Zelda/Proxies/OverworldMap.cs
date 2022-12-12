@@ -113,7 +113,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 			}
 
-			_drawable.Invalidate();
+			this.CenterMap();
 		}
 
 		public OverworldMapState PersistState()
