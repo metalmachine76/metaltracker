@@ -25,5 +25,13 @@
 		{
 			return SlotClass != '\0';
 		}
+
+		public void Mirror()
+		{
+			bool exl = this.CanExitLeft;
+			bool exr = this.CanExitRight;
+			this.CanExitLeft = exr;
+			this.CanExitRight = exl;
+		}
 	}
 }

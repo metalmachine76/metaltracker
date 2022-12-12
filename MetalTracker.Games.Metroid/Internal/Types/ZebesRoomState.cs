@@ -28,5 +28,14 @@ namespace MetalTracker.Games.Metroid.Internal.Types
 
 			return clone;
 		}
+
+		public void Mirror()
+		{
+			var dl = DestLeft;
+			var dr = DestRight;
+
+			DestLeft = dr;
+			DestRight = dl;
+		}
 	}
 }

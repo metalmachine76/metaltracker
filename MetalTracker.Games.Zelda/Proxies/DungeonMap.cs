@@ -677,11 +677,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 					}
 					if (roomState.DestWest != null)
 					{
-						DrawExit(g, x0 - 32, y0 + 11, 64, roomState.DestWest);
+						DrawExit(g, x0 - _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestWest);
 					}
 					if (roomState.DestEast != null)
 					{
-						DrawExit(g, x0 + 32, y0 + 11, 64, roomState.DestEast);
+						DrawExit(g, x0 + _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestEast);
 					}
 				}
 			}
@@ -817,8 +817,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var s0 = _roomStates[y, x];
 					var s1 = _roomStates[y, (_mw - 1) - x];
 
-					s0.Mirror();
-					s1.Mirror();
+					s0?.Mirror();
+					s1?.Mirror();
 
 					_roomStates[y, x] = s1;
 					_roomStates[y, (_mw - 1) - x] = s0;

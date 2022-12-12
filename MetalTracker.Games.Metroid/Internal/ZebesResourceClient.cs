@@ -143,6 +143,10 @@ namespace MetalTracker.Games.Metroid.Internal
 					{
 						var m0 = meta[y, x];
 						var m1 = meta[y, 31 - x];
+
+						m0.Mirror();
+						m1.Mirror();
+
 						meta[y, x] = m1;
 						meta[y, 31 - x] = m0;
 					}

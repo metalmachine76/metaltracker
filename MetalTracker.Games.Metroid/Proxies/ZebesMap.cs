@@ -535,6 +535,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 				{
 					var s0 = _roomStates[y, x];
 					var s1 = _roomStates[y, 31 - x];
+
+					s0?.Mirror();
+					s1?.Mirror();
+
 					_roomStates[y, x] = s1;
 					_roomStates[y, 31 - x] = s0;
 				}
