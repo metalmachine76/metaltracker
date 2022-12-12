@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Eto.Forms;
 using Eto.Serialization.Xaml;
 using MetalTracker.Common.Bases;
@@ -79,6 +80,8 @@ namespace MetalTracker.Trackers.Z1M1
 
 			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
 			_itemTracker = new ItemTracker(itemTrackerContainer);
+
+			Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 		}
 
 		public void LocateGoal(BaseMap map, int x, int y)
@@ -145,9 +148,15 @@ namespace MetalTracker.Trackers.Z1M1
 
 		protected void HandleClosed(object sender, EventArgs e)
 		{
-			foreach (var window in Application.Instance.Windows)
+			foreach (var window in Application.Instance.Windows.ToList())
 			{
-				window.Close();
+				try
+				{
+					window.Close();
+				}
+				catch
+				{
+				}
 			}
 		}
 
