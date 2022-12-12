@@ -54,9 +54,10 @@ Map specific features:
 - On the overworld, cave destinations (such as shops, take-any-road, etc) will be shown in white.
 - In dungeons, transport stairs will be shown in blue.
 
-Map interaction is currently mouse-based only:
+Map interaction is currently primarily mouse-based:
 
 - You can click and drag the maps which are larger than the visible area.
+- You can zoom in and out using your mouse wheel (or using the slider below the map).
 - Clicking a room will select it and show the details for that room in the "Room Detail" panel.
 - Right-clicking applicable rooms will show a context menu:
   - On the overworld, you can choose a cave destination or exit to connect the room to.
@@ -71,7 +72,7 @@ Room Detail:
 Allows you to view and edit details for the room you clicked on the main map. Some rooms have nothing to track and won't show here. 
 
 
-Inventory/Goals:
+Inventory:
 
 You can use this section to keep track of your current inventory, as far as major equipment and quest items. 
 
