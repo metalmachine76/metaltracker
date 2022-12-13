@@ -208,7 +208,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			return bmp;
 		}
 
-		public static List<DungeonWall> GetDungeonWalls()
+		public static IReadOnlyList<DungeonWall> GetDungeonWalls()
 		{
 			return DungeonWalls;
 		}

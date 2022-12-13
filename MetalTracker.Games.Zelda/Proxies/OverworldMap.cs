@@ -29,7 +29,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _mapImage;
 		private OverworldRoomProps[,] _meta;
 
-		private OverworldCave[] _caves = OverworldResourceClient.GetCaves();
+		private IReadOnlyList<OverworldCave> _caves = OverworldResourceClient.GetCaves();
 
 		private ContextMenu _destsMenu;
 		private OverworldRoomStateMutator _mutator = new OverworldRoomStateMutator();

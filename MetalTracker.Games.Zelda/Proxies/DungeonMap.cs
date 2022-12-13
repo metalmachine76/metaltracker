@@ -34,7 +34,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private DungeonRoomProps[,] _meta;
 		private int _numTransports;
 
-		private IReadOnlyList<DungeonWall> _walls = new List<DungeonWall>();
+		private IReadOnlyList<DungeonWall> _walls = DungeonResourceClient.GetDungeonWalls();
 
 		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
 
@@ -80,7 +80,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_wallsMenu.Opening += HandleContextMenuOpening;
 			_wallsMenu.Closed += HandleContextMenuClosed;
 
-			foreach (var wall in DungeonResourceClient.GetDungeonWalls())
+			foreach (var wall in _walls)
 			{
 				Command cmd = new Command();
 				cmd.Executed += HandleWallCommand;

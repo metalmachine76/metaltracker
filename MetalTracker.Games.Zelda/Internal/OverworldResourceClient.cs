@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Eto.Drawing;
 using MetalTracker.Common;
@@ -8,7 +9,7 @@ namespace MetalTracker.Games.Zelda.Internal
 {
 	internal static class OverworldResourceClient
 	{
-		static OverworldCave[] Caves = new OverworldCave[]
+		static List<OverworldCave> Caves = new List<OverworldCave>()
 		{
 			new OverworldCave("S", "Shop", "Normal Shop", 3),
 			new OverworldCave("P", "Potions", "Potions Shop", 3),
@@ -90,7 +91,7 @@ namespace MetalTracker.Games.Zelda.Internal
 					{
 						if (others)
 						{
-							var cave = Array.Find(Caves, d => d.Key == c.ToString());
+							var cave = Caves.Find(d => d.Key == c.ToString());
 							if (cave != null)
 							{
 								state.Cave = cave;
@@ -131,9 +132,9 @@ namespace MetalTracker.Games.Zelda.Internal
 			return states;
 		}
 
-		public static OverworldCave[] GetCaves()
+		public static IReadOnlyList<OverworldCave> GetCaves()
 		{
-			return OverworldResourceClient.Caves;
+			return Caves;
 		}
 
 		private static string[] GetResourceLines(string resName)
