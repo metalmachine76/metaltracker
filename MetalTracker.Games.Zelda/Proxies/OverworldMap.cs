@@ -227,19 +227,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < 16; x++)
 				{
 					var state = _roomStates[y, x];
+
+					string detail = state.Cave != null ? $"({state.Cave.ShortName})" : "";
+
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}", x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1} {detail}", x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}", x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1} {detail}", x, y);
 						list.Add(loc);
 					}
 					if (state.Item3 != null && state.Item3.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}", x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1} {detail}", x, y);
 						list.Add(loc);
 					}
 				}
