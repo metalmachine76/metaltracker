@@ -7,10 +7,10 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 		// shared state
 
 		public bool Ignored { get; set; }
-		public GameDest ExitNorth { get; set; }
-		public GameDest ExitSouth { get; set; }
-		public GameDest ExitWest { get; set; }
-		public GameDest ExitEast { get; set; }
+		public GameExit ExitNorth { get; set; }
+		public GameExit ExitSouth { get; set; }
+		public GameExit ExitWest { get; set; }
+		public GameExit ExitEast { get; set; }
 		public DungeonWall WallNorth { get; set; }
 		public DungeonWall WallSouth { get; set; }
 		public DungeonWall WallWest { get; set; }

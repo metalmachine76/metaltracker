@@ -137,7 +137,7 @@ namespace MetalTracker.Common.Bases
 
 		public abstract void Activate(bool active);
 
-		public abstract List<LocationOfDest> LogExitLocations();
+		public abstract List<LocationOfExit> LogExitLocations();
 
 		public abstract List<LocationOfItem> LogItemLocations();
 

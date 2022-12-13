@@ -5,19 +5,7 @@ namespace MetalTracker.Games.Zelda
 {
 	public static class ZeldaResourceClient
 	{
-		static GameDest[] CaveDestinations = new GameDest[]
-		{
-			new GameDest("z1", "S", "Shop", "Normal Shop", false, 3),
-			new GameDest("z1", "P", "Potions", "Potions Shop", false, 3),
-			new GameDest("z1", "I", "Free", "Free Item(s)", false, 3),
-			new GameDest("z1", "W", "W/M", "White/Magical Sword Cave", false, 1),
-			new GameDest("z1", "G", "MMG", "Money Making Game"),
-			new GameDest("z1", "R", "Road", "Take Any Road"),
-			new GameDest("z1", "C", "Charge", "Door Repair Charge"),
-			new GameDest("z1", "H", "Hint", "Hint"),
-		};
-
-		static GameDest[] ExitDestinations = new GameDest[]
+		static GameExit[] GameExits = new GameExit[]
 		{
 			new GameDest("z1", "0", "OW", "Overworld", true),
 			new GameDest("z1", "1", "D1", "Dungeon #1", true),
@@ -68,14 +56,9 @@ namespace MetalTracker.Games.Zelda
 			new GameItem("z1", "sword3", "Magical Sword", 'E', GetIcon("sword3")),
 		};
 
-		public static GameDest[] GetCaveDestinations()
+		public static GameExit[] GetGameExits()
 		{
-			return CaveDestinations;
-		}
-
-		public static GameDest[] GetExitDestinations()
-		{
-			return ExitDestinations;
+			return GameExits;
 		}
 
 		public static GameItem[] GetGameItems()

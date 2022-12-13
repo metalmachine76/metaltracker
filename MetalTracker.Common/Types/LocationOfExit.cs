@@ -1,6 +1,6 @@
 ﻿namespace MetalTracker.Common.Types
 {
-	public class LocationOfDest
+	public class LocationOfExit
 	{
 		public GameExit Dest { get; private set; }
 
@@ -12,7 +12,7 @@
 
 		public int Y { get; private set; }
 
-		public LocationOfDest(GameExit dest, string location, string map, int x, int y)
+		public LocationOfExit(GameExit dest, string location, string map, int x, int y)
 		{
 			this.Dest = dest;
 			this.Location = location;

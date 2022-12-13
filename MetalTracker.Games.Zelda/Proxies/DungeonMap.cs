@@ -38,9 +38,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
 
-		private List<GameDest> _dests = new List<GameDest>();
-		private List<GameItem> _items = new List<GameItem>();
-
 		private ContextMenu _destsMenu;
 		private ContextMenu _wallsMenu;
 
@@ -53,7 +50,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private DungeonRoomState[,] _roomStates = new DungeonRoomState[8, 8];
 
-		public DungeonMap(Drawable drawable, Panel detailPanel) : base(16, 11, 4, drawable)
+		public DungeonMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) : 
+			base(16, 11, 4, drawable, gameExits, gameItems)
 		{
 			_mw = 8;
 			_mh = 8;
@@ -61,6 +59,23 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleContextMenuOpening;
 			_destsMenu.Closed += HandleContextMenuClosed;
+
+			string lastExitGame = gameExits[0].Game;
+			foreach (var exit in gameExits)
+			{
+				if (exit.Game != lastExitGame)
+				{
+					_destsMenu.Items.AddSeparator();
+				}
+
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = exit;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = exit.LongName, Command = cmd });
+				_exits.Add(exit);
+
+				lastExitGame = exit.Game;
+			}
 
 			_wallsMenu = new ContextMenu();
 			_wallsMenu.Opening += HandleContextMenuOpening;
@@ -76,6 +91,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			}
 
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
+			_dungeonRoomDetail.PopulateItems(_items);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
 
 			_walls_n = DungeonResourceClient.GetDungeonWallIcons("n");
@@ -128,30 +144,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_numTransports = stairsCount / 2;
 
 			_dungeonRoomDetail.SetTransports(_numTransports);
-		}
-
-		public void SetGameItems(IEnumerable<GameItem> gameItems)
-		{
-			_items = gameItems.ToList();
-			_dungeonRoomDetail.PopulateItems(_items);
-		}
-
-		public void AddDestinations(IEnumerable<GameDest> destinations)
-		{
-			if (_destsMenu.Items.Count > 0)
-			{
-				_destsMenu.Items.AddSeparator();
-			}
-
-			foreach (var dest in destinations)
-			{
-				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
-				cmd.CommandParameter = dest;
-				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
-				_dests.Add(dest);
-				_dungeonRoomDetail.AddDest(dest);
-			}
 		}
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
@@ -272,13 +264,13 @@ namespace MetalTracker.Games.Zelda.Proxies
 			foreach (var entry in mapState.Exits)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].ExitNorth = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitNorth = _exits.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].ExitSouth = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitSouth = _exits.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].ExitWest = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitWest = _exits.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 3)
-					_roomStates[entry.Y, entry.X].ExitEast = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitEast = _exits.Find(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Walls)
@@ -338,9 +330,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
-		public override List<LocationOfDest> LogExitLocations()
+		public override List<LocationOfExit> LogExitLocations()
 		{
-			List<LocationOfDest> list = new List<LocationOfDest>();
+			List<LocationOfExit> list = new List<LocationOfExit>();
 
 			for (int y = 0; y < 8; y++)
 			{
@@ -349,22 +341,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.ExitNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.ExitNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.ExitSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.ExitWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.ExitEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -392,7 +384,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 
 				var cmd = sender as Command;
-				var dest = cmd.CommandParameter as GameDest;
+				var dest = cmd.CommandParameter as GameExit;
 				var roomState = _roomStates[_myClick, _mxClick];
 
 				if (_nodeClick == 'N' && roomProps.DestNorth)
@@ -758,7 +750,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.Find(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
 						roomState.ExitNorth = dest;

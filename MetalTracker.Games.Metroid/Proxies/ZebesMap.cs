@@ -59,7 +59,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 				cmd.Executed += HandleDestCommand;
 				cmd.CommandParameter = exit;
 				_destsMenu.Items.Add(new ButtonMenuItem { Text = exit.LongName, Command = cmd });
-				_exits.Add(exit);
 
 				lastExitGame = exit.Game;
 			}
@@ -209,9 +208,9 @@ namespace MetalTracker.Games.Metroid.Proxies
 			return list;
 		}
 
-		public override List<LocationOfDest> LogExitLocations()
+		public override List<LocationOfExit> LogExitLocations()
 		{
-			List<LocationOfDest> list = new List<LocationOfDest>();
+			List<LocationOfExit> list = new List<LocationOfExit>();
 
 			for (int y = 0; y < 32; y++)
 			{
@@ -221,25 +220,25 @@ namespace MetalTracker.Games.Metroid.Proxies
 					if (state.ExitUp != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitDown != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitLeft != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 					if (state.ExitRight != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}

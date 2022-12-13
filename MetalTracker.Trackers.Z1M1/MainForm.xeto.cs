@@ -43,20 +43,17 @@ namespace MetalTracker.Trackers.Z1M1
 			XamlReader.Load(this);
 
 			List<GameItem> gameItems = new List<GameItem>();
-
 			gameItems.AddRange(ZeldaResourceClient.GetGameItems());
 			gameItems.AddRange(MetroidResourceClient.GetGameItems());
 
-			var zeldaCaveDests = ZeldaResourceClient.GetCaveDestinations();
-			var zeldaExitDests = ZeldaResourceClient.GetExitDestinations();
-			var zebesExitDests = MetroidResourceClient.GetDestinations();
+			List<GameExit> gameExits = new List<GameExit>();
+			gameExits.AddRange(ZeldaResourceClient.GetGameExits());
+			gameExits.AddRange(MetroidResourceClient.GetGameExits());
 
 			var drawableCurrentMap = this.FindChild<Drawable>("drawableCurrentMap");
 			var roomDetailContainer = this.FindChild<GroupBox>("groupBoxRoomDetail");
 
 			_overworldMap = new OverworldMap(drawableCurrentMap, roomDetailContainer);
-			_overworldMap.AddDestinations(zeldaCaveDests);
-			_overworldMap.AddDestinations(zeldaExitDests.Where(d => d.Key != "0"));
 			_overworldMap.AddDestinations(zebesExitDests);
 			_overworldMap.SetGameItems(gameItems);
 

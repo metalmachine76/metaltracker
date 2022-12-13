@@ -29,8 +29,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private Image _mapImage;
 		private OverworldRoomProps[,] _meta;
 
-		private List<GameDest> _dests = new List<GameDest>();
-		private List<GameItem> _items = new List<GameItem>();
+		private OverworldCave[] _caves = OverworldResourceClient.GetCaves();
 
 		private ContextMenu _destsMenu;
 		private OverworldRoomStateMutator _mutator = new OverworldRoomStateMutator();
@@ -41,7 +40,8 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		#region Public Methods
 
-		public OverworldMap(Drawable drawable, Panel detailPanel) : base(16, 11, 4, drawable)
+		public OverworldMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) :
+			base(16, 11, 4, drawable, gameExits, gameItems)
 		{
 			_mw = 16;
 			_mh = 8;
@@ -49,6 +49,35 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
 			_destsMenu.Closed += HandleDestsMenuClosed;
+
+			foreach (var cave in _caves)
+			{
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = cave;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = cave.LongName, Command = cmd });
+			}
+
+			string lastExitGame = null;
+			foreach (var exit in gameExits)
+			{
+				if (exit.Game == "z1" && exit.Key == "0")
+				{
+					continue;
+				}
+
+				if (exit.Game != lastExitGame)
+				{
+					_destsMenu.Items.AddSeparator();
+				}
+
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = exit;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = exit.LongName, Command = cmd });
+
+				lastExitGame = exit.Game;
+			}
 
 			_overworldRoomDetail = new OverworldRoomDetail(detailPanel, _mutator);
 			_overworldRoomDetail.DetailChanged += HandleRoomDetailChanged;
@@ -67,28 +96,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_flag_shuffle_caves = shuffleCaves;
 			_mapImage = OverworldResourceClient.GetOverworldImage(q2, mirrored);
 			_meta = OverworldResourceClient.GetOverworldMeta(q2, mirrored);
-		}
-
-		public void SetGameItems(IEnumerable<GameItem> gameItems)
-		{
-			_items = gameItems.ToList();
-		}
-
-		public void AddDestinations(IEnumerable<GameDest> destinations)
-		{
-			if (_destsMenu.Items.Count > 0)
-			{
-				_destsMenu.Items.AddSeparator();
-			}
-
-			foreach (var dest in destinations)
-			{
-				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
-				cmd.CommandParameter = dest;
-				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
-				_dests.Add(dest);
-			}
 		}
 
 		public void SetCoOpClient(ICoOpClient coOpClient)
@@ -126,7 +133,15 @@ namespace MetalTracker.Games.Zelda.Proxies
 				{
 					var roomState = _roomStates[y, x];
 
-					// destination
+					// cave
+
+					if (roomState.Cave!= null)
+					{
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Cave.Key };
+						mapState.Caves.Add(entry);
+					}
+
+					// exit
 
 					if (roomState.Exit != null)
 					{
@@ -167,9 +182,14 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void RestoreState(OverworldMapState mapState)
 		{
+			foreach (var entry in mapState.Caves)
+			{
+				_roomStates[entry.Y, entry.X].Cave = _caves.FirstOrDefault(i => i.Key == entry.Code);
+			}
+
 			foreach (var entry in mapState.Exits)
 			{
-				_roomStates[entry.Y, entry.X].Exit = _dests.Find(i => i.GetCode() == entry.Code);
+				_roomStates[entry.Y, entry.X].Exit = _exits.Find(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Items)
@@ -194,7 +214,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			if (active)
 			{
 				_drawable.Invalidate();
-				_overworldRoomDetail.Build(_dests, _items);
+				_overworldRoomDetail.Build(_exits, _items);
 			}
 		}
 
@@ -228,18 +248,18 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
-		public override List<LocationOfDest> LogExitLocations()
+		public override List<LocationOfExit> LogExitLocations()
 		{
-			List<LocationOfDest> list = new List<LocationOfDest>();
+			List<LocationOfExit> list = new List<LocationOfExit>();
 
 			for (int y = 0; y < 8; y++)
 			{
 				for (int x = 0; x < 16; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.Exit != null && state.Exit.IsExit)
+					if (state.Exit != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.Exit, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.Exit, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -250,7 +270,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void SetDestination(int x, int y, string destCode)
 		{
-			var dest = _dests.Find(d => d.GetCode() == destCode);
+			var dest = _exits.Find(d => d.GetCode() == destCode);
 			_roomStates[y, x].Exit = dest;
 		}
 
@@ -263,14 +283,27 @@ namespace MetalTracker.Games.Zelda.Proxies
 			_drawable.Invalidate();
 		}
 
+		private void HandleCaveCommand(object sender, System.EventArgs e)
+		{
+			if (_mxClick > -1 && _mxClick < 16 && _myClick > -1 && _myClick < 8)
+			{
+				var cmd = sender as Command;
+				var cave = cmd.CommandParameter as OverworldCave;
+				var roomState = _roomStates[_myClick, _mxClick];
+				_mutator.ChangeCave(_mxClick, _myClick, roomState, cave);
+				_drawable.Invalidate();
+				_overworldRoomDetail.Refresh();
+			}
+		}
+
 		private void HandleDestCommand(object sender, System.EventArgs e)
 		{
 			if (_mxClick > -1 && _mxClick < 16 && _myClick > -1 && _myClick < 8)
 			{
 				var cmd = sender as Command;
-				var dest = cmd.CommandParameter as GameDest;
+				var dest = cmd.CommandParameter as GameExit;
 				var roomState = _roomStates[_myClick, _mxClick];
-				_mutator.ChangeDestination(_mxClick, _myClick, roomState, dest);
+				_mutator.ChangeExit(_mxClick, _myClick, roomState, dest);
 				_drawable.Invalidate();
 				_overworldRoomDetail.Refresh();
 			}
@@ -347,9 +380,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 						continue;
 					}
 
-					if (roomState.Exit != null && !roomState.Exit.IsExit)
+					if (roomState.Cave != null)
 					{
-						var dest = roomState.Exit;
+						var dest = roomState.Cave;
 						DrawText(g, x0 - _rw, y0, 3 * _rw, dest.ShortName, Brushes.White);
 					}
 
@@ -387,7 +420,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					if (roomState.Exit != null && roomState.Exit.IsExit)
+					if (roomState.Exit != null)
 					{
 						var dest = roomState.Exit;
 						DrawExit(g, x0 - _rw, y0, 3 * _rw, dest);
@@ -422,7 +455,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.Find(d => d.GetCode() == e.Code);
 					roomState.Exit = dest;
 				}
 				else if (e.Type == "item")

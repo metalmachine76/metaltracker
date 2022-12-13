@@ -15,28 +15,28 @@ namespace MetalTracker.Games.Zelda.Internal
 			_coOpClient = coOpClient;
 		}
 
-		public void ChangeDestNorth(int w, int x, int y, DungeonRoomState state, GameDest newDest)
+		public void ChangeDestNorth(int w, int x, int y, DungeonRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitNorth = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
-		public void ChangeDestSouth(int w, int x, int y, DungeonRoomState state, GameDest newDest)
+		public void ChangeDestSouth(int w, int x, int y, DungeonRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitSouth = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
-		public void ChangeDestWest(int w, int x, int y, DungeonRoomState state, GameDest newDest)
+		public void ChangeDestWest(int w, int x, int y, DungeonRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitWest = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
-		public void ChangeDestEast(int w, int x, int y, DungeonRoomState state, GameDest newDest)
+		public void ChangeDestEast(int w, int x, int y, DungeonRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitEast = newDest;

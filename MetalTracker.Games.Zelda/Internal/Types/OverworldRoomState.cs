@@ -7,7 +7,7 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 		// shared state
 
 		public bool Ignored { get; set; }
-		public GameDest Exit { get; set; }
+		public GameExit Exit { get; set; }
 		public OverworldCave Cave { get; set; }
 		public GameItem Item1 { get; set; }
 		public GameItem Item2 { get; set; }

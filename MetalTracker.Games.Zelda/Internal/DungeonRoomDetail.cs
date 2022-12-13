@@ -35,7 +35,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownTransports;
 
-		private List<GameDest> _gameDests = new List<GameDest>();
+		private List<GameExit> _gameDests = new List<GameExit>();
 		private List<GameItem> _gameItems;
 		private List<DungeonWall> _walls;
 
@@ -175,7 +175,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			}
 		}
 
-		public void AddDest(GameDest gameDest)
+		public void AddDest(GameExit gameDest)
 		{
 			_gameDests.Add(gameDest);
 

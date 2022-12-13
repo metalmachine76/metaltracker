@@ -16,7 +16,32 @@ namespace MetalTracker.Games.Zelda.Internal
 			_coOpClient = coOpClient;
 		}
 
-		public void ChangeDestination(int x, int y, OverworldRoomState state, GameDest newDest)
+		public void ChangeCave(int x, int y, OverworldRoomState state, OverworldCave newCave)
+		{
+			if (state.Cave != newCave)
+			{
+				var oldState = state.Clone();
+
+				state.Cave = newCave;
+
+				state.Item1 = null;
+				state.Item2 = null;
+				state.Item3 = null;
+
+				if (newCave != null)
+				{
+					if (newCave.Key == "P")
+					{
+						state.Item1 = new GameItem("z1", "potion1", "Blue Potion", 'M', ZeldaResourceClient.GetIcon("bluepotion"));
+						state.Item3 = new GameItem("z1", "potion2", "Red Potion", 'M', ZeldaResourceClient.GetIcon("redpotion"));
+					}
+				}
+
+				SendCoOpUpdates(x, y, oldState, state);
+			}
+		}
+
+		public void ChangeExit(int x, int y, OverworldRoomState state, GameExit newDest)
 		{
 			if (state.Exit != newDest)
 			{
@@ -27,15 +52,6 @@ namespace MetalTracker.Games.Zelda.Internal
 				state.Item1 = null;
 				state.Item2 = null;
 				state.Item3 = null;
-
-				if (newDest != null)
-				{
-					if (newDest.Game == "z1" && newDest.Key == "P")
-					{
-						state.Item1 = new GameItem("z1", "potion1", "Blue Potion", 'M', ZeldaResourceClient.GetIcon("bluepotion"));
-						state.Item3 = new GameItem("z1", "potion2", "Red Potion", 'M', ZeldaResourceClient.GetIcon("redpotion"));
-					}
-				}
 
 				SendCoOpUpdates(x, y, oldState, state);
 			}
@@ -83,6 +99,10 @@ namespace MetalTracker.Games.Zelda.Internal
 			if (newState.Item3 != oldState.Item3)
 			{
 				_coOpClient.SendLocation("item", Game, Map, x, y, 2, newState.Item3?.GetCode());
+			}
+			if (newState.Cave != oldState.Cave)
+			{
+				_coOpClient.SendLocation("cave", Game, Map, x, y, 0, newState.Cave?.Key);
 			}
 		}
 	}

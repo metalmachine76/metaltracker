@@ -17,7 +17,9 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownItem3;
 
-		private List<GameDest> _gameDests;
+		private OverworldCave[] _caves = OverworldResourceClient.GetCaves();
+
+		private List<GameExit> _gameDests;
 		private List<GameItem> _gameItems;
 
 		private int _x;
@@ -35,9 +37,9 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameDest> gameDests, List<GameItem> gameItems)
+		public void Build(List<GameExit> gameExits, List<GameItem> gameItems)
 		{
-			_gameDests = gameDests;
+			_gameDests = gameExits;
 			_gameItems = gameItems;
 
 			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
@@ -50,12 +52,25 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_dropDownDest.Items.Add(null);
 
-			foreach (var gameDest in gameDests)
+			foreach (var cave in _caves)
 			{
 				ListItem listItem = new ListItem
 				{
-					Key = gameDest.GetCode(),
-					Text = gameDest.LongName,
+					Tag = cave,
+					Key = $"cave|{cave.Key}",
+					Text = cave.LongName,
+				};
+
+				_dropDownDest.Items.Add(listItem);
+			}
+
+			foreach (var gameExit in gameExits)
+			{
+				ListItem listItem = new ListItem
+				{
+					Tag = gameExit,
+					Key = $"exit|{gameExit.GetCode()}",
+					Text = gameExit.LongName,
 				};
 
 				_dropDownDest.Items.Add(listItem);
@@ -114,8 +129,18 @@ namespace MetalTracker.Games.Zelda.Internal
 		private void HandleSelectedDestChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestination(_x, _y, _state, gameDest);
+
+			if (listItem.Tag is GameExit gameExit)
+			{
+				_mutator.ChangeCave(_x, _y, _state, null);
+				_mutator.ChangeExit(_x, _y, _state, gameExit);
+			}
+			else if (listItem.Tag is OverworldCave cave)
+			{
+				_mutator.ChangeExit(_x, _y, _state, null);
+				_mutator.ChangeCave(_x, _y, _state, cave);
+			}
+
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -162,7 +187,19 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			_dropDownDest.SelectedKey = _state.Exit?.GetCode();
+			if (_state.Cave != null)
+			{
+				_dropDownDest.SelectedKey = $"cave|{_state.Cave.Key}";
+			}
+			else if (_state.Exit != null)
+			{
+				_dropDownDest.SelectedKey = $"exit|{_state.Exit.GetCode()}";
+			}
+			else
+			{
+				_dropDownDest.SelectedIndex = 0;
+			}
+
 			_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
 			_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 			_dropDownItem3.SelectedKey = _state.Item3?.GetCode();
@@ -192,7 +229,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownItem2.Visible = true;
 				_dropDownItem3.Visible = true;
 
-				if (_state.Exit == null)
+				if (_state.Cave == null)
 				{
 					_dropDownItem1.Enabled = false;
 					_dropDownItem2.Enabled = false;
@@ -204,26 +241,26 @@ namespace MetalTracker.Games.Zelda.Internal
 				}
 				else
 				{
-					if (_state.Exit.ItemSlots == 0)
+					if (_state.Cave.ItemSlots == 0)
 					{
 						_dropDownItem1.Enabled = false;
 						_dropDownItem2.Enabled = false;
 						_dropDownItem3.Enabled = false;
 					}
-					else if (_state.Exit.ItemSlots == 1)
+					else if (_state.Cave.ItemSlots == 1)
 					{
 						_dropDownItem1.Enabled = false;
 						_dropDownItem2.Enabled = true;
 						_dropDownItem3.Enabled = false;
 					}
-					else if (_state.Exit.ItemSlots == 2)
+					else if (_state.Cave.ItemSlots == 2)
 					{
 						_dropDownItem1.Enabled = true;
 						_dropDownItem2.Enabled = false;
 						_dropDownItem3.Enabled = true;
 
 					}
-					else if (_state.Exit.ItemSlots == 3)
+					else if (_state.Cave.ItemSlots == 3)
 					{
 						_dropDownItem1.Enabled = true;
 						_dropDownItem2.Enabled = true;

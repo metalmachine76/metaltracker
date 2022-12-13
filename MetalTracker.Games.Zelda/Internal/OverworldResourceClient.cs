@@ -71,7 +71,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		public static OverworldRoomState[,] GetDefaultOverworldState(bool q2, bool dungeons, bool others, bool mirrored)
 		{
 			var caveDests = ZeldaResourceClient.GetCaveDestinations();
-			var exitDests = ZeldaResourceClient.GetExitDestinations();
+			var exitDests = ZeldaResourceClient.GetGameExits();
 			var gameItems = ZeldaResourceClient.GetGameItems();
 
 			OverworldRoomState[,] states = new OverworldRoomState[8, 16];
