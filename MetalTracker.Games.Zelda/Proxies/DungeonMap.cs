@@ -189,25 +189,25 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					// dests
 
-					if (roomState.DestNorth != null)
+					if (roomState.ExitNorth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestNorth.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.ExitNorth.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestSouth != null)
+					if (roomState.ExitSouth != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestSouth.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.ExitSouth.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestWest != null)
+					if (roomState.ExitWest != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestWest.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.ExitWest.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestEast != null)
+					if (roomState.ExitEast != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestEast.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.ExitEast.GetCode() };
+						mapState.Exits.Add(entry);
 					}
 
 					// walls
@@ -269,16 +269,16 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void RestoreState(DungeonMapState mapState)
 		{
-			foreach (var entry in mapState.Dests)
+			foreach (var entry in mapState.Exits)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].DestNorth = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitNorth = _dests.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].DestSouth = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitSouth = _dests.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].DestWest = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitWest = _dests.Find(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 3)
-					_roomStates[entry.Y, entry.X].DestEast = _dests.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitEast = _dests.Find(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Walls)
@@ -347,24 +347,24 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < _mw; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.DestNorth != null)
+					if (state.ExitNorth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
 						list.Add(loc);
 					}
-					if (state.DestSouth != null)
+					if (state.ExitSouth != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
 						list.Add(loc);
 					}
-					if (state.DestWest != null)
+					if (state.ExitWest != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
 						list.Add(loc);
 					}
-					if (state.DestEast != null)
+					if (state.ExitEast != null)
 					{
-						LocationOfDest loc = new LocationOfDest(state.DestEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
 						list.Add(loc);
 					}
 				}
@@ -668,21 +668,21 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					// exits
 
-					if (roomState.DestNorth != null)
+					if (roomState.ExitNorth != null)
 					{
-						DrawExit(g, x0 - _rw, y0 - 11, 3 * _rw, roomState.DestNorth);
+						DrawExit(g, x0 - _rw, y0 - 11, 3 * _rw, roomState.ExitNorth);
 					}
-					if (roomState.DestSouth != null)
+					if (roomState.ExitSouth != null)
 					{
-						DrawExit(g, x0 - _rw, y0 + _rh - 10, 3 * _rw, roomState.DestSouth);
+						DrawExit(g, x0 - _rw, y0 + _rh - 10, 3 * _rw, roomState.ExitSouth);
 					}
-					if (roomState.DestWest != null)
+					if (roomState.ExitWest != null)
 					{
-						DrawExit(g, x0 - _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestWest);
+						DrawExit(g, x0 - _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.ExitWest);
 					}
-					if (roomState.DestEast != null)
+					if (roomState.ExitEast != null)
 					{
-						DrawExit(g, x0 + _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.DestEast);
+						DrawExit(g, x0 + _rw / 2, y0 + _rh / 2 - 10, _rw, roomState.ExitEast);
 					}
 				}
 			}
@@ -761,13 +761,13 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var dest = _dests.Find(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
-						roomState.DestNorth = dest;
+						roomState.ExitNorth = dest;
 					else if (e.Slot == 1)
-						roomState.DestSouth = dest;
+						roomState.ExitSouth = dest;
 					else if (e.Slot == 2)
-						roomState.DestWest = dest;
+						roomState.ExitWest = dest;
 					else if (e.Slot == 3)
-						roomState.DestEast = dest;
+						roomState.ExitEast = dest;
 				}
 				else if (e.Type == "item")
 				{

@@ -18,11 +18,11 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		public void ChangeDestination(int x, int y, OverworldRoomState state, GameDest newDest)
 		{
-			if (state.Destination != newDest)
+			if (state.Exit != newDest)
 			{
 				var oldState = state.Clone();
 
-				state.Destination = newDest;
+				state.Exit = newDest;
 
 				state.Item1 = null;
 				state.Item2 = null;
@@ -68,9 +68,9 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			if (!_coOpClient.IsConnected()) return;
 
-			if (newState.Destination != oldState.Destination)
+			if (newState.Exit != oldState.Exit)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.Destination?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.Exit?.GetCode());
 			}
 			if (newState.Item1 != oldState.Item1)
 			{

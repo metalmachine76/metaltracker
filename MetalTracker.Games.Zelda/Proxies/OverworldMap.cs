@@ -128,10 +128,10 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					// destination
 
-					if (roomState.Destination != null)
+					if (roomState.Exit != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Destination.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Exit.GetCode() };
+						mapState.Exits.Add(entry);
 					}
 
 					// items
@@ -167,9 +167,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		public void RestoreState(OverworldMapState mapState)
 		{
-			foreach (var entry in mapState.Dests)
+			foreach (var entry in mapState.Exits)
 			{
-				_roomStates[entry.Y, entry.X].Destination = _dests.Find(i => i.GetCode() == entry.Code);
+				_roomStates[entry.Y, entry.X].Exit = _dests.Find(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Items)
@@ -237,9 +237,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 				for (int x = 0; x < 16; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.Destination != null && state.Destination.IsExit)
+					if (state.Exit != null && state.Exit.IsExit)
 					{
-						LocationOfDest loc = new LocationOfDest(state.Destination, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.Exit, $"Overworld at {y:X1}{x:X1}", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -251,7 +251,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		public void SetDestination(int x, int y, string destCode)
 		{
 			var dest = _dests.Find(d => d.GetCode() == destCode);
-			_roomStates[y, x].Destination = dest;
+			_roomStates[y, x].Exit = dest;
 		}
 
 		#endregion
@@ -347,9 +347,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 						continue;
 					}
 
-					if (roomState.Destination != null && !roomState.Destination.IsExit)
+					if (roomState.Exit != null && !roomState.Exit.IsExit)
 					{
-						var dest = roomState.Destination;
+						var dest = roomState.Exit;
 						DrawText(g, x0 - _rw, y0, 3 * _rw, dest.ShortName, Brushes.White);
 					}
 
@@ -365,7 +365,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					if (roomState.Item2 != null)
 					{
-						if (roomState.Destination == null)
+						if (roomState.Exit == null)
 						{
 							DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item2.Icon);
 						}
@@ -387,9 +387,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					if (roomState.Destination != null && roomState.Destination.IsExit)
+					if (roomState.Exit != null && roomState.Exit.IsExit)
 					{
-						var dest = roomState.Destination;
+						var dest = roomState.Exit;
 						DrawExit(g, x0 - _rw, y0, 3 * _rw, dest);
 					}
 				}
@@ -423,7 +423,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				if (e.Type == "dest")
 				{
 					var dest = _dests.Find(d => d.GetCode() == e.Code);
-					roomState.Destination = dest;
+					roomState.Exit = dest;
 				}
 				else if (e.Type == "item")
 				{

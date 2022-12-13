@@ -19,28 +19,28 @@ namespace MetalTracker.Games.Metroid.Internal
 		public void ChangeDestUp(int x, int y, ZebesRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestUp = newDest;
+			state.ExitUp = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
 		public void ChangeDestDown(int x, int y, ZebesRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestDown = newDest;
+			state.ExitDown = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
 		public void ChangeDestLeft(int x, int y, ZebesRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestLeft = newDest;
+			state.ExitLeft = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
 		public void ChangeDestRight(int x, int y, ZebesRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestRight = newDest;
+			state.ExitRight = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
@@ -57,21 +57,21 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			if (!_coOpClient.IsConnected()) return;
 
-			if (newState.DestUp != oldState.DestUp)
+			if (newState.ExitUp != oldState.ExitUp)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.DestUp?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 0, newState.ExitUp?.GetCode());
 			}
-			if (newState.DestDown != oldState.DestDown)
+			if (newState.ExitDown != oldState.ExitDown)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 1, newState.DestDown?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 1, newState.ExitDown?.GetCode());
 			}
-			if (newState.DestLeft != oldState.DestLeft)
+			if (newState.ExitLeft != oldState.ExitLeft)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 2, newState.DestLeft?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 2, newState.ExitLeft?.GetCode());
 			}
-			if (newState.DestRight != oldState.DestRight)
+			if (newState.ExitRight != oldState.ExitRight)
 			{
-				_coOpClient.SendLocation("dest", Game, Map, x, y, 3, newState.DestRight?.GetCode());
+				_coOpClient.SendLocation("dest", Game, Map, x, y, 3, newState.ExitRight?.GetCode());
 			}
 			if (newState.Item != oldState.Item)
 			{

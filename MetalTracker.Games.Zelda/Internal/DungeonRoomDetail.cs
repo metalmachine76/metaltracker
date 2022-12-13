@@ -236,10 +236,10 @@ namespace MetalTracker.Games.Zelda.Internal
 			{
 				_mainLayout.Visible = true;
 
-				_dropDownDestNorth.SelectedKey = _state.DestNorth?.GetCode();
-				_dropDownDestSouth.SelectedKey = _state.DestSouth?.GetCode();
-				_dropDownDestWest.SelectedKey = _state.DestWest?.GetCode();
-				_dropDownDestEast.SelectedKey = _state.DestEast?.GetCode();
+				_dropDownDestNorth.SelectedKey = _state.ExitNorth?.GetCode();
+				_dropDownDestSouth.SelectedKey = _state.ExitSouth?.GetCode();
+				_dropDownDestWest.SelectedKey = _state.ExitWest?.GetCode();
+				_dropDownDestEast.SelectedKey = _state.ExitEast?.GetCode();
 
 				_dropDownWallNorth.SelectedKey = _state.WallNorth?.Code;
 				_dropDownWallSouth.SelectedKey = _state.WallSouth?.Code;

@@ -18,28 +18,28 @@ namespace MetalTracker.Games.Zelda.Internal
 		public void ChangeDestNorth(int w, int x, int y, DungeonRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestNorth = newDest;
+			state.ExitNorth = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
 		public void ChangeDestSouth(int w, int x, int y, DungeonRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestSouth = newDest;
+			state.ExitSouth = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
 		public void ChangeDestWest(int w, int x, int y, DungeonRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestWest = newDest;
+			state.ExitWest = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
 		public void ChangeDestEast(int w, int x, int y, DungeonRoomState state, GameDest newDest)
 		{
 			var oldState = state.Clone();
-			state.DestEast = newDest;
+			state.ExitEast = newDest;
 			SendCoOpUpdates(w, x, y, oldState, state);
 		}
 
@@ -100,21 +100,21 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			string map = $"d{w}";
 
-			if (newState.DestNorth != oldState.DestNorth)
+			if (newState.ExitNorth != oldState.ExitNorth)
 			{
-				_coOpClient.SendLocation("dest", Game, map, x, y, 0, newState.DestNorth?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 0, newState.ExitNorth?.GetCode());
 			}
-			if (newState.DestSouth != oldState.DestSouth)
+			if (newState.ExitSouth != oldState.ExitSouth)
 			{
-				_coOpClient.SendLocation("dest", Game, map, x, y, 1, newState.DestSouth?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 1, newState.ExitSouth?.GetCode());
 			}
-			if (newState.DestWest != oldState.DestWest)
+			if (newState.ExitWest != oldState.ExitWest)
 			{
-				_coOpClient.SendLocation("dest", Game, map, x, y, 2, newState.DestWest?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 2, newState.ExitWest?.GetCode());
 			}
-			if (newState.DestEast != oldState.DestEast)
+			if (newState.ExitEast != oldState.ExitEast)
 			{
-				_coOpClient.SendLocation("dest", Game, map, x, y, 3, newState.DestEast?.GetCode());
+				_coOpClient.SendLocation("dest", Game, map, x, y, 3, newState.ExitEast?.GetCode());
 			}
 
 			if (newState.WallNorth != oldState.WallNorth)

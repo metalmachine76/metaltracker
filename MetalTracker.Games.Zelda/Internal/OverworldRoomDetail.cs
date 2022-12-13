@@ -162,7 +162,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_refreshing = true;
 
-			_dropDownDest.SelectedKey = _state.Destination?.GetCode();
+			_dropDownDest.SelectedKey = _state.Exit?.GetCode();
 			_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
 			_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 			_dropDownItem3.SelectedKey = _state.Item3?.GetCode();
@@ -192,7 +192,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownItem2.Visible = true;
 				_dropDownItem3.Visible = true;
 
-				if (_state.Destination == null)
+				if (_state.Exit == null)
 				{
 					_dropDownItem1.Enabled = false;
 					_dropDownItem2.Enabled = false;
@@ -204,26 +204,26 @@ namespace MetalTracker.Games.Zelda.Internal
 				}
 				else
 				{
-					if (_state.Destination.ItemSlots == 0)
+					if (_state.Exit.ItemSlots == 0)
 					{
 						_dropDownItem1.Enabled = false;
 						_dropDownItem2.Enabled = false;
 						_dropDownItem3.Enabled = false;
 					}
-					else if (_state.Destination.ItemSlots == 1)
+					else if (_state.Exit.ItemSlots == 1)
 					{
 						_dropDownItem1.Enabled = false;
 						_dropDownItem2.Enabled = true;
 						_dropDownItem3.Enabled = false;
 					}
-					else if (_state.Destination.ItemSlots == 2)
+					else if (_state.Exit.ItemSlots == 2)
 					{
 						_dropDownItem1.Enabled = true;
 						_dropDownItem2.Enabled = false;
 						_dropDownItem3.Enabled = true;
 
 					}
-					else if (_state.Destination.ItemSlots == 3)
+					else if (_state.Exit.ItemSlots == 3)
 					{
 						_dropDownItem1.Enabled = true;
 						_dropDownItem2.Enabled = true;

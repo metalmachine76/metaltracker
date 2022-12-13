@@ -8,6 +8,18 @@ namespace MetalTracker.Games.Zelda.Internal
 {
 	internal static class OverworldResourceClient
 	{
+		static OverworldCave[] Caves = new OverworldCave[]
+		{
+			new OverworldCave("S", "Shop", "Normal Shop", 3),
+			new OverworldCave("P", "Potions", "Potions Shop", 3),
+			new OverworldCave("I", "Free", "Free Item(s)", 3),
+			new OverworldCave("W", "W/M", "White/Magical Sword Cave", 1),
+			new OverworldCave("G", "MMG", "Money Making Game"),
+			new OverworldCave("R", "Road", "Take Any Road"),
+			new OverworldCave("C", "Charge", "Door Repair Charge"),
+			new OverworldCave("H", "Hint", "Hint"),
+		};
+
 		public static Image GetOverworldImage(bool q2, bool mirrored)
 		{
 			Bitmap map;
@@ -82,7 +94,7 @@ namespace MetalTracker.Games.Zelda.Internal
 							var caveDest = Array.Find(caveDests, d => d.Key == c.ToString());
 							if (caveDest != null)
 							{
-								state.Destination = caveDest;
+								state.Exit = caveDest;
 								if (caveDest.Key == "P")
 								{
 									state.Item1 = gameItems.First(i => i.Key == "potion1");
@@ -95,7 +107,7 @@ namespace MetalTracker.Games.Zelda.Internal
 							var exitDest = Array.Find(exitDests, d => d.Key == c.ToString());
 							if (exitDest != null)
 							{
-								state.Destination = exitDest;
+								state.Exit = exitDest;
 							}
 						}
 					}
@@ -118,6 +130,11 @@ namespace MetalTracker.Games.Zelda.Internal
 			}
 
 			return states;
+		}
+
+		public static OverworldCave[] GetCaves()
+		{
+			return OverworldResourceClient.Caves;
 		}
 
 		private static string[] GetResourceLines(string resName)

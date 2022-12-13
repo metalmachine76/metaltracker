@@ -6,10 +6,11 @@ namespace MetalTracker.Games.Metroid.Internal.Types
 	{
 		// shared state
 
-		public GameDest DestUp { get; set; }
-		public GameDest DestDown { get; set; }
-		public GameDest DestLeft { get; set; }
-		public GameDest DestRight { get; set; }
+		public bool Ignored { get; set; }
+		public GameDest ExitUp { get; set; }
+		public GameDest ExitDown { get; set; }
+		public GameDest ExitLeft { get; set; }
+		public GameDest ExitRight { get; set; }
 		public GameItem Item { get; set; }
 
 		// local state
@@ -20,10 +21,11 @@ namespace MetalTracker.Games.Metroid.Internal.Types
 		{
 			var clone = new ZebesRoomState();
 
-			clone.DestUp = this.DestUp;
-			clone.DestDown = this.DestDown;
-			clone.DestLeft = this.DestLeft;
-			clone.DestRight = this.DestRight;
+			clone.Ignored = this.Ignored;
+			clone.ExitUp = this.ExitUp;
+			clone.ExitDown = this.ExitDown;
+			clone.ExitLeft = this.ExitLeft;
+			clone.ExitRight = this.ExitRight;
 			clone.Item = Item;
 
 			return clone;
@@ -31,11 +33,11 @@ namespace MetalTracker.Games.Metroid.Internal.Types
 
 		public void Mirror()
 		{
-			var dl = DestLeft;
-			var dr = DestRight;
+			var dl = ExitLeft;
+			var dr = ExitRight;
 
-			DestLeft = dr;
-			DestRight = dl;
+			ExitLeft = dr;
+			ExitRight = dl;
 		}
 	}
 }

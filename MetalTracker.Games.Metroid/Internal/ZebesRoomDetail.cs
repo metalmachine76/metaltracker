@@ -182,10 +182,10 @@ namespace MetalTracker.Games.Metroid.Internal
 			{
 				_mainLayout.Visible = true;
 
-				_dropDownDestElevUp.SelectedKey = _state.DestUp?.GetCode();
-				_dropDownDestElevDown.SelectedKey = _state.DestDown?.GetCode();
-				_dropDownDestExitLeft.SelectedKey = _state.DestLeft?.GetCode();
-				_dropDownDestExitRight.SelectedKey = _state.DestRight?.GetCode();
+				_dropDownDestElevUp.SelectedKey = _state.ExitUp?.GetCode();
+				_dropDownDestElevDown.SelectedKey = _state.ExitDown?.GetCode();
+				_dropDownDestExitLeft.SelectedKey = _state.ExitLeft?.GetCode();
+				_dropDownDestExitRight.SelectedKey = _state.ExitRight?.GetCode();
 
 				_dropDownItem.SelectedKey = _state.Item?.GetCode();
 

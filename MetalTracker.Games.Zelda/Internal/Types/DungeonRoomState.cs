@@ -6,10 +6,11 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 	{
 		// shared state
 
-		public GameDest DestNorth { get; set; }
-		public GameDest DestSouth { get; set; }
-		public GameDest DestWest { get; set; }
-		public GameDest DestEast { get; set; }
+		public bool Ignored { get; set; }
+		public GameDest ExitNorth { get; set; }
+		public GameDest ExitSouth { get; set; }
+		public GameDest ExitWest { get; set; }
+		public GameDest ExitEast { get; set; }
 		public DungeonWall WallNorth { get; set; }
 		public DungeonWall WallSouth { get; set; }
 		public DungeonWall WallWest { get; set; }
@@ -26,30 +27,31 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 		{
 			var clone = new DungeonRoomState();
 
-			clone.DestNorth = DestNorth;
-			clone.DestSouth = DestSouth;
-			clone.DestWest = DestWest;
-			clone.DestEast = DestEast;
-			clone.WallNorth = WallNorth;
-			clone.WallSouth = WallSouth;
-			clone.WallWest = WallWest;
-			clone.WallEast = WallEast;
-			clone.Item1 = Item1;
-			clone.Item2 = Item2;
-			clone.Transport = Transport;
+			clone.Ignored = this.Ignored;
+			clone.ExitNorth = this.ExitNorth;
+			clone.ExitSouth = this.ExitSouth;
+			clone.ExitWest = this.ExitWest;
+			clone.ExitEast = this.ExitEast;
+			clone.WallNorth = this.WallNorth;
+			clone.WallSouth = this.WallSouth;
+			clone.WallWest = this.WallWest;
+			clone.WallEast = this.WallEast;
+			clone.Item1 = this.Item1;
+			clone.Item2 = this.Item2;
+			clone.Transport = this.Transport;
 
 			return clone;
 		}
 
 		public void Mirror()
 		{
-			var de = this.DestEast;
-			var dw = this.DestWest;
+			var de = this.ExitEast;
+			var dw = this.ExitWest;
 			var we = this.WallEast;
 			var ww = this.WallWest;
 
-			this.DestEast = dw;
-			this.DestWest = de;
+			this.ExitEast = dw;
+			this.ExitWest = de;
 			this.WallEast = ww;
 			this.WallWest = we;
 		}

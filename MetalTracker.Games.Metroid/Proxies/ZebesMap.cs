@@ -129,25 +129,25 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					// exits
 
-					if (roomState.DestUp != null)
+					if (roomState.ExitUp != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.DestUp.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.ExitUp.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestDown != null)
+					if (roomState.ExitDown != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.DestDown.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 1, Code = roomState.ExitDown.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestLeft != null)
+					if (roomState.ExitLeft != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.DestLeft.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 2, Code = roomState.ExitLeft.GetCode() };
+						mapState.Exits.Add(entry);
 					}
-					if (roomState.DestRight != null)
+					if (roomState.ExitRight != null)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.DestRight.GetCode() };
-						mapState.Dests.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 3, Code = roomState.ExitRight.GetCode() };
+						mapState.Exits.Add(entry);
 					}
 
 					// items
@@ -173,17 +173,17 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		public void RestoreState(ZebesMapState mapState)
 		{
-			foreach (var entry in mapState.Dests)
+			foreach (var entry in mapState.Exits)
 			{
 				var dest = _dests.Find(i => i.GetCode() == entry.Code);
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].DestUp = dest;
+					_roomStates[entry.Y, entry.X].ExitUp = dest;
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].DestDown = dest;
+					_roomStates[entry.Y, entry.X].ExitDown = dest;
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].DestLeft = dest;
+					_roomStates[entry.Y, entry.X].ExitLeft = dest;
 				else if (entry.Slot == 3)
-					_roomStates[entry.Y, entry.X].DestRight = dest;
+					_roomStates[entry.Y, entry.X].ExitRight = dest;
 			}
 			foreach (var entry in mapState.Items)
 			{
@@ -225,28 +225,28 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.DestUp != null && state.DestUp.IsExit)
+					if (state.ExitUp != null && state.ExitUp.IsExit)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.DestUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.DestDown != null && state.DestDown.IsExit)
+					if (state.ExitDown != null && state.ExitDown.IsExit)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.DestDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.DestLeft != null && state.DestLeft.IsExit)
+					if (state.ExitLeft != null && state.ExitLeft.IsExit)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.DestLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.DestRight != null && state.DestRight.IsExit)
+					if (state.ExitRight != null && state.ExitRight.IsExit)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfDest loc = new LocationOfDest(state.DestRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfDest loc = new LocationOfDest(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
 				}
@@ -428,21 +428,21 @@ namespace MetalTracker.Games.Metroid.Proxies
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
 					}
 
-					if (roomState.DestUp != null)
+					if (roomState.ExitUp != null)
 					{
-						DrawExit(g, x0 - _rw, y0, 3 * _rw, roomState.DestUp);
+						DrawExit(g, x0 - _rw, y0, 3 * _rw, roomState.ExitUp);
 					}
-					if (roomState.DestDown != null)
+					if (roomState.ExitDown != null)
 					{
-						DrawExit(g, x0 - _rw, y0 + _rh / 2, 3 * _rw, roomState.DestDown);
+						DrawExit(g, x0 - _rw, y0 + _rh / 2, 3 * _rw, roomState.ExitDown);
 					}
-					if (roomState.DestLeft != null)
+					if (roomState.ExitLeft != null)
 					{
-						DrawExit(g, x0 - _rw - _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.DestLeft);
+						DrawExit(g, x0 - _rw - _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.ExitLeft);
 					}
-					if (roomState.DestRight != null)
+					if (roomState.ExitRight != null)
 					{
-						DrawExit(g, x0 - _rw + _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.DestRight);
+						DrawExit(g, x0 - _rw + _rw / 3, y0 + _rh / 2 - 15, 3 * _rw, roomState.ExitRight);
 					}
 				}
 			}
@@ -502,13 +502,13 @@ namespace MetalTracker.Games.Metroid.Proxies
 					var dest = _dests.Find(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
-						roomState.DestUp = dest;
+						roomState.ExitUp = dest;
 					else if (e.Slot == 1)
-						roomState.DestDown = dest;
+						roomState.ExitDown = dest;
 					else if (e.Slot == 2)
-						roomState.DestLeft = dest;
+						roomState.ExitLeft = dest;
 					else if (e.Slot == 3)
-						roomState.DestRight = dest;
+						roomState.ExitRight = dest;
 				}
 				else if (e.Type == "item")
 				{
