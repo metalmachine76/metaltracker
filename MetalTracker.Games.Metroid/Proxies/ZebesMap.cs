@@ -28,9 +28,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 		private Image _mapImage;
 		private ZebesRoomProps[,] _meta;
 
-		private List<GameDest> _dests = new List<GameDest>();
-		private List<GameItem> _items = new List<GameItem>();
-
 		private ContextMenu _destsMenu;
 		private ZebesRoomStateMutator _mutator = new ZebesRoomStateMutator();
 
@@ -40,7 +37,8 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel) : base(16, 15, 2, drawable)
+		public ZebesMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) : 
+			base(16, 15, 2, drawable, gameExits, gameItems)
 		{
 			_mw = 32;
 			_mh = 32;
@@ -48,6 +46,23 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_destsMenu = new ContextMenu();
 			_destsMenu.Opening += HandleDestsMenuOpening;
 			_destsMenu.Closed += HandleDestsMenuClosed;
+
+			string lastExitGame = gameExits[0].Game;
+			foreach (var exit in gameExits)
+			{
+				if (exit.Game != lastExitGame)
+				{
+					_destsMenu.Items.AddSeparator();
+				}
+
+				Command cmd = new Command();
+				cmd.Executed += HandleDestCommand;
+				cmd.CommandParameter = exit;
+				_destsMenu.Items.Add(new ButtonMenuItem { Text = exit.LongName, Command = cmd });
+				_exits.Add(exit);
+
+				lastExitGame = exit.Game;
+			}
 
 			_zebesRoomDetail = new ZebesRoomDetail(detailPanel, _mutator);
 			_zebesRoomDetail.DetailChanged += HandleRoomDetailChanged;
@@ -66,28 +81,6 @@ namespace MetalTracker.Games.Metroid.Proxies
 			_meta = ZebesResourceClient.GetZebesMeta(shuffleMode, mirrored);
 		}
 
-		public void SetGameItems(IEnumerable<GameItem> gameItems)
-		{
-			_items = gameItems.ToList();
-		}
-
-		public void AddDestinations(IEnumerable<GameDest> destinations)
-		{
-			if (_destsMenu.Items.Count > 0)
-			{
-				_destsMenu.Items.AddSeparator();
-			}
-
-			foreach (var dest in destinations)
-			{
-				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
-				cmd.CommandParameter = dest;
-				_destsMenu.Items.Add(new ButtonMenuItem { Text = dest.LongName, Command = cmd });
-				_dests.Add(dest);
-			}
-		}
-
 		public void SetCoOpClient(ICoOpClient coOpClient)
 		{
 			coOpClient.Found += HandleCoOpClientFound;
@@ -100,7 +93,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			if (active)
 			{
 				_drawable.Invalidate();
-				_zebesRoomDetail.Build(_dests, _items);
+				_zebesRoomDetail.Build(_exits, _items);
 			}
 		}
 
@@ -175,7 +168,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			foreach (var entry in mapState.Exits)
 			{
-				var dest = _dests.Find(i => i.GetCode() == entry.Code);
+				var dest = _exits.Find(i => i.GetCode() == entry.Code);
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].ExitUp = dest;
 				else if (entry.Slot == 1)
@@ -225,25 +218,25 @@ namespace MetalTracker.Games.Metroid.Proxies
 				for (int x = 0; x < 32; x++)
 				{
 					var state = _roomStates[y, x];
-					if (state.ExitUp != null && state.ExitUp.IsExit)
+					if (state.ExitUp != null)
 					{
 						string areaName = GetAreaName(x, y);
 						LocationOfDest loc = new LocationOfDest(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.ExitDown != null && state.ExitDown.IsExit)
+					if (state.ExitDown != null)
 					{
 						string areaName = GetAreaName(x, y);
 						LocationOfDest loc = new LocationOfDest(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.ExitLeft != null && state.ExitLeft.IsExit)
+					if (state.ExitLeft != null)
 					{
 						string areaName = GetAreaName(x, y);
 						LocationOfDest loc = new LocationOfDest(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
 						list.Add(loc);
 					}
-					if (state.ExitRight != null && state.ExitRight.IsExit)
+					if (state.ExitRight != null)
 					{
 						string areaName = GetAreaName(x, y);
 						LocationOfDest loc = new LocationOfDest(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
@@ -290,7 +283,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			if (_mxClick > -1 && _mxClick < 32 && _myClick > -1 && _myClick < 32)
 			{
 				var cmd = sender as Command;
-				var dest = cmd.CommandParameter as GameDest;
+				var dest = cmd.CommandParameter as GameExit;
 				var roomState = _roomStates[_myClick, _mxClick];
 
 				if (_nodeClick == 'U')
@@ -499,7 +492,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _dests.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.Find(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
 						roomState.ExitUp = dest;

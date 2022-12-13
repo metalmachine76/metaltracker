@@ -16,28 +16,28 @@ namespace MetalTracker.Games.Metroid.Internal
 			_coOpClient = coOpClient;
 		}
 
-		public void ChangeDestUp(int x, int y, ZebesRoomState state, GameDest newDest)
+		public void ChangeDestUp(int x, int y, ZebesRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitUp = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
-		public void ChangeDestDown(int x, int y, ZebesRoomState state, GameDest newDest)
+		public void ChangeDestDown(int x, int y, ZebesRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitDown = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
-		public void ChangeDestLeft(int x, int y, ZebesRoomState state, GameDest newDest)
+		public void ChangeDestLeft(int x, int y, ZebesRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitLeft = newDest;
 			SendCoOpUpdates(x, y, oldState, state);
 		}
 
-		public void ChangeDestRight(int x, int y, ZebesRoomState state, GameDest newDest)
+		public void ChangeDestRight(int x, int y, ZebesRoomState state, GameExit newDest)
 		{
 			var oldState = state.Clone();
 			state.ExitRight = newDest;

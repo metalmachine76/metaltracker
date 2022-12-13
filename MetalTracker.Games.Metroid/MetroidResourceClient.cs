@@ -4,13 +4,13 @@ namespace MetalTracker.Games.Metroid
 {
 	public static class MetroidResourceClient
 	{
-		static GameDest[] GameDestinations = new GameDest[]
+		static GameExit[] GameExits = new GameExit[]
 		{
-			new GameDest("m1", "B", "Brinstar", "Brinstar", true),
-			new GameDest("m1", "N", "Norfair", "Norfair", true),
-			new GameDest("m1", "K", "Kraid", "Kraid's Hideout", true),
-			new GameDest("m1", "R", "Ridley", "Ridley's Hideout", true),
-			new GameDest("m1", "T", "Tourian", "Tourian Bridge", true),
+			new GameExit("m1", "B", "Brinstar", "Brinstar"),
+			new GameExit("m1", "N", "Norfair", "Norfair"),
+			new GameExit("m1", "K", "Kraid", "Kraid's Hideout"),
+			new GameExit("m1", "R", "Ridley", "Ridley's Hideout"),
+			new GameExit("m1", "T", "Tourian", "Tourian Bridge"),
 		};
 
 		static GameItem[] GameItems = new GameItem[]
@@ -31,9 +31,9 @@ namespace MetalTracker.Games.Metroid
 				new GameItem("m1", "energy", "Energy", 'M', GetIcon("energy")),
 		};
 
-		public static GameDest[] GetDestinations()
+		public static GameExit[] GetGameExits()
 		{
-			return GameDestinations;
+			return GameExits;
 		}
 
 		public static GameItem[] GetGameItems()

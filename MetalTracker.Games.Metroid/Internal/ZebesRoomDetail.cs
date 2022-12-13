@@ -18,7 +18,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		DropDown _dropDownDestExitRight;
 		DropDown _dropDownItem;
 
-		List<GameDest> _gameDests;
+		List<GameExit> _gameDests;
 		List<GameItem> _gameItems;
 
 		private int _x;
@@ -36,7 +36,7 @@ namespace MetalTracker.Games.Metroid.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameDest> gameDests, List<GameItem> gameItems)
+		public void Build(List<GameExit> gameDests, List<GameItem> gameItems)
 		{
 			_gameDests = gameDests;
 			_gameItems = gameItems;

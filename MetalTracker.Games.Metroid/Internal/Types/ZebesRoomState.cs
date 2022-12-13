@@ -7,10 +7,10 @@ namespace MetalTracker.Games.Metroid.Internal.Types
 		// shared state
 
 		public bool Ignored { get; set; }
-		public GameDest ExitUp { get; set; }
-		public GameDest ExitDown { get; set; }
-		public GameDest ExitLeft { get; set; }
-		public GameDest ExitRight { get; set; }
+		public GameExit ExitUp { get; set; }
+		public GameExit ExitDown { get; set; }
+		public GameExit ExitLeft { get; set; }
+		public GameExit ExitRight { get; set; }
 		public GameItem Item { get; set; }
 
 		// local state

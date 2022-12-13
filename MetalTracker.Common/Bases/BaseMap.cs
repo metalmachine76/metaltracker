@@ -19,6 +19,9 @@ namespace MetalTracker.Common.Bases
 		protected int _mw;
 		protected int _mh;
 
+		protected List<GameExit> _exits;
+		protected List<GameItem> _items;
+
 		protected bool _active;
 		protected bool _mousePresent;
 		protected bool _mouseDown;
@@ -38,7 +41,7 @@ namespace MetalTracker.Common.Bases
 		protected bool _invalidateMap;
 		protected bool _invalidateRoom;
 
-		protected BaseMap(float rw0, float rh0, int zoom, Drawable drawable)
+		protected BaseMap(float rw0, float rh0, int zoom, Drawable drawable, IList<GameExit> gameExits, IList<GameItem> gameItems)
 		{
 			_roomWidths = new float[7];
 
@@ -78,6 +81,9 @@ namespace MetalTracker.Common.Bases
 			_timer.Interval = 0.5;
 			_timer.Elapsed += HandleTimerElapsed;
 			_timer.Start();
+
+			_exits = gameExits.ToList();
+			_items = gameItems.ToList();
 		}
 
 		public void LocateRoom(int x, int y)
@@ -135,7 +141,7 @@ namespace MetalTracker.Common.Bases
 
 		public abstract List<LocationOfItem> LogItemLocations();
 
-		protected void DrawExit(Graphics g, float x0, float y0, float rw, GameDest dest)
+		protected void DrawExit(Graphics g, float x0, float y0, float rw, GameExit dest)
 		{
 			DrawText(g, x0, y0, rw, dest?.ShortName ?? "?", Brushes.Lime);
 		}
