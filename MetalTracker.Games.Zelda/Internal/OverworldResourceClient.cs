@@ -70,9 +70,8 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		public static OverworldRoomState[,] GetDefaultOverworldState(bool q2, bool dungeons, bool others, bool mirrored)
 		{
-			var caveDests = ZeldaResourceClient.GetCaveDestinations();
-			var exitDests = ZeldaResourceClient.GetGameExits();
-			var gameItems = ZeldaResourceClient.GetGameItems();
+			var zeldaExits = ZeldaResourceClient.GetGameExits();
+			var zeldaItems = ZeldaResourceClient.GetGameItems();
 
 			OverworldRoomState[,] states = new OverworldRoomState[8, 16];
 
@@ -91,20 +90,20 @@ namespace MetalTracker.Games.Zelda.Internal
 					{
 						if (others)
 						{
-							var caveDest = Array.Find(caveDests, d => d.Key == c.ToString());
-							if (caveDest != null)
+							var cave = Array.Find(Caves, d => d.Key == c.ToString());
+							if (cave != null)
 							{
-								state.Exit = caveDest;
-								if (caveDest.Key == "P")
+								state.Cave = cave;
+								if (cave.Key == "P")
 								{
-									state.Item1 = gameItems.First(i => i.Key == "potion1");
-									state.Item3 = gameItems.First(i => i.Key == "potion2");
+									state.Item1 = zeldaItems.First(i => i.Key == "potion1");
+									state.Item3 = zeldaItems.First(i => i.Key == "potion2");
 								}
 							}
 						}
 						if (dungeons)
 						{
-							var exitDest = Array.Find(exitDests, d => d.Key == c.ToString());
+							var exitDest = Array.Find(zeldaExits, d => d.Key == c.ToString());
 							if (exitDest != null)
 							{
 								state.Exit = exitDest;

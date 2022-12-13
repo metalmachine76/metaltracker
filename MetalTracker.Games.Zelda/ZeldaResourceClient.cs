@@ -7,16 +7,16 @@ namespace MetalTracker.Games.Zelda
 	{
 		static GameExit[] GameExits = new GameExit[]
 		{
-			new GameDest("z1", "0", "OW", "Overworld", true),
-			new GameDest("z1", "1", "D1", "Dungeon #1", true),
-			new GameDest("z1", "2", "D2", "Dungeon #2", true),
-			new GameDest("z1", "3", "D3", "Dungeon #3", true),
-			new GameDest("z1", "4", "D4", "Dungeon #4", true),
-			new GameDest("z1", "5", "D5", "Dungeon #5", true),
-			new GameDest("z1", "6", "D6", "Dungeon #6", true),
-			new GameDest("z1", "7", "D7", "Dungeon #7", true),
-			new GameDest("z1", "8", "D8", "Dungeon #8", true),
-			new GameDest("z1", "9", "D9", "Dungeon #9", true),
+			new GameExit("z1", "0", "OW", "Overworld"),
+			new GameExit("z1", "1", "D1", "Dungeon #1"),
+			new GameExit("z1", "2", "D2", "Dungeon #2"),
+			new GameExit("z1", "3", "D3", "Dungeon #3"),
+			new GameExit("z1", "4", "D4", "Dungeon #4"),
+			new GameExit("z1", "5", "D5", "Dungeon #5"),
+			new GameExit("z1", "6", "D6", "Dungeon #6"),
+			new GameExit("z1", "7", "D7", "Dungeon #7"),
+			new GameExit("z1", "8", "D8", "Dungeon #8"),
+			new GameExit("z1", "9", "D9", "Dungeon #9"),
 		};
 
 		static GameItem[] GameItems = new GameItem[]
