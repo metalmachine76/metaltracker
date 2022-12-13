@@ -53,7 +53,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 			foreach (var cave in _caves)
 			{
 				Command cmd = new Command();
-				cmd.Executed += HandleDestCommand;
+				cmd.Executed += HandleCaveCommand;
 				cmd.CommandParameter = cave;
 				_destsMenu.Items.Add(new ButtonMenuItem { Text = cave.LongName, Command = cmd });
 			}
@@ -388,29 +388,33 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 					#region Items
 
-					var sw = _rw / 3f;
-					var sh = _rh / 2f;
-
-					if (roomState.Item1 != null)
+					if (props.ItemHere)
 					{
-						DrawCenteredImage(g, x0, y0 + sh, sw, sh, roomState.Item1.Icon);
-					}
-
-					if (roomState.Item2 != null)
-					{
-						if (roomState.Exit == null)
+						if (roomState.Item2 != null)
 						{
 							DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item2.Icon);
 						}
-						else
-						{
-							DrawCenteredImage(g, x0 + 1 * sw, y0 + sh, sw, sh, roomState.Item2.Icon);
-						}
 					}
-
-					if (roomState.Item3 != null)
+					else if (props.DestHere)
 					{
-						DrawCenteredImage(g, x0 + 2 * sw, y0 + sh, sw, sh, roomState.Item3.Icon);
+						if (roomState.Cave != null && roomState.Cave.ItemSlots > 0)
+						{
+							var sw = _rw / 3f;
+							var sh = _rh / 2f;
+
+							if (roomState.Item1 != null)
+							{
+								DrawCenteredImage(g, x0 + 0 * sw, y0 + sh, sw, sh, roomState.Item1.Icon);
+							}
+							if (roomState.Item2 != null)
+							{
+								DrawCenteredImage(g, x0 + 1 * sw, y0 + sh, sw, sh, roomState.Item2.Icon);
+							}
+							if (roomState.Item3 != null)
+							{
+								DrawCenteredImage(g, x0 + 2 * sw, y0 + sh, sw, sh, roomState.Item3.Icon);
+							}
+						}
 					}
 
 					#endregion

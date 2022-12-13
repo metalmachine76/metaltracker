@@ -22,6 +22,8 @@ namespace MetalTracker.Games.Zelda.Internal
 			{
 				var oldState = state.Clone();
 
+				state.Exit = null;
+
 				state.Cave = newCave;
 
 				state.Item1 = null;
@@ -46,6 +48,8 @@ namespace MetalTracker.Games.Zelda.Internal
 			if (state.Exit != newDest)
 			{
 				var oldState = state.Clone();
+
+				state.Cave = null;
 
 				state.Exit = newDest;
 
