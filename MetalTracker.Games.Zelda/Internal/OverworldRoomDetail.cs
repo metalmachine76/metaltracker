@@ -17,11 +17,6 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownItem3;
 
-		private OverworldCave[] _caves = OverworldResourceClient.GetCaves();
-
-		private List<GameExit> _gameDests;
-		private List<GameItem> _gameItems;
-
 		private int _x;
 		private int _y;
 		private OverworldRoomProps _props;
@@ -39,9 +34,6 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		public void Build(List<GameExit> gameExits, List<GameItem> gameItems)
 		{
-			_gameDests = gameExits;
-			_gameItems = gameItems;
-
 			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
 			#region Destination
@@ -52,13 +44,13 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_dropDownDest.Items.Add(null);
 
-			foreach (var cave in _caves)
+			foreach (var cave in OverworldResourceClient.GetCaves())
 			{
 				ListItem listItem = new ListItem
 				{
-					Tag = cave,
 					Key = $"cave|{cave.Key}",
 					Text = cave.LongName,
+					Tag = cave,
 				};
 
 				_dropDownDest.Items.Add(listItem);
@@ -68,9 +60,9 @@ namespace MetalTracker.Games.Zelda.Internal
 			{
 				ListItem listItem = new ListItem
 				{
-					Tag = gameExit,
 					Key = $"exit|{gameExit.GetCode()}",
 					Text = gameExit.LongName,
+					Tag = gameExit,
 				};
 
 				_dropDownDest.Items.Add(listItem);
@@ -106,6 +98,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				{
 					Key = gameItem.GetCode(),
 					Image = gameItem.Icon,
+					Tag = gameItem,
 				};
 
 				_dropDownItem1.Items.Add(listItem);
@@ -130,7 +123,12 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 
-			if (listItem.Tag is GameExit gameExit)
+			if (listItem.Key == null)
+			{
+				_mutator.ChangeCave(_x, _y, _state, null);
+				_mutator.ChangeExit(_x, _y, _state, null);
+			}
+			else if (listItem.Tag is GameExit gameExit)
 			{
 				_mutator.ChangeCave(_x, _y, _state, null);
 				_mutator.ChangeExit(_x, _y, _state, gameExit);
@@ -148,7 +146,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private void HandleSelectedItem1Changed(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem1(_x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -157,7 +155,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private void HandleSelectedItem2Changed(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem2(_x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -166,7 +164,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private void HandleSelectedItem3Changed(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem3(_x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);

@@ -53,26 +53,17 @@ namespace MetalTracker.Trackers.Z1M1
 			var drawableCurrentMap = this.FindChild<Drawable>("drawableCurrentMap");
 			var roomDetailContainer = this.FindChild<GroupBox>("groupBoxRoomDetail");
 
-			_overworldMap = new OverworldMap(drawableCurrentMap, roomDetailContainer);
-			_overworldMap.AddDestinations(zebesExitDests);
-			_overworldMap.SetGameItems(gameItems);
-
+			_overworldMap = new OverworldMap(drawableCurrentMap, roomDetailContainer, gameExits, gameItems);
 			_gameMaps[0] = _overworldMap;
 
 			for (int i = 0; i < 9; i++)
 			{
-				var dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer);
-				dungeonMap.AddDestinations(zeldaExitDests);
-				dungeonMap.AddDestinations(zebesExitDests);
-				dungeonMap.SetGameItems(gameItems);
+				var dungeonMap = new DungeonMap(drawableCurrentMap, roomDetailContainer, gameExits, gameItems);
 				_dungeonMaps[i] = dungeonMap;
 				_gameMaps[i + 1] = dungeonMap;
 			}
 
-			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer);
-			_zebesMap.AddDestinations(zeldaExitDests);
-			_zebesMap.AddDestinations(zebesExitDests);
-			_zebesMap.SetGameItems(gameItems);
+			_zebesMap = new ZebesMap(drawableCurrentMap, roomDetailContainer, gameExits, gameItems);
 			_gameMaps[10] = _zebesMap;
 
 			var itemTrackerContainer = this.FindChild<GroupBox>("groupBoxItemTracker");
@@ -228,12 +219,12 @@ namespace MetalTracker.Trackers.Z1M1
 		protected void HandleShowSessionLogClick(object sender, EventArgs e)
 		{
 			SessionLogForm form = new SessionLogForm(this);
-			form.AddMap(_overworldMap);
-			for (int i = 0; i < 9; i++)
+
+			foreach (var map in _gameMaps)
 			{
-				form.AddMap(_dungeonMaps[i]);
+				form.AddMap(map);
 			}
-			form.AddMap(_zebesMap);
+
 			form.Show();
 		}
 

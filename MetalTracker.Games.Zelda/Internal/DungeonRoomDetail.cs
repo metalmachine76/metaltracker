@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Eto.Drawing;
 using Eto.Forms;
 using MetalTracker.Common.Types;
 using MetalTracker.Games.Zelda.Internal.Types;
@@ -35,10 +34,6 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownTransports;
 
-		private List<GameExit> _gameDests = new List<GameExit>();
-		private List<GameItem> _gameItems;
-		private List<DungeonWall> _walls;
-
 		private int _level;
 		private int _x;
 		private int _y;
@@ -53,8 +48,6 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			_detailPanel = detailPanel;
 			_mutator = mutator;
-
-			_walls = DungeonResourceClient.GetDungeonWalls();
 
 			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 
@@ -82,12 +75,13 @@ namespace MetalTracker.Games.Zelda.Internal
 			_dropDownWallWest.SelectedIndexChanged += HandleSelectedWallWestChanged;
 			_dropDownWallEast.SelectedIndexChanged += HandleSelectedWallEastChanged;
 
-			foreach (var wall in _walls)
+			foreach (var wall in DungeonResourceClient.GetDungeonWalls())
 			{
 				ListItem listItem = new ListItem
 				{
 					Key = wall.Code,
-					Text = wall.Name
+					Text = wall.Name,
+					Tag = wall
 				};
 
 				_dropDownWallNorth.Items.Add(listItem);
@@ -157,8 +151,6 @@ namespace MetalTracker.Games.Zelda.Internal
 
 		public void PopulateItems(List<GameItem> gameItems)
 		{
-			_gameItems = gameItems;
-
 			_dropDownItem1.Items.Add(null);
 			_dropDownItem2.Items.Add(null);
 
@@ -168,6 +160,7 @@ namespace MetalTracker.Games.Zelda.Internal
 				{
 					Key = gameItem.GetCode(),
 					Image = gameItem.Icon,
+					Tag = gameItem
 				};
 
 				_dropDownItem1.Items.Add(listItem);
@@ -175,20 +168,27 @@ namespace MetalTracker.Games.Zelda.Internal
 			}
 		}
 
-		public void AddDest(GameExit gameDest)
+		public void PopulateExits(List<GameExit> gameExits)
 		{
-			_gameDests.Add(gameDest);
+			_dropDownDestNorth.Items.Add(null);
+			_dropDownDestSouth.Items.Add(null);
+			_dropDownDestWest.Items.Add(null);
+			_dropDownDestEast.Items.Add(null);
 
-			ListItem listItem = new ListItem
+			foreach (var exit in gameExits)
 			{
-				Key = gameDest.GetCode(),
-				Text = gameDest.LongName,
-			};
+				ListItem listItem = new ListItem
+				{
+					Key = exit.GetCode(),
+					Text = exit.LongName,
+					Tag = exit
+				};
 
-			_dropDownDestNorth.Items.Add(listItem);
-			_dropDownDestSouth.Items.Add(listItem);
-			_dropDownDestWest.Items.Add(listItem);
-			_dropDownDestEast.Items.Add(listItem);
+				_dropDownDestNorth.Items.Add(listItem);
+				_dropDownDestSouth.Items.Add(listItem);
+				_dropDownDestWest.Items.Add(listItem);
+				_dropDownDestEast.Items.Add(listItem);
+			}
 		}
 
 		public void SetTransports(int numTransports)
@@ -276,8 +276,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestNorth(_level, _x, _y, _state, gameDest);
+			var gameExit = listItem.Tag as GameExit;
+			_mutator.ChangeDestNorth(_level, _x, _y, _state, gameExit);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -286,8 +286,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestSouth(_level, _x, _y, _state, gameDest);
+			var gameExit = listItem.Tag as GameExit;
+			_mutator.ChangeDestSouth(_level, _x, _y, _state, gameExit);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -296,8 +296,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestWest(_level, _x, _y, _state, gameDest);
+			var gameExit = listItem.Tag as GameExit;
+			_mutator.ChangeDestWest(_level, _x, _y, _state, gameExit);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -306,8 +306,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
-			_mutator.ChangeDestEast(_level, _x, _y, _state, gameDest);
+			var gameExit = listItem.Tag as GameExit;
+			_mutator.ChangeDestEast(_level, _x, _y, _state, gameExit);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -316,7 +316,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var wall = _walls.Find(d => d.Code == listItem.Key);
+			var wall = listItem.Tag as DungeonWall;
 			_mutator.ChangeWallNorth(_level, _x, _y, _state, wall);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -326,7 +326,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var wall = _walls.Find(d => d.Code == listItem.Key);
+			var wall = listItem.Tag as DungeonWall;
 			_mutator.ChangeWallSouth(_level, _x, _y, _state, wall);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -336,7 +336,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var wall = _walls.Find(d => d.Code == listItem.Key);
+			var wall = listItem.Tag as DungeonWall;
 			_mutator.ChangeWallWest(_level, _x, _y, _state, wall);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -346,7 +346,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var wall = _walls.Find(d => d.Code == listItem.Key);
+			var wall = listItem.Tag as DungeonWall;
 			_mutator.ChangeWallEast(_level, _x, _y, _state, wall);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -356,7 +356,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem1(_level, _x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -366,7 +366,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			if (_refreshing) return;
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem2(_level, _x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
