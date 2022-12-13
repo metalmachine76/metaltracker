@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Eto.Drawing;
+﻿using Eto.Drawing;
 using Eto.Forms;
 using MetalTracker.Common.Types;
 
@@ -19,8 +18,8 @@ namespace MetalTracker.Common.Bases
 		protected int _mw;
 		protected int _mh;
 
-		protected List<GameExit> _exits;
-		protected List<GameItem> _items;
+		protected IReadOnlyList<GameExit> _exits;
+		protected IReadOnlyList<GameItem> _items;
 
 		protected bool _active;
 		protected bool _mousePresent;
@@ -41,7 +40,7 @@ namespace MetalTracker.Common.Bases
 		protected bool _invalidateMap;
 		protected bool _invalidateRoom;
 
-		protected BaseMap(float rw0, float rh0, int zoom, Drawable drawable, IList<GameExit> gameExits, IList<GameItem> gameItems)
+		protected BaseMap(float rw0, float rh0, int zoom, Drawable drawable, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems)
 		{
 			_roomWidths = new float[7];
 

@@ -40,7 +40,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		#region Public Methods
 
-		public OverworldMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) :
+		public OverworldMap(Drawable drawable, Panel detailPanel, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems) :
 			base(16, 11, 4, drawable, gameExits, gameItems)
 		{
 			_mw = 16;
@@ -189,17 +189,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 			foreach (var entry in mapState.Exits)
 			{
-				_roomStates[entry.Y, entry.X].Exit = _exits.Find(i => i.GetCode() == entry.Code);
+				_roomStates[entry.Y, entry.X].Exit = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Items)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].Item1 = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].Item2 = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].Item3 = _items.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].Item3 = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Explored)
@@ -268,9 +268,9 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
-		public void SetDestination(int x, int y, string destCode)
+		public void SetDestination(int x, int y, string exitCode)
 		{
-			var dest = _exits.Find(d => d.GetCode() == destCode);
+			var dest = _exits.FirstOrDefault(d => d.GetCode() == exitCode);
 			_roomStates[y, x].Exit = dest;
 		}
 
@@ -459,12 +459,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _exits.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.FirstOrDefault(d => d.GetCode() == e.Code);
 					roomState.Exit = dest;
 				}
 				else if (e.Type == "item")
 				{
-					var item = _items.Find(i => i.GetCode() == e.Code);
+					var item = _items.FirstOrDefault(i => i.GetCode() == e.Code);
 					if (e.Slot == 0)
 						roomState.Item1 = item;
 					if (e.Slot == 1)

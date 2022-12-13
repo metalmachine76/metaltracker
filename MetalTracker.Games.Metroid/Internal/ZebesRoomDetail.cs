@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eto.Forms;
 using MetalTracker.Common.Types;
 using MetalTracker.Games.Metroid.Internal.Types;
@@ -18,8 +19,8 @@ namespace MetalTracker.Games.Metroid.Internal
 		DropDown _dropDownDestExitRight;
 		DropDown _dropDownItem;
 
-		List<GameExit> _gameDests;
-		List<GameItem> _gameItems;
+		IReadOnlyList<GameExit> _gameDests;
+		IReadOnlyList<GameItem> _gameItems;
 
 		private int _x;
 		private int _y;
@@ -36,7 +37,7 @@ namespace MetalTracker.Games.Metroid.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameExit> gameDests, List<GameItem> gameItems)
+		public void Build(IReadOnlyList<GameExit> gameDests, IReadOnlyList<GameItem> gameItems)
 		{
 			_gameDests = gameDests;
 			_gameItems = gameItems;
@@ -121,7 +122,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		private void HandleSelectedDestUpChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestUp(_x, _y, _state, gameDest);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -130,7 +131,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		private void HandleSelectedDestDownChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestDown(_x, _y, _state, gameDest);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -139,7 +140,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		private void HandleSelectedDestLeftChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestLeft(_x, _y, _state, gameDest);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -148,7 +149,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		private void HandleSelectedDestRightChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameDest = _gameDests.Find(d => d.GetCode() == listItem.Key);
+			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestRight(_x, _y, _state, gameDest);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
@@ -157,7 +158,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		private void HandleSelectedItemChanged(object sender, EventArgs e)
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
-			var gameItem = _gameItems.Find(d => d.GetCode() == listItem.Key);
+			var gameItem = _gameItems.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeItem(_x, _y, _state, gameItem);
 			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);

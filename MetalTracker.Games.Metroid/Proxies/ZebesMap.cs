@@ -37,7 +37,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) : 
+		public ZebesMap(Drawable drawable, Panel detailPanel, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems) : 
 			base(16, 15, 2, drawable, gameExits, gameItems)
 		{
 			_mw = 32;
@@ -167,7 +167,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			foreach (var entry in mapState.Exits)
 			{
-				var dest = _exits.Find(i => i.GetCode() == entry.Code);
+				var dest = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 				if (entry.Slot == 0)
 					_roomStates[entry.Y, entry.X].ExitUp = dest;
 				else if (entry.Slot == 1)
@@ -179,7 +179,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 			}
 			foreach (var entry in mapState.Items)
 			{
-				_roomStates[entry.Y, entry.X].Item = _items.Find(i => i.GetCode() == entry.Code);
+				_roomStates[entry.Y, entry.X].Item = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
 			foreach (var entry in mapState.Explored)
 			{
@@ -491,7 +491,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _exits.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.FirstOrDefault(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
 						roomState.ExitUp = dest;
@@ -504,7 +504,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 				}
 				else if (e.Type == "item")
 				{
-					var item = _items.Find(i => i.GetCode() == e.Code);
+					var item = _items.FirstOrDefault(i => i.GetCode() == e.Code);
 					roomState.Item = item;
 				}
 

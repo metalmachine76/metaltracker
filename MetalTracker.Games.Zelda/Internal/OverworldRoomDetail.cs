@@ -32,7 +32,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mutator = mutator;
 		}
 
-		public void Build(List<GameExit> gameExits, List<GameItem> gameItems)
+		public void Build(IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems)
 		{
 			_mainLayout = new StackLayout { Orientation = Orientation.Vertical, HorizontalContentAlignment = HorizontalAlignment.Center };
 

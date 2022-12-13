@@ -34,7 +34,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 		private DungeonRoomProps[,] _meta;
 		private int _numTransports;
 
-		private List<DungeonWall> _walls = new List<DungeonWall>();
+		private IReadOnlyList<DungeonWall> _walls = new List<DungeonWall>();
 
 		private DungeonRoomStateMutator _mutator = new DungeonRoomStateMutator();
 
@@ -50,7 +50,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 		private DungeonRoomState[,] _roomStates = new DungeonRoomState[8, 8];
 
-		public DungeonMap(Drawable drawable, Panel detailPanel, IList<GameExit> gameExits, IList<GameItem> gameItems) : 
+		public DungeonMap(Drawable drawable, Panel detailPanel, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems) : 
 			base(16, 11, 4, drawable, gameExits, gameItems)
 		{
 			_mw = 8;
@@ -72,7 +72,6 @@ namespace MetalTracker.Games.Zelda.Proxies
 				cmd.Executed += HandleDestCommand;
 				cmd.CommandParameter = exit;
 				_destsMenu.Items.Add(new ButtonMenuItem { Text = exit.LongName, Command = cmd });
-				_exits.Add(exit);
 
 				lastExitGame = exit.Game;
 			}
@@ -87,11 +86,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 				cmd.Executed += HandleWallCommand;
 				cmd.CommandParameter = wall;
 				_wallsMenu.Items.Add(new ButtonMenuItem { Text = wall.Name, Command = cmd });
-				_walls.Add(wall);
 			}
 
 			_dungeonRoomDetail = new DungeonRoomDetail(detailPanel, _mutator);
 			_dungeonRoomDetail.PopulateItems(_items);
+			_dungeonRoomDetail.PopulateExits(_exits);
 			_dungeonRoomDetail.DetailChanged += HandleRoomDetailChanged;
 
 			_walls_n = DungeonResourceClient.GetDungeonWallIcons("n");
@@ -264,33 +263,33 @@ namespace MetalTracker.Games.Zelda.Proxies
 			foreach (var entry in mapState.Exits)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].ExitNorth = _exits.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitNorth = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].ExitSouth = _exits.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitSouth = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].ExitWest = _exits.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitWest = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 3)
-					_roomStates[entry.Y, entry.X].ExitEast = _exits.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].ExitEast = _exits.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Walls)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].WallNorth = _walls.Find(i => i.Code == entry.Code);
+					_roomStates[entry.Y, entry.X].WallNorth = _walls.FirstOrDefault(i => i.Code == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].WallSouth = _walls.Find(i => i.Code == entry.Code);
+					_roomStates[entry.Y, entry.X].WallSouth = _walls.FirstOrDefault(i => i.Code == entry.Code);
 				else if (entry.Slot == 2)
-					_roomStates[entry.Y, entry.X].WallWest = _walls.Find(i => i.Code == entry.Code);
+					_roomStates[entry.Y, entry.X].WallWest = _walls.FirstOrDefault(i => i.Code == entry.Code);
 				else if (entry.Slot == 3)
-					_roomStates[entry.Y, entry.X].WallEast = _walls.Find(i => i.Code == entry.Code);
+					_roomStates[entry.Y, entry.X].WallEast = _walls.FirstOrDefault(i => i.Code == entry.Code);
 			}
 
 			foreach (var entry in mapState.Items)
 			{
 				if (entry.Slot == 0)
-					_roomStates[entry.Y, entry.X].Item1 = _items.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].Item1 = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 				else if (entry.Slot == 1)
-					_roomStates[entry.Y, entry.X].Item2 = _items.Find(i => i.GetCode() == entry.Code);
+					_roomStates[entry.Y, entry.X].Item2 = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
 
 			foreach (var entry in mapState.Stairs)
@@ -750,7 +749,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 
 				if (e.Type == "dest")
 				{
-					var dest = _exits.Find(d => d.GetCode() == e.Code);
+					var dest = _exits.FirstOrDefault(d => d.GetCode() == e.Code);
 
 					if (e.Slot == 0)
 						roomState.ExitNorth = dest;
@@ -763,7 +762,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 				else if (e.Type == "item")
 				{
-					var item = _items.Find(i => i.GetCode() == e.Code);
+					var item = _items.FirstOrDefault(i => i.GetCode() == e.Code);
 
 					if (e.Slot == 0)
 						roomState.Item1 = item;
@@ -772,7 +771,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 				}
 				else if (e.Type == "wall")
 				{
-					var wall = _walls.Find(w => w.Code == e.Code);
+					var wall = _walls.FirstOrDefault(w => w.Code == e.Code);
 
 					if (e.Slot == 0)
 						roomState.WallNorth = wall;

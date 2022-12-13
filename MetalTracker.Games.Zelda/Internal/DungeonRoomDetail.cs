@@ -95,11 +95,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			_dropDownDestWest = new DropDown { Width = 120 };
 			_dropDownDestEast = new DropDown { Width = 120 };
 
-			_dropDownDestNorth.Items.Add(null);
-			_dropDownDestSouth.Items.Add(null);
-			_dropDownDestWest.Items.Add(null);
-			_dropDownDestEast.Items.Add(null);
-
 			_dropDownDestNorth.SelectedIndexChanged += HandleSelectedDestNorthChanged;
 			_dropDownDestSouth.SelectedIndexChanged += HandleSelectedDestSouthChanged;
 			_dropDownDestWest.SelectedIndexChanged += HandleSelectedDestWestChanged;
@@ -149,7 +144,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			_mainLayout.Visible = false;
 		}
 
-		public void PopulateItems(List<GameItem> gameItems)
+		public void PopulateItems(IReadOnlyList<GameItem> gameItems)
 		{
 			_dropDownItem1.Items.Add(null);
 			_dropDownItem2.Items.Add(null);
@@ -168,7 +163,7 @@ namespace MetalTracker.Games.Zelda.Internal
 			}
 		}
 
-		public void PopulateExits(List<GameExit> gameExits)
+		public void PopulateExits(IReadOnlyList<GameExit> gameExits)
 		{
 			_dropDownDestNorth.Items.Add(null);
 			_dropDownDestSouth.Items.Add(null);
