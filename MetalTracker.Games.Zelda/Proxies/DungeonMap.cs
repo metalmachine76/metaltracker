@@ -315,12 +315,12 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", _mapKey, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Dungeon #{_flag_level} (floor)", x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", _mapKey, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Dungeon #{_flag_level} (basement)", x, y);
 						list.Add(loc);
 					}
 				}
@@ -340,22 +340,22 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.ExitNorth != null)
 					{
-						LocationOfExit loc = new LocationOfExit(state.ExitNorth, $"Dungeon #{_flag_level} (north door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitNorth, $"Dungeon #{_flag_level} (north door)", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitSouth != null)
 					{
-						LocationOfExit loc = new LocationOfExit(state.ExitSouth, $"Dungeon #{_flag_level} (south door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitSouth, $"Dungeon #{_flag_level} (south door)", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitWest != null)
 					{
-						LocationOfExit loc = new LocationOfExit(state.ExitWest, $"Dungeon #{_flag_level} (west door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitWest, $"Dungeon #{_flag_level} (west door)", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitEast != null)
 					{
-						LocationOfExit loc = new LocationOfExit(state.ExitEast, $"Dungeon #{_flag_level} (east door)", _mapKey, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitEast, $"Dungeon #{_flag_level} (east door)", x, y);
 						list.Add(loc);
 					}
 				}

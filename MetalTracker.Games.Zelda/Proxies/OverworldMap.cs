@@ -229,17 +229,17 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Item1 != null && state.Item1.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item1, $"Overworld at {y:X1}{x:X1}", x, y);
 						list.Add(loc);
 					}
 					if (state.Item2 != null && state.Item2.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item2, $"Overworld at {y:X1}{x:X1}", x, y);
 						list.Add(loc);
 					}
 					if (state.Item3 != null && state.Item3.IsImportant())
 					{
-						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item3, $"Overworld at {y:X1}{x:X1}", x, y);
 						list.Add(loc);
 					}
 				}
@@ -259,7 +259,7 @@ namespace MetalTracker.Games.Zelda.Proxies
 					var state = _roomStates[y, x];
 					if (state.Exit != null)
 					{
-						LocationOfExit loc = new LocationOfExit(state.Exit, $"Overworld at {y:X1}{x:X1}", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.Exit, $"Overworld at {y:X1}{x:X1}", x, y);
 						list.Add(loc);
 					}
 				}

@@ -199,7 +199,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 					if (state.Item != null && state.Item.IsImportant())
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2} ({areaName})", Map, x, y);
+						LocationOfItem loc = new LocationOfItem(state.Item, $"Zebes at Y={y:X2} X={x:X2} ({areaName})", x, y);
 						list.Add(loc);
 					}
 				}
@@ -220,25 +220,25 @@ namespace MetalTracker.Games.Metroid.Proxies
 					if (state.ExitUp != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfExit loc = new LocationOfExit(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitUp, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitDown != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfExit loc = new LocationOfExit(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitDown, $"Zebes at Y={y:X2} X={x:X2} (elevator in {areaName})", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitLeft != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfExit loc = new LocationOfExit(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitLeft, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", x, y);
 						list.Add(loc);
 					}
 					if (state.ExitRight != null)
 					{
 						string areaName = GetAreaName(x, y);
-						LocationOfExit loc = new LocationOfExit(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", Map, x, y);
+						LocationOfExit loc = new LocationOfExit(state.ExitRight, $"Zebes at Y={y:X2} X={x:X2} (door in {areaName})", x, y);
 						list.Add(loc);
 					}
 				}
