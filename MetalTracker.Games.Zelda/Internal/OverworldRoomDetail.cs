@@ -148,7 +148,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem1(_x, _y, _state, gameItem);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -157,7 +156,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem2(_x, _y, _state, gameItem);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -166,7 +164,6 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem3(_x, _y, _state, gameItem);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 

@@ -124,7 +124,6 @@ namespace MetalTracker.Games.Metroid.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestUp(_x, _y, _state, gameDest);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -133,7 +132,6 @@ namespace MetalTracker.Games.Metroid.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestDown(_x, _y, _state, gameDest);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -142,7 +140,6 @@ namespace MetalTracker.Games.Metroid.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestLeft(_x, _y, _state, gameDest);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -151,7 +148,6 @@ namespace MetalTracker.Games.Metroid.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameDest = _gameDests.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeDestRight(_x, _y, _state, gameDest);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -160,7 +156,6 @@ namespace MetalTracker.Games.Metroid.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = _gameItems.FirstOrDefault(d => d.GetCode() == listItem.Key);
 			_mutator.ChangeItem(_x, _y, _state, gameItem);
-			Refresh();
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
