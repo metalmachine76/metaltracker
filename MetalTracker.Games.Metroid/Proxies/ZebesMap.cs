@@ -20,6 +20,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		static SolidBrush ShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 152));
 		static SolidBrush CursorBrush = new SolidBrush(Color.FromArgb(250, 250, 250, 102));
 		static Pen CurrentPen = new Pen(Colors.White, 2);
+		static Pen IgnoredPen = new Pen(Colors.Black, 4);
 
 		private readonly ZebesRoomDetail _zebesRoomDetail;
 
@@ -37,7 +38,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 		#region Public Methods
 
-		public ZebesMap(Drawable drawable, Panel detailPanel, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems) : 
+		public ZebesMap(Drawable drawable, Panel detailPanel, IReadOnlyList<GameExit> gameExits, IReadOnlyList<GameItem> gameItems) :
 			base(16, 15, 2, drawable, gameExits, gameItems)
 		{
 			_mw = 32;
@@ -152,10 +153,10 @@ namespace MetalTracker.Games.Metroid.Proxies
 
 					// explored
 
-					if (roomState.Explored)
+					if (roomState.Status > 0)
 					{
-						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = "1" };
-						mapState.Explored.Add(entry);
+						StateEntry entry = new StateEntry { X = x, Y = y, Slot = 0, Code = roomState.Status.ToString() };
+						mapState.Status.Add(entry);
 					}
 				}
 			}
@@ -181,9 +182,9 @@ namespace MetalTracker.Games.Metroid.Proxies
 			{
 				_roomStates[entry.Y, entry.X].Item = _items.FirstOrDefault(i => i.GetCode() == entry.Code);
 			}
-			foreach (var entry in mapState.Explored)
+			foreach (var entry in mapState.Status)
 			{
-				_roomStates[entry.Y, entry.X].Explored = entry.Code == "1";
+				_roomStates[entry.Y, entry.X].Status = int.Parse(entry.Code);
 			}
 		}
 
@@ -366,7 +367,7 @@ namespace MetalTracker.Games.Metroid.Proxies
 		{
 			if (_mx > -1 && _mx < 32 && _my > -1 && _my < 32)
 			{
-				_roomStates[_my, _mx].Explored = !_roomStates[_my, _mx].Explored;
+				_roomStates[_my, _mx].Status = (_roomStates[_my, _mx].Status + 1) % 3;
 			}
 		}
 
@@ -415,9 +416,17 @@ namespace MetalTracker.Games.Metroid.Proxies
 						DrawCenteredImage(g, x0, y0, _rw, _rh, roomState.Item.Icon);
 					}
 
-					if (roomState.Explored)
+					if (roomState.Status == 1)
 					{
 						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
+					}
+					else if (roomState.Status == 2)
+					{
+						g.FillRectangle(ShadowBrush, x0, y0, _rw, _rh);
+						g.DrawLine(IgnoredPen, x0, y0, x0 + _rw - 1, y0 + _rh - 1);
+						g.DrawLine(IgnoredPen, x0, y0 + _rh - 1, x0 + _rw - 1, y0);
+						g.DrawLine(CurrentPen, x0, y0, x0 + _rw - 1, y0 + _rh - 1);
+						g.DrawLine(CurrentPen, x0, y0 + _rh - 1, x0 + _rw - 1, y0);
 					}
 
 					if (roomState.ExitUp != null)

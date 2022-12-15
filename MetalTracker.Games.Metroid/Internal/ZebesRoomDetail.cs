@@ -18,6 +18,7 @@ namespace MetalTracker.Games.Metroid.Internal
 		DropDown _dropDownDestExitLeft;
 		DropDown _dropDownDestExitRight;
 		DropDown _dropDownItem;
+		DropDown _dropDownStatus;
 
 		IReadOnlyList<GameExit> _gameDests;
 		IReadOnlyList<GameItem> _gameItems;
@@ -116,6 +117,22 @@ namespace MetalTracker.Games.Metroid.Internal
 
 			#endregion
 
+			#region Status
+
+			_mainLayout.Items.Add(new Label { Text = "Status" });
+
+			_dropDownStatus = new DropDown();
+
+			_dropDownStatus.Items.Add("");
+			_dropDownStatus.Items.Add("Explored");
+			_dropDownStatus.Items.Add("Ignored");
+
+			_dropDownStatus.SelectedIndexChanged += HandleRoomStatusChanged;
+
+			_mainLayout.Items.Add(_dropDownStatus);
+
+			#endregion
+
 			_detailPanel.Content = _mainLayout;
 		}
 
@@ -159,6 +176,12 @@ namespace MetalTracker.Games.Metroid.Internal
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
+		private void HandleRoomStatusChanged(object sender, EventArgs e)
+		{
+			_state.Status = _dropDownStatus.SelectedIndex;
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
 		public void UpdateDetails(int x, int y, ZebesRoomProps props, ZebesRoomState state)
 		{
 			_x = x;
@@ -184,6 +207,8 @@ namespace MetalTracker.Games.Metroid.Internal
 				_dropDownDestExitRight.SelectedKey = _state.ExitRight?.GetCode();
 
 				_dropDownItem.SelectedKey = _state.Item?.GetCode();
+
+				_dropDownStatus.SelectedIndex = _state.Status;
 
 				_dropDownDestElevUp.Enabled = _props.ElevatorUp;
 				_dropDownDestElevDown.Enabled = _props.ElevatorDown;

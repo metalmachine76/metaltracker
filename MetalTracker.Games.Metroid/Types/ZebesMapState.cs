@@ -9,6 +9,6 @@ namespace MetalTracker.Games.Metroid.Types
 
 		public List<StateEntry> Items { get; set; } = new List<StateEntry>();
 
-		public List<StateEntry> Explored { get; set; } = new List<StateEntry>();
+		public List<StateEntry> Status { get; set; } = new List<StateEntry>();
 	}
 }
