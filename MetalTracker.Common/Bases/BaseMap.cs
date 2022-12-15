@@ -297,9 +297,6 @@ namespace MetalTracker.Common.Bases
 
 		protected abstract void PaintMap(Graphics g, float offx, float offy);
 
-		protected virtual char DetermineNode(float x, float y)
-		{
-			return '\0';
-		}
+		protected abstract char DetermineNode(float x, float y);
 	}
 }

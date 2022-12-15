@@ -272,6 +272,11 @@ namespace MetalTracker.Games.Zelda.Proxies
 			return list;
 		}
 
+		protected override char DetermineNode(float x, float y)
+		{
+			return '\0';
+		}
+
 		public void SetDestination(int x, int y, string exitCode)
 		{
 			var dest = _exits.FirstOrDefault(d => d.GetCode() == exitCode);

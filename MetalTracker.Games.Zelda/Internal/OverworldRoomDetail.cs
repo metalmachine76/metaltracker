@@ -119,7 +119,7 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			#region Actions
 
-			_mainLayout.Items.Add(new Label { Text = "Room Status" });
+			_mainLayout.Items.Add(new Label { Text = "Status" });
 
 			_dropDownStatus = new DropDown();
 
