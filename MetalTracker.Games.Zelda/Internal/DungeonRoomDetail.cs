@@ -34,6 +34,8 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownTransports;
 
+		private DropDown _dropDownStatus;
+
 		private int _level;
 		private int _x;
 		private int _y;
@@ -133,11 +135,27 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			_mainLayout.Items.Add(new Label { Text = "Transport" });
 
-			_dropDownTransports = new DropDown { Height = 25 };
+			_dropDownTransports = new DropDown();
 
 			_dropDownTransports.SelectedIndexChanged += HandleSelectedStairChanged;
 
 			_mainLayout.Items.Add(_dropDownTransports);
+
+			#endregion
+
+			#region Status
+
+			_mainLayout.Items.Add(new Label { Text = "Status" });
+
+			_dropDownStatus = new DropDown();
+
+			_dropDownStatus.Items.Add("");
+			_dropDownStatus.Items.Add("Explored");
+			_dropDownStatus.Items.Add("Ignored");
+
+			_dropDownStatus.SelectedIndexChanged += HandleRoomStatusChanged;
+
+			_mainLayout.Items.Add(_dropDownStatus);
 
 			#endregion
 
@@ -244,6 +262,8 @@ namespace MetalTracker.Games.Zelda.Internal
 				_dropDownItem1.SelectedKey = _state.Item1?.GetCode();
 				_dropDownItem2.SelectedKey = _state.Item2?.GetCode();
 				_dropDownTransports.SelectedKey = _state.Transport;
+
+				_dropDownStatus.SelectedIndex = _state.Status;
 
 				var dropNorth = _props.DestNorth ? _dropDownDestNorth : _dropDownWallNorth;
 				var dropSouth = _props.DestSouth ? _dropDownDestSouth : _dropDownWallSouth;
@@ -363,6 +383,12 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			string transport = listItem?.Key;
 			_mutator.ChangeTransport(_level, _x, _y, _state, transport);
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleRoomStatusChanged(object sender, EventArgs e)
+		{
+			_state.Status = _dropDownStatus.SelectedIndex;
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
