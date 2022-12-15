@@ -59,6 +59,8 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			foreach (var gameExit in gameExits)
 			{
+				if (gameExit.Game == "z1" && gameExit.Key == "0") continue;
+
 				ListItem listItem = new ListItem
 				{
 					Key = $"exit|{gameExit.GetCode()}",
@@ -140,7 +142,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		{
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 
-			if (listItem.Key == null)
+			if (listItem == null || listItem.Key == null)
 			{
 				_mutator.ChangeCave(_x, _y, _state, null);
 				_mutator.ChangeExit(_x, _y, _state, null);
