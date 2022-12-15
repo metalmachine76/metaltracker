@@ -6,7 +6,6 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 	{
 		// shared state
 
-		public bool Ignored { get; set; }
 		public GameExit ExitNorth { get; set; }
 		public GameExit ExitSouth { get; set; }
 		public GameExit ExitWest { get; set; }
@@ -27,7 +26,6 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 		{
 			var clone = new DungeonRoomState();
 
-			clone.Ignored = this.Ignored;
 			clone.ExitNorth = this.ExitNorth;
 			clone.ExitSouth = this.ExitSouth;
 			clone.ExitWest = this.ExitWest;

@@ -16,6 +16,7 @@ namespace MetalTracker.Games.Zelda.Internal
 		private DropDown _dropDownItem1;
 		private DropDown _dropDownItem2;
 		private DropDown _dropDownItem3;
+		private DropDown _dropDownStatus;
 
 		private int _x;
 		private int _y;
@@ -114,6 +115,22 @@ namespace MetalTracker.Games.Zelda.Internal
 
 			#endregion
 
+			#region Actions
+
+			_mainLayout.Items.Add(new Label { Text = "Room Status" });
+
+			_dropDownStatus = new DropDown();
+
+			_dropDownStatus.Items.Add("");
+			_dropDownStatus.Items.Add("Explored");
+			_dropDownStatus.Items.Add("Ignored");
+
+			_dropDownStatus.SelectedIndexChanged += HandleRoomStatusChanged;
+
+			_mainLayout.Items.Add(_dropDownStatus);
+
+			#endregion
+
 			_mainLayout.Visible = false;
 
 			_detailPanel.Content = _mainLayout;
@@ -164,6 +181,12 @@ namespace MetalTracker.Games.Zelda.Internal
 			var listItem = (sender as DropDown).SelectedValue as ListItem;
 			var gameItem = listItem.Tag as GameItem;
 			_mutator.ChangeItem3(_x, _y, _state, gameItem);
+			DetailChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void HandleRoomStatusChanged(object sender, EventArgs e)
+		{
+			_state.Status = _dropDownStatus.SelectedIndex;
 			DetailChanged?.Invoke(this, EventArgs.Empty);
 		}
 
@@ -267,6 +290,8 @@ namespace MetalTracker.Games.Zelda.Internal
 			{
 				_mainLayout.Visible = false;
 			}
+
+			_dropDownStatus.SelectedIndex = _state.Status;
 
 			_refreshing = false;
 		}

@@ -6,22 +6,25 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 	{
 		// shared state
 
-		public bool Ignored { get; set; }
 		public GameExit Exit { get; set; }
 		public OverworldCave Cave { get; set; }
 		public GameItem Item1 { get; set; }
 		public GameItem Item2 { get; set; }
 		public GameItem Item3 { get; set; }
 
-		// player state
+		// local state
 
-		public bool Explored { get; set; }
+		/// <summary>
+		/// 0 = none
+		/// 1 = explored
+		/// 2 = ignored
+		/// </summary>
+		public int Status { get; set; }
 
 		public OverworldRoomState Clone()
 		{
 			var clone = new OverworldRoomState();
 
-			clone.Ignored = this.Ignored;
 			clone.Exit = this.Exit;
 			clone.Cave = this.Cave;
 			clone.Item1 = this.Item1;

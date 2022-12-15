@@ -11,6 +11,6 @@ namespace MetalTracker.Games.Zelda.Types
 
 		public List<StateEntry> Caves { get; set; } = new List<StateEntry>();
 
-		public List<StateEntry> Explored { get; set; } = new List<StateEntry>();
+		public List<StateEntry> Status { get; set; } = new List<StateEntry>();
 	}
 }
