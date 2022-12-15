@@ -20,7 +20,12 @@ namespace MetalTracker.Games.Zelda.Internal.Types
 
 		// local state
 
-		public bool Explored { get; set; }
+		/// <summary>
+		/// 0 = none
+		/// 1 = explored
+		/// 2 = ignored
+		/// </summary>
+		public int Status { get; set; }
 
 		public DungeonRoomState Clone()
 		{

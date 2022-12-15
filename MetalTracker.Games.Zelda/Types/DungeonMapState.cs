@@ -13,6 +13,6 @@ namespace MetalTracker.Games.Zelda.Types
 
 		public List<StateEntry> Walls { get; set; } = new List<StateEntry>();
 
-		public List<StateEntry> Explored { get; set; } = new List<StateEntry>();
+		public List<StateEntry> Status { get; set; } = new List<StateEntry>();
 	}
 }
