@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using MetalTracker.Trackers.Z1M1.Dialogs;
 
 namespace MetalTracker.Trackers.Z1M1.Wpf
 {
@@ -8,8 +9,17 @@ namespace MetalTracker.Trackers.Z1M1.Wpf
 		[STAThread]
 		static void Main(string[] args)
 		{
-			var platform = new Eto.Wpf.Platform();
-			new Application(platform).Run(new MainForm());
+			try
+			{
+				var platform = new Eto.Wpf.Platform();
+				new Application(platform).Run(new MainForm());
+			}
+			catch (Exception ex)
+			{
+				FatalErrorDlg dlg = new FatalErrorDlg();
+				dlg.SetException(ex);
+				dlg.ShowModal();
+			}
 		}
 	}
 }

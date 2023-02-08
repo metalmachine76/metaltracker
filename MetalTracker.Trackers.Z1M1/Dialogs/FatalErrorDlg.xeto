@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Dialog
+	xmlns="http://schema.picoe.ca/eto.forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:MetalTracker.Trackers.Z1M1.Dialogs;assembly=EtoApp.1"
+	Title="Fatal Error"
+	MinimumSize="200,200"
+	Resizable="False"
+	Padding="10"
+  Load="HandleLoad"
+	>
+
+	<StackLayout HorizontalContentAlignment="Center">
+    <TextArea Width="500" Height="300" Wrap="False" ID="textAreaDetails"></TextArea>
+    <Label>Please include these details in a bug report.</Label>
+	</StackLayout>
+
+</Dialog>
